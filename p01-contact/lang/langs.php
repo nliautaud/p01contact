@@ -5,12 +5,22 @@
  * @package p01-contact
  */
 $p01contact_langs = array(
+'bg' => 'Bulgarian',
+'cz' => 'Čeština',
+'da' => 'Dansk',
 'de' => 'Deutsch',
 'en' => 'English',
-'es' => '~Español',
+'es' => 'Español',
 'fr' => 'Français',
-'it' => '~Italiano',
-'nl' => '~Nederlands',
+'it' => 'Italiano',
+'lt' => 'Lietuvos',
+'ka' => 'ქართული',
+'mk' => 'македонски',
+'nl' => 'Nederlands',
+'no' => '~Norsk',
+'pl' => 'Polski',
+'ro' => 'Român',
 'ru' => '~русский язык',
+'sk' => 'Slovák'
 'sv' => '~Svenska'
 );?>
