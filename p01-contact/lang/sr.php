@@ -1,7 +1,7 @@
 <?php
 /**
- * English language file
- * @author Nicolas Liautaud
+ * Serbian language file
+ * @author lemi667
  * @package p01-contact
  */
 $p01contact_lang = array(
