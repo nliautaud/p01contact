@@ -23,5 +23,5 @@ $p01contact_langs = array(
 'ru' => '~русский язык',
 'sk' => 'Slovák'
 'sv' => '~Svenska',
-'sr-latin' => 'Serbian latin'
+'sr' => 'Serbian latin'
 );?>
