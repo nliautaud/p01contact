@@ -693,7 +693,7 @@ class P01contact_form
                         $content .= '</ul>';
                         break;
                     case 'askcopy' :
-                        $askcopy = True;
+                        $askcopy = in_array('selected', $value[0]);
                         $content .= '<p><b>' . $this->lang('askedcopy').'.</b></p>';
                         break;
                     default :
