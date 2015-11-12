@@ -579,7 +579,7 @@ class P01contact_form
     
         $html .= $this->html_status();
         
-        if($this->status != 'sent') {
+        if(($this->status != 'sent') && ($this->status != 'sent_copy')) {
             foreach($this->fields as $id => $field) $html .= $field->html();
             
             $html .= '<div><input name="p01-contact_form[id]" type="hidden" value="' . $this->id . '" />';
@@ -608,8 +608,14 @@ class P01contact_form
 	        border-radius: 5px;
 	        -moz-border-radius: 5px;
 	        -khtml-border-radius: 5px;
-	        -webkit-border-radius: 5px;';
-        $style .= $this->status == 'sent' ? 'color:#308000;' : 'color:#D94136;';
+                -webkit-border-radius: 5px;';
+
+         if(($this->status == 'sent') || ($this->status == 'sent_copy')){
+            $style .= 'color:#308000;';
+         }else{
+            $style .= 'color:#D94136;';
+         }
+
         
         return '<div style="'.$style.'">' . $this->lang($this->status) . '</div>';
     }
