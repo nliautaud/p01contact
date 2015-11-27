@@ -666,8 +666,11 @@ class P01contact_form
             $type  = $field->get_type();
             $value = $field->get_value();
             $title = $field->get_title();
-            if($type == 'name')
+            if($type == 'name'){
                 $name = $value;
+                $content .= '<p><b>' . $this->lang($title).' :</b> ';
+                $content .= $name . '</p>';
+            }
             elseif($type == 'email')
                 $email = $value;
             elseif($type == 'subject')
