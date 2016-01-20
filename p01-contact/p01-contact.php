@@ -599,25 +599,12 @@ class P01contact_form
     private function html_status() 
     { 
         if(!$this->status) return '';
-        $style = '
-	        margin:0 0 20px 0;
-	        background:#FCFBB8; 
-	        line-height:30px;
-	        padding:0 10px;
-	        border:1px solid #F9CF51;
-	        border-radius: 5px;
-	        -moz-border-radius: 5px;
-	        -khtml-border-radius: 5px;
-                -webkit-border-radius: 5px;';
-
-         if(($this->status == 'sent') || ($this->status == 'sent_copy')){
-            $style .= 'color:#308000;';
-         }else{
-            $style .= 'color:#D94136;';
-         }
-
-        
-        return '<div style="'.$style.'">' . $this->lang($this->status) . '</div>';
+	if (($this->status == 'sent') || ($this->status == 'sent_copy')) {
+		$statusclass = 'success';
+	} else {
+		$statusclass = 'fail';
+	}
+	return '<div class="' . $statusclass . '">' . $this->lang($this->status) . '</div>';
     }
     
     /*
