@@ -1,4 +1,0 @@
-<Files securimage_show.php>
-order allow,deny
-allow from all
-</Files>

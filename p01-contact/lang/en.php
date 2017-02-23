@@ -26,7 +26,7 @@ $p01contact_lang = array(
 'nosubject'=> '(No subject)',
 'fromsite' => 'Mail sent from',
 'sentfrom' => 'This email was sent from page',
-        
+
 // status messages
 'sent'    => 'Email sent.',
 'error'   => 'Error : no message was sent.',
@@ -40,7 +40,7 @@ $p01contact_lang = array(
 'field_phone'   => 'Please use a valid phone number',
 'field_website' => 'Please write a valid web address',
 'field_message' => 'Please write a longer message',
-'field_captcha' => 'Please copy the following text',
+'field_captcha' => 'Please answer correctly the following captcha',
 'field_fieldcaptcha' => 'Please don\'t fill this field',
 'field_password'=> 'Wrong password',
 
@@ -52,11 +52,11 @@ $p01contact_lang = array(
 'config_updated' => 'Your changes were saved successfully.',
 
 'config_error_open' =>
-'<b>Unable to open config file.</b> 
+'<b>Unable to open config file.</b>
 Check if the file exists and its permissions :',
 
-'config_error_modify' => 
-'<b>Unable to modify config file.</b> 
+'config_error_modify' =>
+'<b>Unable to modify config file.</b>
 Check the file permissions :',
 
 // New release alert
@@ -64,26 +64,32 @@ Check the file permissions :',
 'download' => 'Download the last version',
 
 // Links
-'doc' => 'Documentation',
-'forum' => 'Forum',
+'repo' => 'Github',
+'wiki' => 'Documentation / Wiki',
+'issues' => 'Help / report a bug',
 
 // Parameters
-'enable'     => 'Enable',
-'enable_sub' =>
-'Enable or disable mail sending (doesn\'t hide the contact forms).',
+'disable'     => 'Disable all forms',
+'disable_sub' =>
+'Disable mail sending, without hiding the contact forms.',
 
-'default_email'     => 'Default email',
-'default_email_sub' => 'Leave empty to let it set to',
+'default_email'     => 'Default emails',
+'default_email_sub' => 'One ore more email addresses, separated by commas, that will receive mails from every forms.',
 
 'lang'     => 'Language',
 'lang_sub' => 'Default language is set to',
 
 'default_params'     => 'Default parameters',
 'default_params_sub' =>
-'Default tag form structrure. Use syntax described in documentation.',
+'Default form structure. Use syntax described in documentation.',
 
 'message_len'     => 'Messages minimum length',
 'message_len_sub' => 'Minimum number of characters for message fields.',
+
+'recaptcha_public_key' => 'reCaptcha public key',
+'recaptcha_public_key_sub' => 'Google reCaptcha public key. See <a href="https://www.google.com/recaptcha/admin">reCaptcha admin</a>.',
+'recaptcha_secret_key' => 'reCaptcha secret key',
+'recaptcha_secret_key_sub' => 'Google reCaptcha secret key. See <a href="https://www.google.com/recaptcha/admin">reCaptcha admin</a>.',
 
 'checklists'     => 'Fields checklists',
 'blacklist'      => 'Blacklist',
@@ -98,7 +104,7 @@ Separated by commas.',
 
 'debug'     => 'Debug mode',
 'debug_sub' =>
-'Disable mail sending, display p01-contact data structure, data sent by POST and 
+'Disable mail sending, display p01-contact data structure, data sent by POST and
 the email that would have been sent.',
 'debug_warn'=> 'Don\'t active that on production website!'
 );

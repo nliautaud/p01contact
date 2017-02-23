@@ -2,37 +2,34 @@
 /**
  * p01-contact - A simple contact forms manager
  *
- * @link http://nliautaud.fr/wiki/travaux/getsimple_p01-contact Documentation
- * @link http://get-simple.info/extend/plugin/p01-contact/35 Latest Version
- * @author Nicolas Liautaud <contact@nliautaud.fr>
+ * @link https://github.com/nliautaud/p01contact
+ * @author Nicolas Liautaud
  * @package p01-contact
- * @version 0.9.1
+ * @version 1.0.0
  */
 if(session_id()=='') session_start();
 
-class P01contact 
+class P01contact
 {
     public $version;
     public $default_email;
     public $default_lang;
-    public $securimage_url;
     private $forms;
+    private $config;
+    private $first;
 
-    public function __construct() 
+    public function __construct()
     {
-        $this->version = '0.9.1';
+        $this->version = '1.0.0';
         $this->forms = array();
         $dir = dirname(__FILE__);
-        define('LANGPATH', $dir . '/lang/');
-        define('CONFIGPATH', $dir . '/config.php');
-        define('CAPTCHAPATH', $dir . '/captcha/');
-        
-        define('DOCURL', 'http://nliautaud.fr/wiki/travaux/p01-contact');
-        define('DOWNURL', 'http://get-simple.info/extend/plugin/p01-contact/35');
-        define('FORUMURL', 'http://get-simple.info/forum/topic/1108');
-        define('VERSIONURL', 'http://get-simple.info/api/extend/?id=35');
+        define('ROOTDIR', $dir);
+        define('LANGPATH', ROOTDIR.'/lang/');
+        define('CONFIGFILE', ROOTDIR.'/config.json');
+
+        $this->load_config();
     }
-    
+
     /**
      * Parse a string to replace tags by forms
      *
@@ -42,10 +39,10 @@ class P01contact
      */
     public function parse($contents)
     {
-        $pattern = '`(?<!<code>)\(%\s*contact\s*(.*)\s*%\)`';  
+        $pattern = '`(?<!<code>)\(%\s*contact\s*(.*)\s*%\)`';
         preg_match_all($pattern, $contents, $tags, PREG_SET_ORDER);
         $ids = array();
-        
+
         // create forms structures from TAG
         foreach($tags as $tag) {
             $id = $this->new_form_id();
@@ -59,11 +56,17 @@ class P01contact
         }
         // replace tags by forms
         foreach($ids as $id) {
-            $contents = preg_replace($pattern, $this->forms[$id]->html(), $contents, 1);            
+            $contents = preg_replace($pattern, $this->forms[$id]->html(), $contents, 1);
         }
-        return $contents;
+
+        if(count($this->forms) > 1)  return $contents;
+
+        // styles and scripts
+        $inc = '<style>'.file_get_contents(ROOTDIR.'/style.css').'</style>';
+        $inc.= '<script>'.file_get_contents(ROOTDIR.'/scripts.js').'</script>';
+        return $inc.$contents;
     }
-    
+
     private function format($str)
     {
         $str = trim(preg_replace(
@@ -74,7 +77,7 @@ class P01contact
         return $str;
     }
     /**
-     * Parse a tag to create form structure
+     * Create a form by parsing a tag
      *
      * Find emails and parameters, create and setup form object.
      * @param int $id the form id
@@ -83,68 +86,87 @@ class P01contact
      */
     private function parse_tag($id, $tag)
     {
-        
         $form = new P01contact_form($this, $id);
         $tag = $this->format($tag);
-        
-        $param_pattern = '`[,:]\s*([^ ,"=!]+)(!)?\s*("([^"]*)")?\s*((=&gt;|=)?\s*([^,]*))?\s*`';
-        $targets_pattern = '`[,:]\s*([_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3}))`i';
-        $values_pattern = '`(?:^|\|)\s*(?:"([^"]+)")?\s*([^| ]+)?`';
-        
-        // parse emails
-        preg_match_all($targets_pattern, $tag, $targets);
-        $targets = array_unique($targets[1]);
-        // add targets
-        if(empty($targets)) {
-            $default_email = $this->get_default_email();
-            if($default_email)
-                $form->add_target($default_email);
-        } else {
-            $form->set_targets($targets);
-        }
-        // delete them from tag
-        $rest = preg_replace($targets_pattern, '', $tag); 
-        $rest = $this->format($rest);
-        // parse parameters
-        preg_match_all($param_pattern, $rest, $params, PREG_SET_ORDER);
+
+        // get parameters
+        $params = array_filter(explode(',', $tag));
         if(empty($params)) {
-            $default = $this->settings('default_params');
+            $default = $this->config('default_params');
             $default = $this->format($default);
-            preg_match_all($param_pattern, ': ' . $default, $params, PREG_SET_ORDER);
+            $params = array_filter(explode(',', $default));
         }
-        // add fields
+        // create fields
         foreach($params as $id => $param) {
-            $field = new P01contact_field($form, $id, $param[1]);
-            $field->set_title($param[4]);
-            
-            if($param[1] == 'select'
-            || $param[1] == 'radio'
-            || $param[1] == 'checkbox') {
-                // fields with multiples values
-                preg_match_all($values_pattern, $param[7], $values, PREG_SET_ORDER);
-                $values = unset_r($values, 0); 
-                $field->set_value($values);
-            }
-            elseif($param[1] == 'askcopy') {
-                // create checkbox-like structure
-                $field->set_value(array(array(1 => $this->lang('askcopy'))));
-            }
-            elseif($param[1] == 'password') {
-                // password value is required value
-                $field->set_required($param[7]);
-            }
-            else $field->set_value($param[7]);
-            
-            
-            if($param[1] != 'password')
-                $field->set_required($param[2] == '!' ? True : False);
-            $field->set_locked($param[6] == '=&gt;' ? True : False);
+            $field = $this->parse_tag_param($form, $id, $param);
             $form->add_field($field);
         }
-        
+        // default email addresses
+        $default_emails = $this->get_valid_emails($this->config('default_email'));
+        foreach ($default_emails as $email) {
+            $form->add_target($email);
+        }
+
         return $form;
     }
-    
+    /**
+     * Create a field by parsing a tag parameter
+     *
+     * Find emails and parameters, create and setup form object.
+     * @param int $id the field id
+     * @param string $tag the param to parse
+     * @return P01contact_field the field object
+     */
+    private function parse_tag_param($form, $id, $param)
+    {
+        $param_pattern = '`\s*([^ ,"=!]+)'; // type
+        $param_pattern.= '\s*(!)?';         // required
+        $param_pattern.= '\s*("([^"]*)")?'; // title
+        $param_pattern.= '\s*((=&gt;|=)?';  // assign
+        $param_pattern.= '\s*([^,]*))?\s*`';// values
+
+        $values_pattern = '`(?:^|\|)\s*(?:"([^"]+)")?\s*([^| ]+)?`';
+
+        if(filter_var($param, FILTER_VALIDATE_EMAIL))
+            $form->add_target($param);
+
+        preg_match($param_pattern, $param, $param);
+        list(, $type, $required, , $title, , $assign, $values) = $param;
+
+        $field = new P01contact_field($form, $id, $type);
+
+        // values
+        switch ($type) {
+            case 'select':
+            case 'radio':
+            case 'checkbox':
+                // fields with multiples values
+                preg_match_all($values_pattern, $values, $values, PREG_SET_ORDER);
+                $values = unset_r($values, 0);
+                $field->set_value($values);
+                break;
+            case 'askcopy':
+                // checkbox-like structure
+                $field->set_value(array(array(1 => $this->lang('askcopy'))));
+                break;
+            case 'password':
+                // password value is required value
+                $field->set_required($values);
+                break;
+            default:
+                // simple value
+                $field->set_value($values);
+        }
+        // required
+        if($type != 'password') $field->set_required($required == '!');
+        if($type == 'captcha') $field->set_required(true);
+        // title, locked
+        $field->set_title($title);
+        $field->set_locked($assign == '=&gt;');
+
+        return $field;
+    }
+
     /**
      * Update POSTed form and try to send mail
      *
@@ -159,10 +181,16 @@ class P01contact
         if(isset($this->forms[$form_id]))
         {
             $form = $this->forms[$form_id];
-            foreach($this->format_data($_POST['p01-contact_fields']) as $field_id => $field_post)
+            $fields = $form->get_fields();
+            $posted = $this->format_data($_POST['p01-contact_fields']);
+
+            foreach($fields as $id => $field)
             {
-                $field = $form->get_field($field_id);
-                
+                $field_post = $posted[$field->id];
+
+                if($field->type == 'captcha')
+                    $field_post = $_POST['g-recaptcha-response'];
+
                 // for multiple-values fields, posted value define selection
                 $value = $field->get_value();
                 if(is_array($value)) {
@@ -184,20 +212,20 @@ class P01contact
                 }
                 // for unique value fields, posted value define value
                 else $field->set_value($field_post);
-                
+
                 $check = $field->check_content();
                 $field->set_error($check);
                 if($check) $errors = True;
             }
             // SECURITY : check tokens
-            if(!$this->check_token()) {
+            if(!$this->config('debug') && !$this->check_token()) {
                 $form->set_status('token');
                 $this->set_token();
                 $form->reset();
             }
             // try to send mail
             elseif(!isset($errors)) {
-                if($this->settings('enable') === False) {
+                if($this->config('disable')) {
                     $form->set_status('disable');
                 } elseif($form->count_targets() == 0) {
                     $form->set_status('target');
@@ -209,7 +237,7 @@ class P01contact
             }
          }
     }
-    
+
     /**
      * Return next accessible form ID
      * @param string $key the setting key
@@ -222,14 +250,16 @@ class P01contact
         reset($this->forms);
         return $id;
     }
-    
+
     /**
      * Print POST and p01-contact content.
      */
     public function debug()
     {
-        ini_set('display_errors', 'on');
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
+
         echo'<h2 style="color:#c33">p01-contact debug</h2>';
         if(!empty($_POST)) {
             echo'<h3>$_POST :</h3>';
@@ -242,19 +272,8 @@ class P01contact
         print_r($this);
         echo'</pre>';
     }
-    
-    /**
-     * Return a setting value from config file
-     * @param string $key the setting key
-     * @return mixed the setting value
-     */
-    public function settings($key)
-    {
-        require CONFIGPATH;
-        if(isset($p01contact_settings[$key]))
-            return $p01contact_settings[$key];
-    }
-    
+
+
     /**
      * Format array values
      *
@@ -262,19 +281,18 @@ class P01contact
      * @param array $array
      * @return array
      */
-    private function format_data($array)
+    private function format_data($val)
     {
-        foreach($array as $key => $val) {
-            if(is_array($val)) $this->format_data($array[$key]);
-            else {
-                $tmp = stripslashes($val);
-                $tmp = htmlentities($tmp, ENT_QUOTES, 'UTF-8');
-                $array[$key] = $tmp;
-            }
+        if(is_array($val)) {
+            foreach($val as $key => $v)
+                $val[$key] = $this->format_data($v);
+            return $val;
         }
-        return $array;
+        $val = mb_convert_encoding($val, 'UTF-8', 'UTF-8');
+        $val = htmlentities($val, ENT_QUOTES, 'UTF-8');
+        return $val;
     }
-    
+
     /**
      * Return a traduction of the keyword
      *
@@ -285,16 +303,16 @@ class P01contact
     public function lang($key)
     {
         global $p01contact_lang;
-        
-        $lang = $this->settings('lang');
+
+        $lang = $this->config('lang');
         $lang = empty($lang) ? $this->default_lang : $lang;
-        
+
         $path = LANGPATH . $lang . '.php';
-        
+
         $lang = file_exists($path) ? $lang : 'en';
-        
+
         include_once $path;
-        
+
         if(isset($p01contact_lang[$key])) {
             return $p01contact_lang[$key];
         } else {
@@ -310,34 +328,68 @@ class P01contact
         require LANGPATH . '/langs.php';
         return $p01contact_langs;
     }
-    
-    /**
-     * Return the last version of p01-contact in GS
-     * @return string
+
+
+    /*
+     *  CONFIG
      */
-    private function last_version()
+
+
+    /**
+     * Load the configuration file.
+     */
+    private function load_config()
     {
-        $apiback = file_get_contents(VERSIONURL);
-        $response = json_decode($apiback);
-        if ($response->status == 'successful') {
-            return $response->version;
+        $this->config = json_decode(@file_get_contents(CONFIGFILE));
+        $this->default_config();
+    }
+    /**
+     * Set the obligatory missing settings.
+     */
+    function default_config() {
+        $default = array(
+            'default_params' => 'name!, email!, subject!, message!'
+        );
+        foreach ($default as $key => $value) {
+            if(empty($this->config->{$key}))
+                $this->config->{$key} = $value;
         }
     }
     /**
-     * Check if a new version exists. Return version number if exists, or False.
-     * @return mixed
+     * Update the configuration file with new data.
+     *
+     * @param string $file_path the config file path
+     * @param array $new_values the new values to write
+     * @param array $old_values the values to change
+     * @return boolean file edition sucess
      */
-    private function exists_new_version()
+    private function update_config($new_values)
     {
-        $actual = explode('.', $this->version);
-        $last = $this->last_version();
-        $last_r = explode('.', $last);
-        foreach($actual as $key => $val)
-            if(isset($last_r[$key])
-            && $val < $last_r[$key])
-                return $last;
-        return False;
+        if ($file = fopen(CONFIGFILE, 'w')) {
+            fwrite($file, json_encode($new_values, JSON_PRETTY_PRINT));
+            fclose($file);
+            return true;
+        } return false;
     }
+    /**
+     * Return a setting value from the config.
+     * @param string $key the setting key
+     * @param string $sub the sub-key, for an array setting
+     * @return mixed the setting value
+     */
+    public function config($key, $sub = null)
+    {
+        if(!$sub && isset($this->config->$key))
+            return $this->config->$key;
+        if($sub && isset($this->config->$key->$sub))
+            return $this->config->$key->$sub;
+    }
+
+
+    /*
+     *  PANEL
+     */
+
 
     /**
      * Save settings if necessary and display configuration panel content
@@ -346,43 +398,15 @@ class P01contact
     public function panel()
     {
         if(isset($_POST['p01-contact']['settings'])) {
-            $data = $this->format_data($_POST['p01-contact']['settings']);
-            if($content = file_get_contents(CONFIGPATH)) {
-            
-                $enable  = isset($data['enable']) ? 'True' : 'False';
-                $content = preg_replace("`('enable' => )(True|False)`", "\\1$enable", $content);
-                $debug   = isset($data['debug']) ? 'True' : 'False';
-                $content = preg_replace("`('debug' => )(True|False)`", "\\1$debug", $content);
-                $content = preg_replace("`('lang' => ')[a-z]*'`", "\\1{$data['lang']}'", $content);
-                $content = preg_replace("`('default_params' => ')[^']*'`", "\\1{$data['default_params']}'", $content);
-                $content = preg_replace("`('default_email' => ')[^']*'`", "\\1{$data['default_email']}'", $content);
-                $content = preg_replace("`'message_len' => [0-9]+`", "'message_len' => {$data['message_len']}", $content);
-                
-                foreach($data['checklist'] as $key => $val) {
-                    $content = preg_replace("`('checklist_$key' => ')[^']*'`", "\\1$val'", $content);
-                }
-                if(file_exists(CONFIGPATH)
-                && $file = fopen(CONFIGPATH, 'w')) {
-                    fwrite($file, $content);
-                    fclose($file);
-                    
-                    global $p01contact_settings;
-                    require(CONFIGPATH);
-                    $updated = '<div class="updated">' . $this->lang('config_updated') . '</div>';
-                } else {
-                    $error = $this->lang('config_error_modify');
-                }
-            } else {
-                $error = $this->lang('config_error_open');
-            }
-        }
-        if(isset($updated)) echo $updated;
-        elseif(isset($errors)) {
-            echo '<div class="error">' . $error . '<pre>' . CONFIGPATH . '</pre></div>';
+            $success = $this->update_config($_POST['p01-contact']['settings']);
+            $this->load_config();
+
+            if($success)  echo '<div class="updated">' . $this->lang('config_updated') . '</div>';
+            else echo '<div class="error">'.$this->lang('config_error_modify').'<pre>'.CONFIGFILE.'</pre></div>';
         }
         echo $this->panel_content();
     }
-    
+
     /**
      * Return configuration panel content
      *
@@ -391,119 +415,66 @@ class P01contact
      */
     private function panel_content()
     {
-        global $p01contact_settings;
-        $config_file = file_get_contents(CONFIGPATH, true); //true: use_include_path
-        $pattern = '`/\*[^*]*\* ([^*]*).*\* ([^*]*)[^*]*(\* ([^*]*))?\*/`';
-        preg_match_all($pattern, $config_file, $descs);
-        
-        $c = '<h2>' . $this->lang('config_title') . '</h2>';
-        
-        //new release
-        if($newversion = $this->exists_new_version()) {
-            $c.= '<div class="updated">' . $this->lang('new_release');
-            $c.= '<br /><a href="' . DOWNURL . '">';
-            $c.= $this->lang('download') . ' (' . $newversion . ')</a></div>';
-        }
-        //links
-        $c.= '<p><a href="' . DOCURL . '">' . $this->lang('doc') . '</a>';
-        $c.= ' - <a href="' . FORUMURL . '">' . $this->lang('forum') . '</a></p>';
-        
-        $c.= '<form action="" method="post"><table>';
-        
-        //enable
-        $c.= '<tr><td><b><label style="display:block;float:none">' . $this->lang('enable') . '</label></b>';
-        $c.= '<i>' . $this->lang('enable_sub') . '</i></td>';
-        $c.= '<td><input type="checkbox" name="p01-contact[settings][enable]" ';
-        $c.= $this->settings('enable') ? 'checked="checked" ' : '';
-        $c.= '/></td></tr>';
-        
-        //default email
-        $c.= '<tr><td><b><label style="display:block;float:none">';
-        $c.= $this->lang('default_email') . '</label></b>';
-        $c.= '<i>' . $this->lang('default_email_sub') . ' ';
-        $c.= ($this->default_email ? $this->default_email : '"not set"') . '</i></td><td>';
-        $c.= '<input type="text" name="p01-contact[settings][default_email]" ';
-        $settings_email = $this->settings('default_email');
-        $c.= 'value="' . $settings_email . '" />';
-        $c.= '</td></tr>';
-        
-        // language
-        $c.= '<tr><td><b><label style="display:block;float:none">' . $this->lang('lang') . '</label></b>';
-        $c.= '<i>' . $this->lang('lang_sub') . ' ' . $this->default_lang . '</i></td>';
-        $c.= '</td><td><select name="p01-contact[settings][lang]">';
-        $lang = $this->settings('lang');
-        $c.= '<option value=""' . ($lang == ''?' selected="selected" ':'') . '>Default</option>';
+        $others = (object) array();
+        $others->disablechecked = $this->config('disable') ? 'checked="checked" ' : '';
+        $others->debugchecked = $this->config('debug') ? 'checked="checked" ' : '';
+        $others->default_lang = $this->default_lang;
+
+        $lang = $this->config('lang');
+        $others->langsoptions = '<option value=""'.($lang==''?' selected="selected" ':'').'>Default</option>';
         foreach($this->langs() as $iso => $name) {
-            $c.= '<option value="' . $iso . '" ';
-            if($lang == $iso) $c.= 'selected="selected" ';
-            $c.= '/>' . $name . '</option>';
+            $others->langsoptions .= '<option value="' . $iso . '" ';
+            if($lang == $iso) $others->langsoptions .= 'selected="selected" ';
+            $others->langsoptions .= '/>' . $name . '</option>';
         }
-        $c.= '</select></td></tr>';
-        
-        //message length
-        $c.= '<tr><td><b><label style="display:block;float:none">' . $this->lang('message_len') . '</label></b>';
-        $c.= '<i>' . $this->lang('message_len_sub') . '</i></td>';
-        $c.= '<td><input type="text" name="p01-contact[settings][message_len]" size=3 maxlength=3 ';
-        $c.= 'value="' . $this->settings('message_len').'" /></td></tr>';
-        
-        // default parameters
-        $c.= '<tr><td colspan="2"><b><label style="display:block;float:none">';
-        $c.= $this->lang('default_params') . '</label></b>';
-        $c.= '<i>' . $this->lang('default_params_sub') . '</i><br />';
-        $c.= '<textarea name="p01-contact[settings][default_params]" style="width:100%;height:40px">';
-        $c.= $this->settings('default_params');
-        $c.= '</textarea></td></tr>';
-        
-        //checklists
-        $c.= '<tr><td colspan="2"><b><label style="display:block;float:none">';
-        $c.= $this->lang('checklists') . '</label></b>';
-        $c.= '<i>' . $this->lang('checklists_sub') . '</i>';
-        $fields = array(
-            'general_fields' => array('text','textarea'), 'special_fields' =>
-            array('name','email','address','phone','website','subject','message'));
+
+        $others->checklists = '';
+        $fields = array('general_fields' => array('text','textarea'), 'special_fields' => array('name','email','address','phone','website','subject','message'));
         foreach($fields as $type => $f)
             foreach($f as $id=>$field) {
-                if(!$id) $c.= '<p></p><p><b>' . $this->lang($type) . ' :</b></p>';
-                $content = $this->settings('checklist_'.$field);
-                $c.= '<div><b>' . ucfirst($field);
-                $c.= ' </b><input name="p01-contact[settings][checklist_type]['.$field.']"';
-                $c.= ' type="radio" value="blacklist" checked /> ' . $this->lang('blacklist');
-                $c.= ' <input name="p01-contact[settings][checklist_type]['.$field.']"';
-                $c.= ' type="radio" value="whitelist" disabled /> ' . $this->lang('whitelist') . '</div>';
-                $c.= '<textarea name="p01-contact[settings][checklist]['.$field.']" ';
-                $c.= 'style="width:100%;height:'.(40+strlen($content)*0.2).'px">';
-                $c.= $content . '</textarea>';
+                if(!$id) $others->checklists .= '<p></p><p><b>' . $this->lang($type) . ' :</b></p>';
+                $content = $this->config('checklist', $field);
+                $others->checklists .= '<div><b>' . ucfirst($field);
+                $others->checklists .= ' </b><input name="p01-contact[settings][checklist_type]['.$field.']"';
+                $others->checklists .= ' type="radio" value="blacklist" checked /> ' . $this->lang('blacklist');
+                $others->checklists .= ' <input name="p01-contact[settings][checklist_type]['.$field.']"';
+                $others->checklists .= ' type="radio" value="whitelist" disabled /> ' . $this->lang('whitelist') . '</div>';
+                $others->checklists .= '<textarea name="p01-contact[settings][checklist]['.$field.']" ';
+                $others->checklists .= 'style="width:100%;height:'.(40+strlen($content)*0.2).'px">';
+                $others->checklists .= $content . '</textarea>';
         }
-        $c.= '</tr></td>';
-        
-        //debug
-        $c.= '<tr><td><b><label style="display:block;float:none">' . $this->lang('debug') . '</label></b>';
-        $c.= '<i>' . $this->lang('debug_sub') . '</i><br />';
-        $c.= '<b>' . $this->lang('debug_warn') . '</b></td>';
-        $c.= '<td><input type="checkbox" name="p01-contact[settings][debug]" ';
-        $c.= $this->settings('debug') ? 'checked="checked" ' : '';
-        $c.= '/></td></tr>';
-        
-        $c.= '<tr><td><input type="submit" value="Save settings" /></td></tr>';
-        
-        $c.= '</table></form>';
-        
-        return $c;
+        $others->checklists .= '</tr></td>';
+
+
+        $template = file_get_contents(ROOTDIR.'/settings_tpl.html');
+        return preg_replace_callback('`([A-Z]+|lang|config|other)\(([^)]+)\)`',
+            function ($matches) use($others) {
+                switch ($matches[1]) {
+                    case 'lang': return $this->lang($matches[2]);
+                    case 'config': return $this->config($matches[2]);
+                    case 'other': if(isset($others->{$matches[2]})) return $others->{$matches[2]};
+                    default: return constant($matches[2]);
+                }
+            }, $template);
     }
-    
+
+
+    /*
+     *  TOKENS
+     */
+
+
     /*
      * Create an unique hash in SESSION
      */
-    private function set_token()
-    {
-        $_SESSION['p01-contact_token'] = uniqid(md5(microtime()), True);
+    private function set_token() {
+        $_SESSION['p01-contact_token'] = uniqid(md5(microtime()), true);
     }
     /*
      * Get the token in SESSION (create it if not exists)
      * @return string
      */
-    public function get_token()
-    {
+    public function get_token() {
         if(!isset($_SESSION['p01-contact_token']))
             $this->set_token();
         return $_SESSION['p01-contact_token'];
@@ -512,114 +483,94 @@ class P01contact
      * Compare the POSTed token to the SESSION one
      * @return boolean
      */
-    private function check_token()
-    {
-        if($this->get_token() === $_POST['p01-contact_form']['token'])
-            return True;
-        else return False;
+    private function check_token() {
+        return $this->get_token() === $_POST['p01-contact_form']['token'];
     }
-    
-    /*
-     * Return settings default email if set and valid,
-     * or $this->default_email if set and valid,
-     * or False.
+    /**
+     * Return array of valid emails from a comma separated string
+     * @param string $emails
+     * @return array
      */
-    public function get_default_email()
-    {
-        $settings_email = $this->settings('default_email');
-        $pattern = '`^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$`i';
-        
-        if(!empty($settings_email)
-        && preg_match($pattern, $settings_email))
-            return $settings_email;
-        if(!empty($this->default_email)
-        && preg_match($pattern, $this->default_email))
-            return $this->default_email;
-        
-        return False;
+    public function get_valid_emails($emails) {
+        return array_filter(explode(',', $emails), function($email) {
+            return filter_var($email, FILTER_VALIDATE_EMAIL);
+        });
     }
 }
 
 /*
  * Contact form class
- 
+
  * Contains fields, manage mail sending.
  */
-class P01contact_form 
-{    
+class P01contact_form
+{
     public $P01contact;
-    
+
     private $id;
     private $status;
-    private $targets;
+    public $targets;
     private $fields;
 
     /*
      * @param P01contact $P01contact
      * @param int $id the form id
      */
-    public function __construct($P01contact, $id) 
-    { 
+    public function __construct($P01contact, $id)
+    {
         $this->P01contact = $P01contact;
-        
+
         $this->id = $id;
         $this->status = '';
         $this->targets = array();
         $this->fields = array();
     }
-    
+
     /*
      * Return the html display of the form
      * @return string the <form>
      */
-    public function html() 
-    {     
+    public function html()
+    {
         $html  = '<form action="#p01-contact' . $this->id . '" autocomplete="off" ';
         $html .= 'id="p01-contact' . $this->id . '" class="p01-contact" method="post">';
-    
+
         $html .= $this->html_status();
-        
-        if($this->status != 'sent') {
+
+        if(($this->status != 'sent') && ($this->status != 'sent_copy')) {
             foreach($this->fields as $id => $field) $html .= $field->html();
-            
+
             $html .= '<div><input name="p01-contact_form[id]" type="hidden" value="' . $this->id . '" />';
             $html .= '<input name="p01-contact_form[token]" type="hidden" value="' . $this->P01contact->get_token() . '" />';
             $html .= '<input class="submit" ';
             $html .= 'type="submit" value="' . $this->lang('send') . '" /></div>';
         }
         $html .= '</form>';
-    
+
         return $html;
     }
-    
+
     /*
      * Return an html display of the form status
      * @return string the <div>
      */
-    private function html_status() 
-    { 
+    private function html_status()
+    {
         if(!$this->status) return '';
-        $style = '
-	        margin:0 0 20px 0;
-	        background:#FCFBB8; 
-	        line-height:30px;
-	        padding:0 10px;
-	        border:1px solid #F9CF51;
-	        border-radius: 5px;
-	        -moz-border-radius: 5px;
-	        -khtml-border-radius: 5px;
-	        -webkit-border-radius: 5px;';
-        $style .= $this->status == 'sent' ? 'color:#308000;' : 'color:#D94136;';
-        
-        return '<div style="'.$style.'">' . $this->lang($this->status) . '</div>';
+        if (($this->status == 'sent') || ($this->status == 'sent_copy')) {
+            $statusclass = 'alert success';
+        } else {
+            $statusclass = 'alert failed';
+        }
+        return '<div class="' . $statusclass . '">' . $this->lang($this->status) . '</div>';
     }
-    
+
     /*
      * Return an html http:// link
      * @param string $href the link address
      * @param string $title if not used, the link title will be the address
      * @return string the <a>
-     */   
+     */
     private function html_link($href, $title = False)
     {
         if(!$title) $title = $href;
@@ -631,7 +582,7 @@ class P01contact_form
      * @param string $href the email
      * @param string $title if not used, the link title will be the email
      * @return string the <a>
-     */  
+     */
     private function html_mail_link($href, $title = False)
     {
         if(!$title) $title = $href;
@@ -645,42 +596,35 @@ class P01contact_form
      * and fields datas; and update the form status (sent|error).
      */
     public function send_mail()
-    {   
+    {
         $server = $_SERVER['SERVER_NAME'];
         $uri = $_SERVER['REQUEST_URI'];
-        
-        // title
-        $content  = '<h2>' . $this->lang('fromsite') . ' <i>' . $_SERVER['SERVER_NAME'] . '</i></h2>';
-        $content .= '<h3>' . date('r') . '</h3><br/>';
-        
-        // fields
-        $skip = array('captcha');
+
+        // content
+        $content = '';
+        $skip_in_message = array('name','email','subject','captcha');
         foreach($this->fields as $field)
         {
-            $type  = $field->get_type();
             $value = $field->get_value();
             $title = $field->get_title();
-            if($type == 'name')
-                $name = $value;
-            elseif($type == 'email')
-                $email = $value;
-            elseif($type == 'subject')
-                $subject = $value;
-            elseif(
-                !in_array($type, $skip)
-                && !empty($value))
+            $title = !empty($title) ? $title : $field->type;
+
+            if($field->type == 'name') $name = $value;
+            if($field->type == 'email') $email = $value;
+            if($field->type == 'subject') $subject = $value;
+
+            if(!in_array($field->type, $skip_in_message) && !empty($value))
             {
-                $title = !empty($title) ? $title : $type;
-                if($type != 'askcopy') // managed blow for him.
-                    $content .= '<p><b>' . $this->lang($title).' :</b> ';
-                switch($type)
+                if($field->type != 'askcopy') // managed blow for him.
+                    $content .= '<p><strong>' . $this->lang($title).' :</strong> ';
+                switch($field->type)
                 {
                     case 'message' :
                     case 'textarea' :
                         $content .= '<p style="margin:10px;padding:10px;border:1px solid silver">';
                         $content .= nl2br($value) . '</p>';
                         break;
-                    case 'website' :
+                    case 'url' :
                         $content .= $this->html_link($value);
                         break;
                     case 'checkbox' :
@@ -693,61 +637,69 @@ class P01contact_form
                         $content .= '</ul>';
                         break;
                     case 'askcopy' :
-                        $askcopy = True;
-                        $content .= '<p><b>' . $this->lang('askedcopy').'.</b></p>';
+                        $askcopy = in_array('selected', $value[0]);
+                        $content .= '<p><strong>' . $this->lang('askedcopy').'.</strong></p>';
                         break;
                     default :
                         $content .=  $value;
-                } 
+                }
                 $content .= '</p>';
             }
         }
-        if(!isset($askcopy)) $askcopy = False;
-        
+
+        if(!isset($askcopy)) $askcopy = false;
+        if(empty($email)) {
+            $askcopy = false;
+            $email = $this->lang('nofrom');
+        }
+        if(empty($name)) $name = $this->lang('nofrom');
+        if(empty($subject)) $subject = $this->lang('nosubject');
+
+        // title
+        $title  = '<h2>' . $this->lang('fromsite') . ' <em>' . $server . '</em></h2>';
+        $title .= '<h3>' . date('r') . '</h3>';
+        $title .= '<p><strong>From :</strong> <a href="mailto:'.$email.'">'.$name.($email ? " &lt;$email&gt;":'') . '</a></p>';
+
         // footer infos
         $footer  = '<p><i>' . $this->lang('sentfrom');
         $footer .= ' ' . $this->html_link($server.$uri, $uri);
         $footer_copy = $footer . '</i></p>'; // version without infos below
         $footer .= '<br />If this mail should not be for you, please contact ';
-        $footer .= $this->html_mail_link($this->P01contact->get_default_email());
+        $footer .= $this->html_mail_link($this->targets[0]);
         $footer .= '</i></p>';
-        
+
         $targets = implode(',', $this->targets);
-        
-        if(empty($name)) $name = $this->lang('nofrom');
-        if(empty($email)) {
-            $askcopy = False;
-            $email = $this->lang('nofrom');
-        }
-        if(empty($subject)) $subject = $this->lang('nosubject');
-        $subject = '=?utf-8?B?' . base64_encode($subject) . '?=';
-        
-        $headers  = "From: $name <$email>\r\n";
-        $headers .= "Reply-To: $name <$email>\r\n";
-        $headers .= "Return-Path: $name <$email>\r\n";
+
+        $encoded_subject = mb_encode_mimeheader(html_entity_decode($subject, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
+        $encoded_name = mb_encode_mimeheader(html_entity_decode($name, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
+
+        $headers  = "From: $encoded_name <$email>\r\n";
+        $headers .= "Reply-To: $encoded_name <$email>\r\n";
+        $headers .= "Return-Path: $encoded_name <$email>\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-type: text/html; charset=UTF-8\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n" ;
-        
-        if(!$this->settings('debug')) {
+
+        if(!$this->config('debug')) {
             // send mail
-            $status = mail($targets, $subject, $content.$footer, $headers);
+            $status = mail($targets, $encoded_subject, $title.$content.$footer, $headers);
             if($status) {
                 if($askcopy) { // send copy
-                    $copy = mail($email, $subject, $content.$footer_copy, $headers);
+                    $copy = mail($email, $encoded_subject, $title.$content.$footer_copy, $headers);
                     if($copy) $this->status = 'sent_copy';
                     else $this->status = 'error_copy';
                 } else $this->status = 'sent';
             } else $this->status = 'error';
         } else {
             // display mail for debug
-            echo'<h2 style="color:#c33">p01-contact (not) sent mail :</h2>';
-            echo'<pre>' . $headers . '</pre>';
-            echo'<div style="border:1px solid black;padding:10px">' . $content.$footer . '</div>';
+            echo '<h2 style="color:#c33">p01-contact (not) sent mail :</h2>';
+            echo '<pre>'.htmlspecialchars($headers).'</pre>';
+            echo "<pre>Targets: $targets\nHidden targets: $bcc\nSubject: $encoded_subject</pre>";
+            echo '<div style="border:1px solid #ccc;padding:15px;">' . $title.$content.$footer . '</div>';
             $this->status = $this->lang('debug');
-        }            
+        }
     }
-    
+
     /*
      * Reset all fields values and errors
      */
@@ -762,32 +714,35 @@ class P01contact_form
     /**
      * GETTERS / SETTERS
      */
-    
-    public function add_target($tget) {$this->targets[] = $tget;}
+
+    public function add_target($tget) {
+        if(in_array($tget, $this->targets) === false)
+            $this->targets[] = $tget;
+    }
     public function set_targets(array $targets) {$this->targets = $targets;}
     public function count_targets() {return count($this->targets);}
-    
+
     public function get_field($id) {return $this->fields[$id];}
     public function get_fields() {return $this->fields;}
     public function add_field(P01contact_field $field) {$this->fields[] = $field;}
-    
+
     public function set_status($status) {
         if(is_string($status)) $this->status = $status;
     }
-    
+
     public function get_id() {return $this->id;}
     public function get_status() {return $this->status;}
-    
-    public function settings($key) {return $this->P01contact->settings($key);}
-    public function lang($key) {return $this->P01contact->lang($key);}
-} 
 
-class P01contact_field 
+    public function config($key, $sub=null) {return $this->P01contact->config($key,$sub);}
+    public function lang($key) {return $this->P01contact->lang($key);}
+}
+
+class P01contact_field
 {
     private $form;
-    
-    private $id;
-    private $type;
+
+    public $id;
+    public $type;
     private $title;
     private $value;
     private $required;
@@ -799,10 +754,10 @@ class P01contact_field
      * @param int $id the field id
      * @param string $type the field type
      */
-    public function __construct($form, $id, $type) 
-    { 
+    public function __construct($form, $id, $type)
+    {
         $this->form = $form;
-        
+
         $this->id = $id;
         $this->type = $type;
         $this->title = '';
@@ -811,7 +766,7 @@ class P01contact_field
         $this->locked = False;
         $this->error = '';
     }
-    
+
     /**
      * Check field value
      *
@@ -821,15 +776,16 @@ class P01contact_field
      */
     public function check_content()
     {
+        // empty and required
         if(empty($this->value) && $this->required) {
-            // empty and required
             return 'field_required';
         }
-        elseif(!empty($this->value) && !$this->check_validity()) {
-            // not empty but not valid
+        // not empty but not valid
+        if(!empty($this->value) && !$this->check_validity()) {
             return 'field_' . $this->type;
         }
-        else return '';
+
+        return '';
     }
 
     /**
@@ -840,40 +796,56 @@ class P01contact_field
     public function check_validity()
     {
         if($this->blacklisted()) return False;
-        
+
         switch($this->type) {
             case 'email':
-                $pattern = '`^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$`i';
-                if(preg_match($pattern, $this->value)) return True;
-                else return False;
+                return filter_var($this->value, FILTER_VALIDATE_EMAIL);
             case 'phone':
                 $pattern = '`^\+?[-0-9(). ]{6,}$$`i';
-                if(preg_match($pattern, $this->value)) return True;
-                else return False;
+                return preg_match($pattern, $this->value);
             case 'website':
-                $pattern = "`^((http|https|ftp):\/\/(www\.)?|www\.)[a-zA-Z0-9\_\-]+\.([a-zA-Z]{2,4}|[a-zA-Z]{2}\.[a-zA-Z]{2})(\/[a-zA-Z0-9\-\._\?\&=,'\+%\$#~]*)*$`i";
-                if(preg_match($pattern, $this->value)) return 1;
-                else return False;
+                return filter_var($this->value, FILTER_VALIDATE_URL);
             case 'message':
-                $size = strlen($this->value);
-                if($size > $this->form->settings('message_len')) return True;
-                else return False;
+                return strlen($this->value) > $this->form->config('message_len');
             case 'captcha':
-                include_once CAPTCHAPATH . 'securimage.php';
-                $securimage = new Securimage();
-                if($securimage->check($this->value) == False)
-                    return False;
-                else return True;
+                return $this->reCaptcha_validity($this->value);
             case 'fieldcaptcha':
-                if(!empty($this->value)) return False;
-                else return True; 
+                return empty($this->value);
             case 'password':
-                if($this->value == $this->required)
-                    return True;
-                else return False; 
+                return $this->value == $this->required;
             default:
-                return True;
+                return true;
         }
+    }
+
+    /**
+     * Check if reCaptcha is valid
+     * @return boolean
+     */
+    public function reCaptcha_validity($answer)
+    {
+        if (!$answer) return false;
+        $params = [
+            'secret'    => $this->form->config('recaptcha_secret_key'),
+            'response'  => $answer
+        ];
+        $url = "https://www.google.com/recaptcha/api/siteverify?" . http_build_query($params);
+        if (function_exists('curl_version')) {
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_HEADER, false);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            $response = curl_exec($curl);
+        } else {
+            $response = file_get_contents($url);
+        }
+
+        if (empty($response) || is_null($response)) {
+            return false;
+        }
+
+        return json_decode($response)->success;
     }
 
     /**
@@ -885,7 +857,7 @@ class P01contact_field
      */
     public function blacklisted()
     {
-        $list = $this->form->settings('checklist_' . $this->type);
+        $list = $this->form->config('checklist', $this->type);
         if(empty($list)) return False;
 
         $array = explode(',', $list);
@@ -895,55 +867,37 @@ class P01contact_field
         }
         return False;
     }
-    
+
     /*
      * Return the html display of the field
      *
      * Manage field title, error message, and type-based display
      * @return string the <div>
      */
-    public function html() 
-    {   
+    public function html()
+    {
         $id  = 'p01-contact' . $this->form->get_id() . '_field' . $this->id;
         $name = 'p01-contact_fields[' . $this->id . ']';
         $type = $this->general_type();
         $value = $this->value;
         $disabled = $this->locked ? ' disabled="disabled"' : '';
-        
-        $html  = '
-        <div class="field ' . $type . '">';
+        $required = $this->required ? ' required ' : '';
+
+        $html  = '<div class="field ' . $type.$required. '">';
         if($this->type != 'askcopy') // not needed here, the value say everything
             $html .= $this->html_label($id);
-        
-        switch($type) {
-            case 'text' :
-                $html .= '
-                <input id="' . $id . '" ';
-                $html .= 'name="' . $name . '" type="text" ';
-                $html .= 'value="' . $value . '"' . $disabled . ' />';
-                break;
+
+        switch($type)
+        {
             case 'textarea' :
-                $html .= '
-                <textarea id="' . $id . '" rows="10" ';
-                $html .= 'name="' . $name . '"' . $disabled;
+                $html .= '<textarea id="' . $id . '" rows="10" ';
+                $html .= 'name="' . $name . '"' . $disabled.$required;
                 $html .= '>' . $value . '</textarea>';
                 break;
             case 'captcha' :
-                $html .= '
-                    <div class="captchaimg">';
-                $html .= '<img id="captchaimg" ';
-                $html .=    'src="' . $this->securimage_url() . 'securimage_show.php" ';
-                $html .=    'alt="CAPTCHA Image" />';
-                $html .= '</div></label></div>
-                <a href="#"';
-                $html .= 'onclick="document.getElementById(\'captchaimg\').src = ';
-                $html .= '\'' . $this->securimage_url() . 'securimage_show.php?\' ';
-                $html .= '+ Math.random(); return false">';
-                $html .= $this->form->lang('reload');
-                $html .= '</a>
-                <input id="' . $id . '" ';
-                $html .= 'type="text" name="' . $name . '" ';
-                $html .= 'size="10" maxlength="6"' . $disabled . ' />';
+                $key = $this->form->config('recaptcha_public_key');
+                $html .='<script src="https://www.google.com/recaptcha/api.js?onload=CaptchaCallback&render=explicit" async defer></script>
+                <div class="recaptcha" id="'.$id.'"></div>';
                 break;
             case 'fieldcaptcha' :
                 $html .= '<input id="' . $id . '" type="text" name="' . $name . '" />';
@@ -952,21 +906,18 @@ class P01contact_field
                 foreach($this->value as $i => $v) {
                     $value = !empty($v[1]) ? ' ' . $v[1] : '';
                     $selected = !empty($v[2]) && $v[2] == 'selected' ? ' checked' : '';
-                    $html .= '
-                    <input id="' . $id . '_option' . $i . '"';
+                    $html .= '<input id="' . $id . '_option' . $i . '"';
                     $html .= ' type="checkbox" name="' . $name . '[' . $i . ']"';
-                    $html .= ' value="' . $value . '"' . $disabled . $selected;
+                    $html .= ' value="' . $value . '"' . $disabled.$required.$selected;
                     $html .= ' />' . $value;
                 }
                 break;
             case 'select' :
-                $html .= '
-                <select id="' . $id . '" name="' . $name . '"' . $disabled . '>';
+                $html .= '<select id="' . $id . '" name="' . $name . '"' . $disabled.$required . '>';
                 foreach($this->value as $i => $v) {
                     $value = !empty($v[1]) ? ' ' . $v[1] : ' Default';
                     $selected = !empty($v[2]) && $v[2] == 'selected' ? 'selected="selected"' : '';
-                    $html .= '
-                    <option id="' . $id . '_option' . $i . '" value="' . $value;
+                    $html .= '<option id="' . $id . '_option' . $i . '" value="' . $value;
                     $html .= '"' . $selected . ' >' . $value . '</option>';
                 }
                 $html.= '</select>';
@@ -975,54 +926,40 @@ class P01contact_field
                 foreach($this->value as $i => $v) {
                     $value = !empty($v[1]) ? ' ' . $v[1] : ' Default';
                     $selected = !empty($v[2]) && $v[2] == 'selected' ? ' checked' : '';
-                    $html .= ' 
-                    <input id="' . $id . '_option' . $i . '" type="radio" ';
+                    $html .= '<input id="' . $id . '_option' . $i . '" type="radio" ';
                     $html .= 'name="' . $name . '" value="' . $value . '"';
-                    $html .= $disabled . $selected . ' />' . $value;
+                    $html .= $disabled.$required.$selected . ' />' . $value;
                 }
                 break;
-            case 'password' :
-                $html .= '
-                <input id="' . $id . '" ';
-                $html .= 'name="' . $name . '" type="password" ';
-                $html .= $disabled . ' />';
-                break;
-            //case 'file' :
+            default :
                 $html .= '<input id="' . $id . '" ';
-                $html .= 'type="file" name="' . $name . '"' . $disabled . ' />';
+                $html .= 'name="' . $name . '" type="'.$type.'" ';
+                $html .= 'value="' . $value . '"' . $disabled.$required . ' />';
                 break;
         }
         $html .= '</div>';
         return $html;
     }
-    
+
     /*
      * Return the label of the field
-     * @param string $for id of the target field 
+     * @param string $for id of the target field
      * @return string the <div> (unclosed for captcha)
      */
     private function html_label($for)
     {
-        $html  = '
-                <div class="label">';
-        $html .= '<label for="' . $for . '">';
+        $html = '<label for="' . $for . '">';
         if(!empty($this->title)) {
             $html .= $this->title;
         } else $html .= ucfirst($this->form->lang($this->type));
-        
-        $html .= $this->required ? ' <strong style="color:red">*</strong>' : '';
-        
+
         if(!empty($this->error)) {
-            $html .= ' <span style="font-size:0.7em;color:red">';
-            $html .= $this->form->lang($this->error);
-            $html .= '</span>';
+            $html .= ' <span class="error-msg">' . $this->form->lang($this->error) . '</span>';
         }
-        if($this->type != 'captcha') { // captcha close label after image
-            $html .= '</label></div>';
-        }
+        $html .= '</label>';
         return $html;
     }
-        
+
     /**
      * Return the general type of a field, even of specials fields.
      */
@@ -1030,38 +967,32 @@ class P01contact_field
     {
         $types = array(
             'name'    => 'text',
-            'email'   => 'text',
-            'phone'   => 'text',
-            'website' => 'text',
             'subject' => 'text',
             'address' => 'textarea',
             'message' => 'textarea',
-            'file'    => 'file',
-            'captcha' => 'captcha',
-            'askcopy' => 'checkbox');
+            'askcopy' => 'checkbox'
+        );
         if(isset($types[$this->type]))
             return $types[$this->type];
         else return $this->type;
     }
-    
+
     /**
      * GETTERS / SETTERS
      */
-     
-    public function get_type() {return $this->type;}
-    
+
     public function get_title() {return $this->title;}
     public function set_title($title) {
         if(is_string($title)) $this->title = $title;
     }
-    
+
     public function get_value() {return $this->value;}
     public function set_value($value) {
         if(is_string($value)
         || is_array($value))
         $this->value = $value;
     }
-    
+
     public function set_required($required) {
         $this->required = $required;
     }
@@ -1070,9 +1001,6 @@ class P01contact_field
     }
     public function set_error($error) {
         if(is_string($error)) $this->error = $error;
-    }
-    public function securimage_url() {
-        return $this->form->P01contact->securimage_url;
     }
 }
 
