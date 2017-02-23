@@ -15,6 +15,11 @@
     }
     .p01contact_panel label > * {
         flex: 1;
+        margin-left: 2em;
+    }
+    .p01contact_panel label > div {
+        margin-left: 0;
+        margin-right: 2em;
     }
     .p01contact_panel label {
         margin: 1em 0;
@@ -23,11 +28,14 @@
         display: block;
     }
     .p01contact_panel em {
+        color: #999;
         font-weight: normal;
+        font-size: .95em;
+        font-style: normal;
     }
 </style>
 <div class="p01contact_panel">
-    <h2>lang(config_title)</h2>
+    <h3>lang(config_title)</h3>
     <p>
         <a href="https://github.com/nliautaud/p01contact">lang(repo)</a> -
         <a href="https://github.com/nliautaud/p01contact/wiki">lang(wiki)</a> -
@@ -40,27 +48,26 @@
         </label>
         <label>
             <div><strong>lang(lang)</strong><em>lang(lang_sub) other(default_lang)</em></div>
-            <select name="p01-contact[settings][lang]">other(langsoptions)</select>
+            <select class="text" name="p01-contact[settings][lang]">other(langsoptions)</select>
         </label>
         <label>
             <div><strong>lang(message_len)</strong><em>lang(message_len_sub)</em></div>
-            <input type="number" name="p01-contact[settings][message_len_sub]" value="config(message_len)" size=3 maxlength=3 min=0 />
+            <input type="number" class="text" name="p01-contact[settings][message_len_sub]" value="config(message_len)" size=3 maxlength=3 min=0 />
         </label>
         <label>
             <div><strong>lang(recaptcha_public_key)</strong><em>lang(recaptcha_public_key_sub)</em></div>
-            <input type="text" name="p01-contact[settings][recaptcha_public_key]" value="config(recaptcha_public_key)"/>
+            <input type="text" class="text" name="p01-contact[settings][recaptcha_public_key]" value="config(recaptcha_public_key)"/>
         </label>
         <label>
             <div><strong>lang(recaptcha_secret_key)</strong><em>lang(recaptcha_secret_key_sub)</em></div>
-            <input type="text" name="p01-contact[settings][recaptcha_secret_key]" value="config(recaptcha_secret_key)"/>
+            <input type="text" class="text" name="p01-contact[settings][recaptcha_secret_key]" value="config(recaptcha_secret_key)"/>
         </label>
         <label>
             <div><strong>lang(default_params)</strong><em>lang(default_params_sub)</em></div>
             <textarea name="p01-contact[settings][default_params]">config(default_params)</textarea>
         </label>
-        <p>
-            <div><strong>lang(checklists)</strong><em>lang(checklists_sub)</em></div>
-        </p>
+        <h3>lang(checklists)</h3>
+        <p><em>lang(checklists_sub)</em></p>
         other(checklists)
         <label>
             <div><strong>lang(disable)</strong><em>lang(disable_sub)</em></div>
@@ -71,7 +78,7 @@
             <input type="checkbox" name="p01-contact[settings][debug]" other(debugchecked)/>
         </label>
         <label>
-            <input type="submit" value="Save settings" />
+            <input class="submit" type="submit" value="Save settings" />
         </label>
     </form>
 </div>

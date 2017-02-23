@@ -432,16 +432,16 @@ class P01contact
         $fields = array('general_fields' => array('text','textarea'), 'special_fields' => array('name','email','address','phone','website','subject','message'));
         foreach($fields as $type => $f)
             foreach($f as $id=>$field) {
-                if(!$id) $others->checklists .= '<p></p><p><b>' . $this->lang($type) . ' :</b></p>';
+                if(!$id) $others->checklists .= '<p><b>' . $this->lang($type) . ' :</b></p>';
                 $content = $this->config('checklist', $field);
-                $others->checklists .= '<div><b>' . ucfirst($field);
-                $others->checklists .= ' </b><input name="p01-contact[settings][checklist_type]['.$field.']"';
+                $others->checklists .= '<label><div><strong>' . ucfirst($field) . '</strong><em>';
+                $others->checklists .= '<input name="p01-contact[settings][checklist_type]['.$field.']"';
                 $others->checklists .= ' type="radio" value="blacklist" checked /> ' . $this->lang('blacklist');
                 $others->checklists .= ' <input name="p01-contact[settings][checklist_type]['.$field.']"';
-                $others->checklists .= ' type="radio" value="whitelist" disabled /> ' . $this->lang('whitelist') . '</div>';
-                $others->checklists .= '<textarea name="p01-contact[settings][checklist]['.$field.']" ';
+                $others->checklists .= ' type="radio" value="whitelist" disabled /> ' . $this->lang('whitelist');
+                $others->checklists .= '</em></div><textarea name="p01-contact[settings][checklist]['.$field.']" ';
                 $others->checklists .= 'style="width:100%;height:'.(40+strlen($content)*0.2).'px">';
-                $others->checklists .= $content . '</textarea>';
+                $others->checklists .= $content . '</textarea></label>';
         }
         $others->checklists .= '</tr></td>';
 
