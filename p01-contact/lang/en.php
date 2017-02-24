@@ -79,12 +79,14 @@ Check the file permissions :',
 'lang'     => 'Language',
 'lang_sub' => 'Default language is set to',
 
-'default_params'     => 'Default parameters',
-'default_params_sub' =>
-'Default form structure. Use syntax described in documentation.',
-
 'message_len'     => 'Messages minimum length',
 'message_len_sub' => 'Minimum number of characters for message fields.',
+
+'default_params'     => 'Default parameters',
+'default_params_sub' => 'Default form structure. Use syntax described in documentation.',
+
+'separator'     => 'Separator',
+'separator_sub' => 'Parameters separator in forms markup. Ex: comma, semicolon, double-pipe...',
 
 'recaptcha_public_key' => 'reCaptcha public key',
 'recaptcha_public_key_sub' => 'Google reCaptcha public key. See <a href="https://www.google.com/recaptcha/admin">reCaptcha admin</a>.',

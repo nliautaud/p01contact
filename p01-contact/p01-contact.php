@@ -88,7 +88,8 @@ class P01contact
     {
         $form = new P01contact_form($this, $id);
         $tag = $this->format($tag);
-        $params = array_filter(explode(',', $tag));
+        $sep = $this->config('separator');
+        $params = array_filter(explode($sep, $tag));
 
         // emails
         foreach($params as $id => $param) {
@@ -352,7 +353,8 @@ class P01contact
      */
     function default_config() {
         $default = array(
-            'default_params' => 'name!, email!, subject!, message!'
+            'default_params' => 'name!, email!, subject!, message!',
+            'separator' => ','
         );
         foreach ($default as $key => $value) {
             if(empty($this->config->{$key}))
