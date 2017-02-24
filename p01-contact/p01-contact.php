@@ -39,7 +39,7 @@ class P01contact
      */
     public function parse($contents)
     {
-        $pattern = '`(?<!<code>)\(%\s*contact\s*(.*)\s*%\)`';
+        $pattern = '`(?<!<code>)\(%\s*contact\s*:?\s*(.*)\s*%\)`';
         preg_match_all($pattern, $contents, $tags, PREG_SET_ORDER);
         $ids = array();
 
@@ -88,9 +88,16 @@ class P01contact
     {
         $form = new P01contact_form($this, $id);
         $tag = $this->format($tag);
-
-        // get parameters
         $params = array_filter(explode(',', $tag));
+
+        // emails
+        foreach($params as $id => $param) {
+            if(filter_var($param, FILTER_VALIDATE_EMAIL)) {
+                $form->add_target($param);
+                unset($params[$id]);
+            }
+        }
+        // default params
         if(empty($params)) {
             $default = $this->config('default_params');
             $default = $this->format($default);
@@ -126,9 +133,6 @@ class P01contact
         $param_pattern.= '\s*([^,]*))?\s*`';// values
 
         $values_pattern = '`(?:^|\|)\s*(?:"([^"]+)")?\s*([^| ]+)?`';
-
-        if(filter_var($param, FILTER_VALIDATE_EMAIL))
-            $form->add_target($param);
 
         preg_match($param_pattern, $param, $param);
         list(, $type, $required, , $title, , $assign, $values) = $param;
