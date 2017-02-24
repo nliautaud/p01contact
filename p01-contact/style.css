@@ -10,6 +10,11 @@
     font-weight: normal;
     margin-top: .5em;
 }
+.p01-contact label .description{
+    font-size: .875em;
+    color: #888;
+    float: right;
+}
 .p01-contact input,
 .p01-contact textarea,
 .p01-contact select{

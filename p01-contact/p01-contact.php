@@ -127,16 +127,17 @@ class P01contact
      */
     private function parse_tag_param($form, $id, $param)
     {
-        $param_pattern = '`\s*([^ ,"=!]+)'; // type
-        $param_pattern.= '\s*(!)?';         // required
-        $param_pattern.= '\s*("([^"]*)")?'; // title
-        $param_pattern.= '\s*((=&gt;|=)?';  // assign
-        $param_pattern.= '\s*([^,]*))?\s*`';// values
+        $param_pattern = '`\s*([^ ,"=!]+)';     // type
+        $param_pattern.= '\s*(!)?';             // required
+        $param_pattern.= '\s*("([^"]*)")?';     // title
+        $param_pattern.= '\s*(\(([^"]*)\))?';   // description
+        $param_pattern.= '\s*((=&gt;|=)?';      // assign
+        $param_pattern.= '\s*([^,]*))?\s*`';    // values
 
         $values_pattern = '`(?:^|\|)\s*(?:"([^"]+)")?\s*([^| ]+)?`';
 
         preg_match($param_pattern, $param, $param);
-        list(, $type, $required, , $title, , $assign, $values) = $param;
+        list(, $type, $required, , $title, , $desc, , $assign, $values) = $param;
 
         $field = new P01contact_field($form, $id, $type);
 
@@ -148,26 +149,27 @@ class P01contact
                 // fields with multiples values
                 preg_match_all($values_pattern, $values, $values, PREG_SET_ORDER);
                 $values = unset_r($values, 0);
-                $field->set_value($values);
+                $field->value = $values;
                 break;
             case 'askcopy':
                 // checkbox-like structure
-                $field->set_value(array(array(1 => $this->lang('askcopy'))));
+                $field->value = array(array(1 => $this->lang('askcopy')));
                 break;
             case 'password':
                 // password value is required value
-                $field->set_required($values);
+                $field->required = $values;
                 break;
             default:
                 // simple value
-                $field->set_value($values);
+                $field->value = $values;
         }
         // required
-        if($type != 'password') $field->set_required($required == '!');
-        if($type == 'captcha') $field->set_required(true);
-        // title, locked
-        $field->set_title($title);
-        $field->set_locked($assign == '=&gt;');
+        if($type != 'password') $field->required = $required == '!';
+        if($type == 'captcha') $field->required = true;
+
+        $field->title = $title;
+        $field->description = $desc;
+        $field->locked = $assign == '=&gt;';
 
         return $field;
     }
@@ -197,7 +199,7 @@ class P01contact
                     $field_post = $_POST['g-recaptcha-response'];
 
                 // for multiple-values fields, posted value define selection
-                $value = $field->get_value();
+                $value = $field->value;
                 if(is_array($value)) {
                     // selections need to be an array
                     if(!is_array($field_post)) $selections = array($field_post);
@@ -213,13 +215,13 @@ class P01contact
                                 $value[$key][2] = 'selected';
                         }
                     }
-                    $field->set_value($value);
+                    $field->value = $value;
                 }
                 // for unique value fields, posted value define value
-                else $field->set_value($field_post);
+                else $field->value = $field_post;
 
                 $check = $field->check_content();
-                $field->set_error($check);
+                $field->error = $check;
                 if($check) $errors = True;
             }
             // SECURITY : check tokens
@@ -611,43 +613,41 @@ class P01contact_form
         $skip_in_message = array('name','email','subject','captcha');
         foreach($this->fields as $field)
         {
-            $value = $field->get_value();
-            $title = $field->get_title();
-            $title = !empty($title) ? $title : $field->type;
+            $title = !empty($field->title) ? $field->title : $field->type;
 
-            if($field->type == 'name') $name = $value;
-            if($field->type == 'email') $email = $value;
-            if($field->type == 'subject') $subject = $value;
+            if($field->type == 'name') $name = $field->value;
+            if($field->type == 'email') $email = $field->value;
+            if($field->type == 'subject') $subject = $field->value;
 
-            if(!in_array($field->type, $skip_in_message) && !empty($value))
+            if(!in_array($field->type, $skip_in_message) && !empty($field->value))
             {
                 if($field->type != 'askcopy') // managed blow for him.
-                    $content .= '<p><strong>' . $this->lang($title).' :</strong> ';
+                    $content .= '<p><strong>' . $this->lang($field->title).' :</strong> ';
                 switch($field->type)
                 {
                     case 'message' :
                     case 'textarea' :
                         $content .= '<p style="margin:10px;padding:10px;border:1px solid silver">';
-                        $content .= nl2br($value) . '</p>';
+                        $content .= nl2br($field->value) . '</p>';
                         break;
                     case 'url' :
-                        $content .= $this->html_link($value);
+                        $content .= $this->html_link($field->value);
                         break;
                     case 'checkbox' :
                     case 'select' :
                     case 'radio' :
                         $content .= '<ul>';
-                        foreach($value as $v)
+                        foreach($field->value as $v)
                             if(isset($v[2]) && $v[2] == 'selected')
                                 $content .=  '<li>' . $v[1] . '</li>';
                         $content .= '</ul>';
                         break;
                     case 'askcopy' :
-                        $askcopy = in_array('selected', $value[0]);
+                        $askcopy = in_array('selected', $field->value[0]);
                         $content .= '<p><strong>' . $this->lang('askedcopy').'.</strong></p>';
                         break;
                     default :
-                        $content .=  $value;
+                        $content .=  $field->value;
                 }
                 $content .= '</p>';
             }
@@ -712,8 +712,8 @@ class P01contact_form
     public function reset()
     {
         foreach($this->fields as $id => $field) {
-            $field->set_value('');
-            $field->set_error('');
+            $field->value = '';
+            $field->error = '';
         }
     }
 
@@ -749,11 +749,12 @@ class P01contact_field
 
     public $id;
     public $type;
-    private $title;
-    private $value;
-    private $required;
-    private $locked;
-    private $error;
+    public $title;
+    public $description;
+    public $value;
+    public $required;
+    public $locked;
+    public $error;
 
     /*
      * @param P01contact_form $form the container form
@@ -960,11 +961,14 @@ class P01contact_field
     private function html_label($for)
     {
         $html = '<label for="' . $for . '">';
-        if(!empty($this->title)) {
+        if($this->title) {
             $html .= $this->title;
         } else $html .= ucfirst($this->form->lang($this->type));
 
-        if(!empty($this->error)) {
+        if($this->description) {
+            $html .= ' <em class="description">' . $this->description . '</em>';
+        }
+        if($this->error) {
             $html .= ' <span class="error-msg">' . $this->form->lang($this->error) . '</span>';
         }
         $html .= '</label>';
@@ -986,32 +990,6 @@ class P01contact_field
         if(isset($types[$this->type]))
             return $types[$this->type];
         else return $this->type;
-    }
-
-    /**
-     * GETTERS / SETTERS
-     */
-
-    public function get_title() {return $this->title;}
-    public function set_title($title) {
-        if(is_string($title)) $this->title = $title;
-    }
-
-    public function get_value() {return $this->value;}
-    public function set_value($value) {
-        if(is_string($value)
-        || is_array($value))
-        $this->value = $value;
-    }
-
-    public function set_required($required) {
-        $this->required = $required;
-    }
-    public function set_locked($locked) {
-        if(is_bool($locked)) $this->locked = $locked;
-    }
-    public function set_error($error) {
-        if(is_string($error)) $this->error = $error;
     }
 }
 
