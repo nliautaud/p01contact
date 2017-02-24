@@ -39,14 +39,15 @@ class P01contact
      */
     public function parse($contents)
     {
-        $pattern = '`(?<!<code>)\(%\s*contact\s*:?\s*(.*)\s*%\)`';
+        $pattern = '`(?<!<code>)\(%\s*contact\s*(\w*)\s*:?\s*(.*)\s*%\)`';
         preg_match_all($pattern, $contents, $tags, PREG_SET_ORDER);
         $ids = array();
 
         // create forms structures from TAG
         foreach($tags as $tag) {
             $id = $this->new_form_id();
-            $form = $this->parse_tag($id, $tag[1]);
+            $form = $this->parse_tag($id, $tag[2]);
+            $form->lang = $tag[1];
             $this->forms[$id] = $form;
             $ids[] = $id; // forms manipulated by this parsing session
         }
@@ -107,7 +108,6 @@ class P01contact
         // create fields
         foreach($params as $id => $param) {
             $field = $this->parse_tag_param($form, $id, $param);
-            $form->add_field($field);
         }
         // default email addresses
         $default_emails = $this->get_valid_emails($this->config('default_email'));
@@ -171,6 +171,7 @@ class P01contact
         $field->description = $desc;
         $field->locked = $assign == '=&gt;';
 
+        $form->add_field($field);
         return $field;
     }
 
@@ -270,14 +271,10 @@ class P01contact
         echo'<h2 style="color:#c33">p01-contact debug</h2>';
         if(!empty($_POST)) {
             echo'<h3>$_POST :</h3>';
-            echo'<pre>';
-            @print_r($_POST);
-            echo'</pre>';
+            preint($_POST);
         }
         echo'<h3>$p01contact :</h3>';
-        echo'<pre>';
-        print_r($this);
-        echo'</pre>';
+        preint($this);
     }
 
 
@@ -307,12 +304,14 @@ class P01contact
      * @param string $key the keyword
      * @return string
      */
-    public function lang($key)
+    public function lang($key, $lang = null)
     {
         global $p01contact_lang;
 
-        $lang = $this->config('lang');
-        $lang = empty($lang) ? $this->default_lang : $lang;
+        if(!$lang) {
+            $lang = $this->config('lang');
+            $lang = empty($lang) ? $this->default_lang : $lang;
+        }
 
         $path = LANGPATH . $lang . '.php';
 
@@ -519,6 +518,7 @@ class P01contact_form
     private $status;
     public $targets;
     private $fields;
+    public $lang;
 
     /*
      * @param P01contact $P01contact
@@ -740,7 +740,7 @@ class P01contact_form
     public function get_status() {return $this->status;}
 
     public function config($key) {return $this->P01contact->config($key);}
-    public function lang($key) {return $this->P01contact->lang($key);}
+    public function lang($key) {return $this->P01contact->lang($key, $this->lang);}
 }
 
 class P01contact_field
@@ -756,7 +756,7 @@ class P01contact_field
     public $locked;
     public $error;
 
-    /*
+    /**
      * @param P01contact_form $form the container form
      * @param int $id the field id
      * @param string $type the field type
@@ -764,14 +764,8 @@ class P01contact_field
     public function __construct($form, $id, $type)
     {
         $this->form = $form;
-
         $this->id = $id;
         $this->type = $type;
-        $this->title = '';
-        $this->value = '';
-        $this->required = False;
-        $this->locked = False;
-        $this->error = '';
     }
 
     /**
@@ -993,7 +987,8 @@ class P01contact_field
     }
 }
 
-function preint($arr) {echo'<pre>';var_dump($arr);echo'</pre>';}
+function preint($arr) {echo'<pre class="test" style="white-space:pre-wrap;">'; print_r(@$arr); echo '</pre>';}
+function predump($arr) {echo'<pre class="test" style="white-space:pre-wrap;">';var_dump($arr);echo'</pre>';}
 function unset_r($a,$i) {
     foreach($a as $k=>$v)
         if(isset($v[$i]))
