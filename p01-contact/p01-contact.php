@@ -379,16 +379,25 @@ class P01contact
     }
     /**
      * Return a setting value from the config.
-     * @param string $key the setting key
-     * @param string $sub the sub-key, for an array setting
+     * @param mixed $key the setting key, or an array as path to sub-key
      * @return mixed the setting value
      */
-    public function config($key, $sub = null)
+    public function config($key)
     {
-        if(!$sub && isset($this->config->$key))
-            return $this->config->$key;
-        if($sub && isset($this->config->$key->$sub))
-            return $this->config->$key->$sub;
+        if(!is_array($key)) $key = array($key);
+        $curr = $this->config;
+        foreach($key as $k) {
+            if(is_numeric($k)) {
+                $k = intval($k);
+                if(!isset($curr[$k])) return;
+                $curr = $curr[$k];
+            } else {
+                if(!isset($curr->$k)) return;
+                $curr = $curr->$k;
+            }
+            $k = $curr;
+        }
+        return $k;
     }
 
 
@@ -414,51 +423,42 @@ class P01contact
     }
 
     /**
-     * Return configuration panel content
+     * Return configuration panel content, replacing the following in the template :
      *
-     * Display informations, parse config file and display settings form.
+     * - lang(key) : language string
+     * - config(key,...) : value of a config setting
+     * - other(key) : other value pre-defined
+     * - VALUE : constant value
+     *
      * @return string
      */
     private function panel_content()
     {
-        $others = (object) array();
-        $others->disablechecked = $this->config('disable') ? 'checked="checked" ' : '';
-        $others->debugchecked = $this->config('debug') ? 'checked="checked" ' : '';
-        $others->default_lang = $this->default_lang;
+        $others = array();
+        $others['disablechecked'] = $this->config('disable') ? 'checked="checked" ' : '';
+        $others['debugchecked'] = $this->config('debug') ? 'checked="checked" ' : '';
+        $others['default_lang'] = $this->default_lang;
+
+        foreach($this->config('checklist') as $i => $cl) {
+            $others['cl'.$i.'bl'] = isset($cl->type) && $cl->type == 'whitelist' ? '' : 'checked';
+            $others['cl'.$i.'wl'] = $others['cl'.$i.'bl'] ? '' : 'checked';
+        }
 
         $lang = $this->config('lang');
-        $others->langsoptions = '<option value=""'.($lang==''?' selected="selected" ':'').'>Default</option>';
+        $others['langsoptions'] = '<option value=""'.($lang==''?' selected="selected" ':'').'>Default</option>';
         foreach($this->langs() as $iso => $name) {
-            $others->langsoptions .= '<option value="' . $iso . '" ';
-            if($lang == $iso) $others->langsoptions .= 'selected="selected" ';
-            $others->langsoptions .= '/>' . $name . '</option>';
+            $others['langsoptions'] .= '<option value="' . $iso . '" ';
+            if($lang == $iso) $others['langsoptions'] .= 'selected="selected" ';
+            $others['langsoptions'] .= '/>' . $name . '</option>';
         }
-
-        $others->checklists = '';
-        $fields = array('general_fields' => array('text','textarea'), 'special_fields' => array('name','email','address','phone','website','subject','message'));
-        foreach($fields as $type => $f)
-            foreach($f as $id=>$field) {
-                if(!$id) $others->checklists .= '<p><b>' . $this->lang($type) . ' :</b></p>';
-                $content = $this->config('checklist', $field);
-                $others->checklists .= '<label><div><strong>' . ucfirst($field) . '</strong><em>';
-                $others->checklists .= '<input name="p01-contact[settings][checklist_type]['.$field.']"';
-                $others->checklists .= ' type="radio" value="blacklist" checked /> ' . $this->lang('blacklist');
-                $others->checklists .= ' <input name="p01-contact[settings][checklist_type]['.$field.']"';
-                $others->checklists .= ' type="radio" value="whitelist" disabled /> ' . $this->lang('whitelist');
-                $others->checklists .= '</em></div><textarea name="p01-contact[settings][checklist]['.$field.']" ';
-                $others->checklists .= 'style="width:100%;height:'.(40+strlen($content)*0.2).'px">';
-                $others->checklists .= $content . '</textarea></label>';
-        }
-        $others->checklists .= '</tr></td>';
-
 
         $template = file_get_contents(ROOTDIR.'/settings_tpl.html');
         return preg_replace_callback('`([A-Z]+|lang|config|other)\(([^)]+)\)`',
             function ($matches) use($others) {
                 switch ($matches[1]) {
                     case 'lang': return $this->lang($matches[2]);
-                    case 'config': return $this->config($matches[2]);
-                    case 'other': if(isset($others->{$matches[2]})) return $others->{$matches[2]};
+                    case 'config': return $this->config(explode(',', $matches[2]));
+                    case 'other': if(isset($others[$matches[2]])) return $others[$matches[2]];
                     default: return constant($matches[2]);
                 }
             }, $template);
@@ -739,7 +739,7 @@ class P01contact_form
     public function get_id() {return $this->id;}
     public function get_status() {return $this->status;}
 
-    public function config($key, $sub=null) {return $this->P01contact->config($key,$sub);}
+    public function config($key) {return $this->P01contact->config($key);}
     public function lang($key) {return $this->P01contact->lang($key);}
 }
 
@@ -786,6 +786,10 @@ class P01contact_field
         if(empty($this->value) && $this->required) {
             return 'field_required';
         }
+        // value blacklisted or not in whitelist
+        if($reason = $this->check_blacklisted()) {
+            return 'field_' . $reason;
+        }
         // not empty but not valid
         if(!empty($this->value) && !$this->check_validity()) {
             return 'field_' . $this->type;
@@ -801,15 +805,13 @@ class P01contact_field
      */
     public function check_validity()
     {
-        if($this->blacklisted()) return False;
-
         switch($this->type) {
             case 'email':
                 return filter_var($this->value, FILTER_VALIDATE_EMAIL);
-            case 'phone':
+            case 'tel':
                 $pattern = '`^\+?[-0-9(). ]{6,}$$`i';
                 return preg_match($pattern, $this->value);
-            case 'website':
+            case 'url':
                 return filter_var($this->value, FILTER_VALIDATE_URL);
             case 'message':
                 return strlen($this->value) > $this->form->config('message_len');
@@ -857,21 +859,24 @@ class P01contact_field
     /**
      * Check if field value is blacklisted
      *
-     * Search any entry of config file field type
-     * blacklist in field value.
+     * Search for every comma-separated entry of every checklist
+     * in value, and define if it should or should not be there.
+     *
      * @return boolean
      */
-    public function blacklisted()
+    public function check_blacklisted()
     {
-        $list = $this->form->config('checklist', $this->type);
-        if(empty($list)) return False;
-
-        $array = explode(',', $list);
-        foreach($array as $avoid) {
-            if(preg_match('`' . $avoid . '`', $this->value))
-                return True;
+        $list = $this->form->config('checklist');
+        foreach ($list as $i => $cl) {
+            if($cl->name != $this->type) continue;
+            $content = array_filter(explode(',', $cl->content));
+            foreach($content as $avoid) {
+                $found = preg_match("`$avoid`", $this->value);
+                if($cl->type == 'blacklist' && $found) return $cl->type;
+                if($cl->type == 'whitelist' && !$found) return $cl->type;
+            }
         }
-        return False;
+        return false;
     }
 
     /*

@@ -42,7 +42,9 @@ $p01contact_lang = array(
 'field_message' => 'Please write a longer message',
 'field_captcha' => 'Please answer correctly the following captcha',
 'field_fieldcaptcha' => 'Please don\'t fill this field',
-'field_password'=> 'Wrong password',
+'field_password' => 'Wrong password',
+'field_blacklist' => 'This field contains prohibited terms',
+'field_whitelist' => 'An expected value is missing',
 
 // configuration panel
 
@@ -96,10 +98,7 @@ Check the file permissions :',
 'checklists'     => 'Fields checklists',
 'blacklist'      => 'Blacklist',
 'whitelist'      => 'Whitelist',
-'checklists_sub' =>
-'Blacklist : values that must not be present in the field to send email.<br />
-Whitelist : possibles values required for the field to send email.<br />
-Separated by commas.',
+'checklists_sub' => 'A blacklist is a list of prohibited values in the given field type, and a whitelist is a list of the only possible values for the given field type. Each term should be separated by commas.',
 
 'general_fields' => 'General fields',
 'special_fields' => 'Special fields',
