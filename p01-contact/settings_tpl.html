@@ -9,6 +9,11 @@
     .p01contact_panel {
         overflow: auto;
     }
+    .p01contact_panel .version {
+        color: #aaa;
+        float: right;
+        font-weight: bold;
+    }
     .p01contact_panel fieldset {
         border: 0;
         width: 100%;
@@ -59,9 +64,10 @@
         <input class="submit" type="submit" value="Save settings" />
         <h3>lang(config_title)</h3>
         <p>
-            <a href="https://github.com/nliautaud/p01contact">lang(repo)</a> -
-            <a href="https://github.com/nliautaud/p01contact/wiki">lang(wiki)</a> -
-            <a href="https://github.com/nliautaud/p01contact/issues">lang(issues)</a>
+            <a href="const(REPOURL)">lang(repo)</a> -
+            <a href="const(WIKIURL)">lang(wiki)</a> -
+            <a href="const(ISSUESURL)">lang(issues)</a>
+            <span class="version">vother(version)</span>
         </p>
         <label class="field">
             <div><strong>lang(default_email)</strong><em>lang(default_email_sub)</em></div>

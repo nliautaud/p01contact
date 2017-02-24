@@ -27,7 +27,30 @@ class P01contact
         define('LANGPATH', ROOTDIR.'/lang/');
         define('CONFIGFILE', ROOTDIR.'/config.json');
 
+        define('REPOURL', 'https://github.com/nliautaud/p01contact');
+        define('WIKIURL', 'https://github.com/nliautaud/p01contact/wiki');
+        define('ISSUESURL', 'https://github.com/nliautaud/p01contact/issues');
+        define('APILATEST', 'https://api.github.com/repos/nliautaud/p01contact/releases/latest');
+
         $this->load_config();
+    }
+
+    /**
+     * Query the releases API and return the new release infos, if there is one.
+     *
+     * @see https://developer.github.com/v3/repos/releases/#get-the-latest-release
+     * @return object the release infos
+     */
+    function get_new_release() {
+        $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
+        $context  = stream_context_create($options);
+        $resp = file_get_contents(APILATEST, false, $context);
+        if(!$resp) return;
+        $resp = json_decode($resp);
+        if(!$resp->name) return;
+        if(version_compare($this->version, $resp->name) > 0)
+            return $resp;
+        return;
     }
 
     /**
@@ -454,15 +477,25 @@ class P01contact
         }
 
         $template = file_get_contents(ROOTDIR.'/settings_tpl.html');
-        return preg_replace_callback('`([A-Z]+|lang|config|other)\(([^)]+)\)`',
+        $template = preg_replace_callback('`(const|lang|config|other)\(([^)]+)\)`',
             function ($matches) use($others) {
                 switch ($matches[1]) {
                     case 'lang': return $this->lang($matches[2]);
                     case 'config': return $this->config(explode(',', $matches[2]));
                     case 'other': if(isset($others[$matches[2]])) return $others[$matches[2]];
-                    default: return constant($matches[2]);
+                    case 'const': return constant($matches[2]);
                 }
             }, $template);
+
+        //new release
+        $versionblock = '';
+        if($new = $this->get_new_release()) {
+            $versionblock .= '<div class="updated">' . $this->lang('new_release');
+            $versionblock .= '<br /><a href="' . $new->html_url . '">';
+            $versionblock .= $this->lang('download') . ' (' . $new->name . ')</a></div>';
+        }
+
+        return $versionblock . $template;
     }
 
 
