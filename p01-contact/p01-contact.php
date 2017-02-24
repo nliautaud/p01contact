@@ -291,7 +291,12 @@ class P01contact
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
 
+        $health = 'PHP version : '.phpversion()."\n";
+        $health.= 'PHP mbstring (UTF-8) : '.(function_exists('mb_convert_encoding') ? 'OK' : 'MISSING');
+
         echo'<h2 style="color:#c33">p01-contact debug</h2>';
+        echo'<h3>Health :</h3>';
+        preint($health);
         if(!empty($_POST)) {
             echo'<h3>$_POST :</h3>';
             preint($_POST);
@@ -315,7 +320,8 @@ class P01contact
                 $val[$key] = $this->format_data($v);
             return $val;
         }
-        $val = mb_convert_encoding($val, 'UTF-8', 'UTF-8');
+        if(function_exists('mb_convert_encoding'))
+            $val = mb_convert_encoding($val, 'UTF-8', 'UTF-8');
         $val = htmlentities($val, ENT_QUOTES, 'UTF-8');
         return $val;
     }
@@ -709,8 +715,10 @@ class P01contact_form
 
         $targets = implode(',', $this->targets);
 
-        $encoded_subject = mb_encode_mimeheader(html_entity_decode($subject, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
-        $encoded_name = mb_encode_mimeheader(html_entity_decode($name, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
+        if(function_exists('mb_convert_encoding')) {
+            $subject = mb_encode_mimeheader(html_entity_decode($subject, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
+            $name = mb_encode_mimeheader(html_entity_decode($name, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
+        }
 
         $headers  = "From: $encoded_name <$email>\r\n";
         $headers .= "Reply-To: $encoded_name <$email>\r\n";
@@ -721,10 +729,10 @@ class P01contact_form
 
         if(!$this->config('debug')) {
             // send mail
-            $status = mail($targets, $encoded_subject, $title.$content.$footer, $headers);
+            $status = mail($targets, $subject, $title.$content.$footer, $headers);
             if($status) {
                 if($askcopy) { // send copy
-                    $copy = mail($email, $encoded_subject, $title.$content.$footer_copy, $headers);
+                    $copy = mail($email, $subject, $title.$content.$footer_copy, $headers);
                     if($copy) $this->status = 'sent_copy';
                     else $this->status = 'error_copy';
                 } else $this->status = 'sent';
@@ -733,7 +741,7 @@ class P01contact_form
             // display mail for debug
             echo '<h2 style="color:#c33">p01-contact (not) sent mail :</h2>';
             echo '<pre>'.htmlspecialchars($headers).'</pre>';
-            echo "<pre>Targets: $targets\nHidden targets: $bcc\nSubject: $encoded_subject</pre>";
+            echo "<pre>Targets: $targets\nHidden targets: $bcc\nSubject: $subject</pre>";
             echo '<div style="border:1px solid #ccc;padding:15px;">' . $title.$content.$footer . '</div>';
             $this->status = $this->lang('debug');
         }
