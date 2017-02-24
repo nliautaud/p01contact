@@ -468,6 +468,7 @@ class P01contact
         $others['disablechecked'] = $this->config('disable') ? 'checked="checked" ' : '';
         $others['debugchecked'] = $this->config('debug') ? 'checked="checked" ' : '';
         $others['default_lang'] = $this->default_lang;
+        $others['version'] = $this->version;
 
         foreach($this->config('checklist') as $i => $cl) {
             $others['cl'.$i.'bl'] = isset($cl->type) && $cl->type == 'whitelist' ? '' : 'checked';
