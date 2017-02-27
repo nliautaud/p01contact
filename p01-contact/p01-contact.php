@@ -292,7 +292,7 @@ class P01contact
         error_reporting(E_ALL);
 
         $health = 'PHP version : '.phpversion()."\n";
-        $health.= 'PHP mbstring (UTF-8) : '.(function_exists('mb_convert_encoding') ? 'OK' : 'MISSING');
+        $health.= 'PHP mbstring (UTF-8) : '.(extension_loaded('mbstring') ? 'OK' : 'MISSING');
 
         echo'<h2 style="color:#c33">p01-contact debug</h2>';
         echo'<h3>Health :</h3>';
@@ -716,7 +716,7 @@ class P01contact_form
 
         $targets = implode(',', $this->targets);
 
-        if(function_exists('mb_convert_encoding')) {
+        if(extension_loaded('mbstring')) {
             $subject = mb_encode_mimeheader(html_entity_decode($subject, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
             $name = mb_encode_mimeheader(html_entity_decode($name, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
         }
