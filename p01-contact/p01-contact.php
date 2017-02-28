@@ -48,7 +48,7 @@ class P01contact
         if(!$resp) return;
         $resp = json_decode($resp);
         if(!$resp->name) return;
-        if(version_compare($this->version, $resp->name) > 0)
+        if(version_compare($resp->name, $this->version) > 0)
             return $resp;
         return;
     }
