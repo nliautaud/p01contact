@@ -29,6 +29,10 @@ $p01contact_lang = array(
 
 // status messages
 'sent'    => 'Email sent.',
+'sent_debug' => 'Email virtually sent (debug mode enabled).',
+'sent_copy' => 'Email sent. A copy have been sent to the specified address.',
+'sent_copy_error'   => 'Email sent, but there was an issue when sending you the copy.',
+'sent_already'   => 'The message have already been sent.',
 'error'   => 'Error : no message was sent.',
 'disable' => 'Contact forms are disable.',
 'target'  => 'This contact form has no recipient.',

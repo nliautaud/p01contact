@@ -560,6 +560,7 @@ class P01contact_form
     public $targets;
     private $fields;
     public $lang;
+    public $sent;
 
     /*
      * @param P01contact $P01contact
@@ -587,7 +588,7 @@ class P01contact_form
 
         $html .= $this->html_status();
 
-        if(($this->status != 'sent') && ($this->status != 'sent_copy')) {
+        if(!$this->sent) {
             foreach($this->fields as $id => $field) $html .= $field->html();
 
             $html .= '<div><input name="p01-contact_form[id]" type="hidden" value="' . $this->id . '" />';
@@ -607,11 +608,7 @@ class P01contact_form
     private function html_status()
     {
         if(!$this->status) return '';
-        if (($this->status == 'sent') || ($this->status == 'sent_copy')) {
-            $statusclass = 'alert success';
-        } else {
-            $statusclass = 'alert failed';
-        }
+        $statusclass = $this->sent ? 'alert success' : 'alert failed';
         return '<div class="' . $statusclass . '">' . $this->lang($this->status) . '</div>';
     }
 
@@ -731,24 +728,22 @@ class P01contact_form
         $headers .= "Content-type: text/html; charset=UTF-8\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n" ;
 
-        if(!$this->config('debug')) {
-            // send mail
-            $status = mail($targets, $subject, $title.$content.$footer, $headers);
-            if($status) {
-                if($askcopy) { // send copy
-                    $copy = mail($email, $subject, $title.$content.$footer_copy, $headers);
-                    if($copy) $this->status = 'sent_copy';
-                    else $this->status = 'error_copy';
-                } else $this->status = 'sent';
-            } else $this->status = 'error';
-        } else {
-            // display mail for debug
-            echo '<h2 style="color:#c33">p01-contact (not) sent mail :</h2>';
+        if($this->config('debug')) {
+            echo '<h2 style="color:#c33">Virtually sent mail :</h2>';
             echo '<pre>'.htmlspecialchars($headers).'</pre>';
-            echo "<pre>Targets: $targets\nHidden targets: $bcc\nSubject: $subject</pre>";
+            echo "<pre>Targets: $targets\nSubject: $subject</pre>";
             echo '<div style="border:1px solid #ccc;padding:15px;">' . $title.$content.$footer . '</div>';
-            $this->status = $this->lang('debug');
+            return $this->set_status('sent_debug');
         }
+
+        // send mail
+        $success = mail($targets, $subject, $title.$content.$footer, $headers);
+
+        if(!$success) return $this->set_status('error');
+        if(!$email || !$askcopy) return $this->set_status('sent');
+
+        $copy = mail($email, $subject, $title.$content.$footer_copy, $headers);
+        $this->set_status($copy ? 'sent_copy' : 'sent_copy_error');
     }
 
     /*
@@ -778,7 +773,10 @@ class P01contact_form
     public function add_field(P01contact_field $field) {$this->fields[] = $field;}
 
     public function set_status($status) {
-        if(is_string($status)) $this->status = $status;
+        if(!is_string($status)) return;
+        $this->status = $status;
+        if(substr($status, 0, 4) == 'sent')
+            $this->sent = true;
     }
 
     public function get_id() {return $this->id;}
