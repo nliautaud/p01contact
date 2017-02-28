@@ -1,8 +1,5 @@
 <style>
     .p01contact_panel * {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -ms-box-sizing: border-box;
         box-sizing: border-box;
         width: auto;
     }
@@ -22,15 +19,14 @@
     .p01contact_panel .field {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         margin: 1em 0 0 0;
     }
-    .p01contact_panel .field > * {
-        flex: 1;
-        margin-left: 2em;
+    .p01contact_panel .field > :first-child {
+        width: 48%;
     }
-    .p01contact_panel .field > div {
-        margin-left: 0;
-        margin-right: 2em;
+    .p01contact_panel .field > :last-child {
+        width: 48%;
     }
     .p01contact_panel textarea {
         height: 3em;
@@ -38,7 +34,12 @@
     .p01contact_panel strong {
         display: block;
     }
-    .p01contact_panel em {
+    .p01contact_panel p {
+        margin: 1em 0;
+        line-height: 1.2;
+    }
+    .p01contact_panel p,
+    .p01contact_panel .field em {
         color: #999;
         font-weight: normal;
         font-size: .95em;
@@ -79,15 +80,7 @@
         </label>
         <label class="field">
             <div><strong>lang(message_len)</strong><em>lang(message_len_sub)</em></div>
-            <input type="number" class="text" name="p01-contact[settings][message_len_sub]" value="config(message_len)" size=3 maxlength=3 min=0 />
-        </label>
-        <label class="field">
-            <div><strong>lang(recaptcha_public_key)</strong><em>lang(recaptcha_public_key_sub)</em></div>
-            <input type="text" class="text" name="p01-contact[settings][recaptcha_public_key]" value="config(recaptcha_public_key)"/>
-        </label>
-        <label class="field">
-            <div><strong>lang(recaptcha_secret_key)</strong><em>lang(recaptcha_secret_key_sub)</em></div>
-            <input type="text" class="text" name="p01-contact[settings][recaptcha_secret_key]" value="config(recaptcha_secret_key)"/>
+            <input type="number" class="text" name="p01-contact[settings][message_len]" value="config(message_len)" size=3 maxlength=3 min=0 />
         </label>
         <label class="field">
             <div><strong>lang(default_params)</strong><em>lang(default_params_sub)</em></div>
@@ -99,7 +92,7 @@
         </label>
         <fieldset>
             <h3>lang(checklists)</h3>
-            <p><em>lang(checklists_sub)</em></p>
+            <p>lang(checklists_sub)</p>
             <div class="field">
                 <div>
                     <input type="text" class="text left" name="p01-contact[settings][checklist][0][name]" value="config(checklist,0,name)"/>
@@ -130,6 +123,34 @@
                 </div>
                 <textarea name="p01-contact[settings][checklist][2][content]">config(checklist,2,content)</textarea>
             </div>
+        </fieldset>
+        <fieldset>
+        <h3>lang(Security)</h3>
+        <label class="field">
+            <div><strong>lang(use_honeypot)</strong><em>lang(use_honeypot_sub)</em></div>
+            <input type="checkbox" name="p01-contact[settings][use_honeypot]" other(honeypotchecked)/>
+        </label>
+        <label class="field">
+            <div><strong>lang(min_sec_after_load)</strong><em>lang(min_sec_after_load_sub)</em></div>
+            <input type="number" class="text" name="p01-contact[settings][min_sec_after_load]" value="config(min_sec_after_load)" min=0 />
+        </label>
+        <label class="field">
+            <div><strong>lang(min_sec_between_posts)</strong><em>lang(min_sec_between_posts_sub)</em></div>
+            <input type="number" class="text" name="p01-contact[settings][min_sec_between_posts]" value="config(min_sec_between_posts)" min=0 />
+        </label>
+        <label class="field">
+            <div><strong>lang(max_posts_by_hour)</strong><em>lang(max_posts_by_hour_sub)</em></div>
+            <input type="number" class="text" name="p01-contact[settings][max_posts_by_hour]" value="config(max_posts_by_hour)" min=0 />
+        </label>
+        <p>lang(captcha_info)</p>
+        <label class="field">
+            <div><strong>lang(recaptcha_public_key)</strong><em>lang(recaptcha_public_key_sub)</em></div>
+            <input type="text" class="text" name="p01-contact[settings][recaptcha_public_key]" value="config(recaptcha_public_key)"/>
+        </label>
+        <label class="field">
+            <div><strong>lang(recaptcha_secret_key)</strong><em>lang(recaptcha_secret_key_sub)</em></div>
+            <input type="text" class="text" name="p01-contact[settings][recaptcha_secret_key]" value="config(recaptcha_secret_key)"/>
+        </label>
         </fieldset>
         <fieldset>
             <h3>lang(debug)</h3>

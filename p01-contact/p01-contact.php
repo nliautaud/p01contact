@@ -78,6 +78,8 @@ class P01contact
         if(!empty($_POST['p01-contact_form'])) {
             $this->post();
         }
+        $_SESSION['p01-contact']['last_page_load'] = time();
+
         // replace tags by forms
         foreach($ids as $id) {
             $contents = preg_replace($pattern, $this->forms[$id]->html(), $contents, 1);
@@ -209,61 +211,62 @@ class P01contact
     {
         // check posted data and update form data
         $form_id = $_POST['p01-contact_form']['id'];
-        if(isset($this->forms[$form_id]))
+        if(!isset($this->forms[$form_id])) return;
+
+        $form = $this->forms[$form_id];
+        $posted = $this->format_data($_POST['p01-contact_fields']);
+
+        // check token and spam
+        if(!$this->check_token()) {
+            $form->set_status('sent_already');
+            $this->set_token();
+            $form->reset();
+            return;
+        }
+        if(!$this->check_spam($form, $posted)) return;
+
+        $fields = $form->get_fields();
+        foreach($fields as $id => $field)
         {
-            $form = $this->forms[$form_id];
-            $fields = $form->get_fields();
-            $posted = $this->format_data($_POST['p01-contact_fields']);
+            $field_post = $posted[$field->id];
 
-            foreach($fields as $id => $field)
-            {
-                $field_post = $posted[$field->id];
-
-                // for multiple-values fields, posted value define selection
-                $value = $field->value;
-                if(is_array($value)) {
-                    // selections need to be an array
-                    if(!is_array($field_post)) $selections = array($field_post);
-                    else $selections = $field_post;
-                    // reset value selection
+            // for multiple-values fields, posted value define selection
+            $value = $field->value;
+            if(is_array($value)) {
+                // selections need to be an array
+                if(!is_array($field_post)) $selections = array($field_post);
+                else $selections = $field_post;
+                // reset value selection
+                foreach($value as $key => $val) {
+                    $value[$key][2] = '';
+                }
+                // set value selection from POST
+                foreach($selections as $selection) {
                     foreach($value as $key => $val) {
-                        $value[$key][2] = '';
+                        if(trim($val[1]) == trim($selection))
+                            $value[$key][2] = 'selected';
                     }
-                    // set value selection from POST
-                    foreach($selections as $selection) {
-                        foreach($value as $key => $val) {
-                            if(trim($val[1]) == trim($selection))
-                                $value[$key][2] = 'selected';
-                        }
-                    }
-                    $field->value = $value;
                 }
-                // for unique value fields, posted value define value
-                else $field->value = $field_post;
+                $field->value = $value;
+            }
+            // for unique value fields, posted value define value
+            else $field->value = $field_post;
 
-                $check = $field->check_content();
-                $field->error = $check;
-                if($check) $errors = True;
-            }
-            // SECURITY : check tokens
-            if(!$this->config('debug') && !$this->check_token()) {
-                $form->set_status('token');
-                $this->set_token();
-                $form->reset();
-            }
-            // try to send mail
-            elseif(!isset($errors)) {
-                if($this->config('disable')) {
-                    $form->set_status('disable');
-                } elseif($form->count_targets() == 0) {
-                    $form->set_status('target');
-                } else {
-                    $form->send_mail();
-                    $this->set_token();
-                    $form->reset();
-                }
-            }
-         }
+            $check = $field->check_content();
+            $field->error = $check;
+            if($check) $errors = true;
+        }
+
+        if($errors) return;
+
+        if($this->config('disable'))
+            return $form->set_status('disable');
+        if($form->count_targets() == 0)
+            return $form->set_status('target');
+
+        $form->send_mail();
+        $this->set_token();
+        $form->reset();
     }
 
     /**
@@ -385,7 +388,11 @@ class P01contact
     function default_config() {
         $default = array(
             'default_params' => 'name!, email!, subject!, message!',
-            'separator' => ','
+            'separator' => ',',
+            'use_honeypot' => true,
+            'min_sec_after_load' => '3',
+            'max_posts_by_hour' => '10',
+            'min_sec_between_posts' => '5',
         );
         foreach ($default as $key => $value) {
             if(empty($this->config->{$key}))
@@ -468,6 +475,7 @@ class P01contact
         $others = array();
         $others['disablechecked'] = $this->config('disable') ? 'checked="checked" ' : '';
         $others['debugchecked'] = $this->config('debug') ? 'checked="checked" ' : '';
+        $others['honeypotchecked'] = $this->config('use_honeypot') ? 'checked="checked" ' : '';
         $others['default_lang'] = $this->default_lang;
         $others['version'] = $this->version;
 
@@ -508,9 +516,51 @@ class P01contact
 
 
     /*
-     *  TOKENS
+     *  SECURITY
      */
 
+
+    /**
+     * Check if the honeypot field is untouched and if the time between this post,
+     * the page load and previous posts and the hourly post count are valid
+     * according to the settings, and set the form status accordingly.
+     *
+     * @param P01contact_form $form The submitted form
+     * @param array $post Sanitized p01-contact data of $_POST
+     * @return bool the result status
+     */
+    public function check_spam($form, $post)
+    {
+        $s = $_SESSION['p01-contact'];
+        if(!isset($s['first_post']) || time() - $s['first_post'] > 3600) {
+            $s['first_post'] = time();
+            $s['post_count'] = 0;
+        }
+
+        if(isset($post['totally_legit'])) {
+            $form->set_status('honeypot');
+            return false;
+        }
+        if(time() - $s['last_page_load'] < $this->config('min_sec_after_load')) {
+            $form->set_status('wait_load');
+            return false;
+        }
+        if(time() - $s['last_post'] < $this->config('min_sec_between_posts')) {
+            $form->set_status('sent_recently');
+            return false;
+        }
+        if(!$this->config('debug') && $s['post_count'] > $this->config('max_posts_by_hour')) {
+            $form->set_status('wait_hour');
+            return false;
+        }
+
+        $s['last_post'] = time();
+        $s['post_count']++;
+
+        $_SESSION['p01-contact'] = $s;
+
+        return true;
+    }
 
     /*
      * Create an unique hash in SESSION
@@ -591,10 +641,12 @@ class P01contact_form
         if(!$this->sent) {
             foreach($this->fields as $id => $field) $html .= $field->html();
 
+            if($this->config('use_honeypot'))
+                $html .= '<input type="checkbox" name="p01-contact_fields[totally_legit]" value="1" style="display:none !important" tabindex="-1" autocomplete="false">';
+
             $html .= '<div><input name="p01-contact_form[id]" type="hidden" value="' . $this->id . '" />';
             $html .= '<input name="p01-contact_form[token]" type="hidden" value="' . $this->P01contact->get_token() . '" />';
-            $html .= '<input class="submit" ';
-            $html .= 'type="submit" value="' . $this->lang('send') . '" /></div>';
+            $html .= '<input class="submit" type="submit" value="' . $this->lang('send') . '" /></div>';
         }
         $html .= '</form>';
 
