@@ -698,18 +698,15 @@ class P01contact_form
             }
         }
 
-        if(!isset($askcopy)) $askcopy = false;
-        if(empty($email)) {
-            $askcopy = false;
-            $email = $this->lang('nofrom');
-        }
         if(empty($name)) $name = $this->lang('nofrom');
         if(empty($subject)) $subject = $this->lang('nosubject');
 
         // title
         $title  = '<h2>' . $this->lang('fromsite') . ' <em>' . $server . '</em></h2>';
         $title .= '<h3>' . date('r') . '</h3>';
-        $title .= '<p><strong>From :</strong> <a href="mailto:'.$email.'">'.$name.($email ? " &lt;$email&gt;":'') . '</a></p>';
+        $title .= "<p><strong>From :</strong> $name";
+        if($email) $title .= " (<a href=\"mailto:$email\">$email</a>)";
+        $title .= '</p>';
 
         // footer infos
         $footer  = '<p><i>' . $this->lang('sentfrom');
@@ -726,9 +723,13 @@ class P01contact_form
             $name = mb_encode_mimeheader(html_entity_decode($name, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
         }
 
-        $headers  = "From: $encoded_name <$email>\r\n";
-        $headers .= "Reply-To: $encoded_name <$email>\r\n";
-        $headers .= "Return-Path: $encoded_name <$email>\r\n";
+        $headers  = "From: $name";
+        if($email) {
+            $headers .= " <$email>\r\n";
+            $headers .= "Reply-To: $name <$email>\r\n";
+            $headers .= "Return-Path: $name <$email>";
+        }
+        $headers .= "\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-type: text/html; charset=UTF-8\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n" ;
