@@ -562,13 +562,13 @@ class P01contact
         return true;
     }
 
-    /*
+    /**
      * Create an unique hash in SESSION
      */
     private function set_token() {
         $_SESSION['p01-contact']['token'] = uniqid(md5(microtime()), true);
     }
-    /*
+    /**
      * Get the token in SESSION (create it if not exists)
      * @return string
      */
@@ -577,7 +577,7 @@ class P01contact
             $this->set_token();
         return $_SESSION['p01-contact']['token'];
     }
-    /*
+    /**
      * Compare the POSTed token to the SESSION one
      * @return boolean
      */
@@ -612,7 +612,7 @@ class P01contact_form
     public $lang;
     public $sent;
 
-    /*
+    /**
      * @param P01contact $P01contact
      * @param int $id the form id
      */
@@ -626,7 +626,7 @@ class P01contact_form
         $this->fields = array();
     }
 
-    /*
+    /**
      * Return the html display of the form
      * @return string the <form>
      */
@@ -653,7 +653,7 @@ class P01contact_form
         return $html;
     }
 
-    /*
+    /**
      * Return an html display of the form status
      * @return string the <div>
      */
@@ -664,7 +664,7 @@ class P01contact_form
         return '<div class="' . $statusclass . '">' . $this->lang($this->status) . '</div>';
     }
 
-    /*
+    /**
      * Return an html http:// link
      * @param string $href the link address
      * @param string $title if not used, the link title will be the address
@@ -676,7 +676,7 @@ class P01contact_form
         return '<a href="http://' . $href . '">' . $title . '</a>';
     }
 
-    /*
+    /**
      * Return an html mailto: link
      * @param string $href the email
      * @param string $title if not used, the link title will be the email
@@ -1067,7 +1067,6 @@ class P01contact_field
         $types = array(
             'name'    => 'text',
             'subject' => 'text',
-            'address' => 'textarea',
             'message' => 'textarea',
             'askcopy' => 'checkbox'
         );
