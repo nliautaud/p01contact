@@ -219,9 +219,6 @@ class P01contact
             {
                 $field_post = $posted[$field->id];
 
-                if($field->type == 'captcha')
-                    $field_post = $_POST['g-recaptcha-response'];
-
                 // for multiple-values fields, posted value define selection
                 $value = $field->value;
                 if(is_array($value)) {
@@ -859,9 +856,7 @@ class P01contact_field
             case 'message':
                 return strlen($this->value) > $this->form->config('message_len');
             case 'captcha':
-                return $this->reCaptcha_validity($this->value);
-            case 'fieldcaptcha':
-                return empty($this->value);
+                return $this->reCaptcha_validity($_POST['g-recaptcha-response']);
             case 'password':
                 return $this->value == $this->required;
             default:
@@ -952,9 +947,6 @@ class P01contact_field
                 $key = $this->form->config('recaptcha_public_key');
                 $html .='<script src="https://www.google.com/recaptcha/api.js?onload=CaptchaCallback&render=explicit" async defer></script>
                 <div class="recaptcha" id="'.$id.'"></div>';
-                break;
-            case 'fieldcaptcha' :
-                $html .= '<input id="' . $id . '" type="text" name="' . $name . '" />';
                 break;
             case 'checkbox' :
                 foreach($this->value as $i => $v) {
