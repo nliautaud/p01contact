@@ -584,7 +584,8 @@ class P01contact_form
      */
     public function html()
     {
-        $html  = '<form action="#p01-contact' . $this->id . '" autocomplete="off" ';
+        $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $html  = '<form action="'.$url.'#p01-contact'.$this->id.'" autocomplete="off" ';
         $html .= 'id="p01-contact' . $this->id . '" class="p01-contact" method="post">';
 
         $html .= $this->html_status();
