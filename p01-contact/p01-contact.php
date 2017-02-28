@@ -297,6 +297,10 @@ class P01contact
         echo'<h2 style="color:#c33">p01-contact debug</h2>';
         echo'<h3>Health :</h3>';
         preint($health);
+        if(!empty($_SESSION)) {
+            echo'<h3>$_SESSION :</h3>';
+            preint($_SESSION);
+        }
         if(!empty($_POST)) {
             echo'<h3>$_POST :</h3>';
             preint($_POST);
