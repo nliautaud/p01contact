@@ -343,16 +343,16 @@ class P01contact
         }
 
         $path = LANGPATH . $lang . '.php';
-
-        $lang = file_exists($path) ? $lang : 'en';
-
+        if(!file_exists($path))
+            $path = LANGPATH . 'en.php';
         include_once $path;
 
-        if(isset($p01contact_lang[$key])) {
+        if(!isset($p01contact_lang[$key]))
+            include_once LANGPATH . 'en.php';
+
+        if(isset($p01contact_lang[$key]))
             return $p01contact_lang[$key];
-        } else {
-            return ucfirst($key);
-        }
+        return ucfirst($key);
     }
     /**
      * Return list of existing langs from lang/langs.php
