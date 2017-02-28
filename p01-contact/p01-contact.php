@@ -566,16 +566,16 @@ class P01contact
      * Create an unique hash in SESSION
      */
     private function set_token() {
-        $_SESSION['p01-contact_token'] = uniqid(md5(microtime()), true);
+        $_SESSION['p01-contact']['token'] = uniqid(md5(microtime()), true);
     }
     /*
      * Get the token in SESSION (create it if not exists)
      * @return string
      */
     public function get_token() {
-        if(!isset($_SESSION['p01-contact_token']))
+        if(!isset($_SESSION['p01-contact']['token']))
             $this->set_token();
-        return $_SESSION['p01-contact_token'];
+        return $_SESSION['p01-contact']['token'];
     }
     /*
      * Compare the POSTed token to the SESSION one
