@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Navn',
 'email'   => 'E-post adresse',
 'address' => 'Adresse',
-'phone'   => 'Tel. nummer',
-'website' => 'Nettside',
+'tel'   => 'Tel. nummer',
+'url' => 'Nettside',
 'subject' => 'Emne',
 'message' => 'Melding',
 'file'    => 'Bilag',
@@ -24,7 +24,7 @@ $p01contact_lang = array(
 'nosubject'=> '(Intet emne)',
 'fromsite' => 'E-post sendt i fra',
 'sentfrom' => 'Denne e-post er sendt i fra',
-        
+
 // status messages
 'sent'    => 'E-post sendt.',
 'error'   => 'Feil : Ingen melding er sendt.',
@@ -34,8 +34,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Dette feltet må fylles ut',
 'field_email'   => 'Vennligst bruk en korrekt e-post adresse',
-'field_phone'   => 'Vennligst bruk ett korrekt telefon nummer',
-'field_website' => 'Vennligst bruk en korrekt nettside adresse',
+'field_tel'   => 'Vennligst bruk ett korrekt telefon nummer',
+'field_url' => 'Vennligst bruk en korrekt nettside adresse',
 'field_message' => 'Meldingen er for kort.',
 'field_captcha' => 'Kopier bokstavene'
 );

@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Nome',
 'email'   => 'Email',
 'address' => 'Indirizzo postale',
-'phone'   => 'Telefono',
-'website' => 'Sito web',
+'tel'   => 'Telefono',
+'url' => 'Sito web',
 'subject' => 'Soggetto',
 'message' => 'Messaggio',
 'file'    => 'Allegato',
@@ -37,8 +37,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Campo richiesto',
 'field_email'   => 'Per favore usa un indirizzo email valido',
-'field_phone'   => 'Per favore usa un numero di telefono valido',
-'field_website' => 'Per favore usa un indirizzo web valido',
+'field_tel'   => 'Per favore usa un numero di telefono valido',
+'field_url' => 'Per favore usa un indirizzo web valido',
 'field_message' => 'Per favore inserisci un maggior numero di caratteri',
 'field_captcha' => 'Per favore copia questo testo'
 'field_fieldcaptcha' => 'Per favore non compilare questo campo',
@@ -52,11 +52,11 @@ $p01contact_lang = array(
 'config_updated' => 'Le modifiche sono state applicate.',
 
 'config_error_open' =>
-'<b>Impossibile aprire il file di configurazione.</b> 
+'<b>Impossibile aprire il file di configurazione.</b>
 Controlla che esista e i suoi permessi :',
 
-'config_error_modify' => 
-'<b>Impossibile modificare il file di configurazione.</b> 
+'config_error_modify' =>
+'<b>Impossibile modificare il file di configurazione.</b>
 Controlla i permessi di accesso :',
 
 // New release alert

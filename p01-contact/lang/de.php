@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Name',
 'email'   => 'E-Mail',
 'address' => 'Anschrift',
-'phone'   => 'Telefonnummer',
-'website' => 'Website',
+'tel'   => 'Telefonnummer',
+'url' => 'Website',
 'subject' => 'Betreff',
 'message' => 'Nachricht',
 'file'    => 'Anhang',
@@ -26,7 +26,7 @@ $p01contact_lang = array(
 'nosubject'=> '(kein Betreff)',
 'fromsite' => 'Nachricht gesendet von',
 'sentfrom' => 'Diese Nachricht wurde gesendet von der Seite',
-        
+
 // status messages
 'sent'    => 'Nachricht verschickt.',
 'error'   => 'Fehler : Nachricht wurde nicht verschickt.',
@@ -37,8 +37,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Dieses Feld ist obligatorisch',
 'field_email'   => 'Bitte korrekte E-Mail-Adresse verwenden',
-'field_phone'   => 'Bitte korrekte Telefonnummer verwenden',
-'field_website' => 'Bitte korrekte Internetadresse angeben',
+'field_tel'   => 'Bitte korrekte Telefonnummer verwenden',
+'field_url' => 'Bitte korrekte Internetadresse angeben',
 'field_message' => 'Bitte umfangreichere Nachricht schreiben',
 'field_captcha' => 'Folgendes bitte abschreiben',
 'field_fieldcaptcha' => 'Folgendes nicht beschriften',
@@ -52,11 +52,11 @@ $p01contact_lang = array(
 'config_updated' => 'Erfolgreich eingestellt.',
 
 'config_error_open' =>
-'<b>Konfigurationsdatei nicht lesbar.</b> 
+'<b>Konfigurationsdatei nicht lesbar.</b>
 Datei eventuell anlegen und Rechte einstellen :',
 
-'config_error_modify' => 
-'<b>Konfigurationsdatei nicht beschreibbar.</b> 
+'config_error_modify' =>
+'<b>Konfigurationsdatei nicht beschreibbar.</b>
 Rechte einstellen :',
 
 // New release alert
@@ -98,7 +98,7 @@ Durch Kommata abgetrennt.',
 
 'debug'     => 'Debugmodus',
 'debug_sub' =>
-'E-Mail versand deaktiveren, Datenstruktur von p01-contact anzeigen, Daten per POST verschickt und 
+'E-Mail versand deaktiveren, Datenstruktur von p01-contact anzeigen, Daten per POST verschickt und
 die E-Mail, die verschickt worden waere.',
 'debug_warn'=> 'Nicht im laufenden Betrieb verwenden!'
 );

@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Jméno',
 'email'   => 'E-mail',
 'address' => 'Adresa',
-'phone'   => 'Telefonní číslo',
-'website' => 'Webové stránky',
+'tel'   => 'Telefonní číslo',
+'url' => 'Webové stránky',
 'subject' => 'Předmět',
 'message' => 'Text zprávy',
 'file'    => 'Přílohy',
@@ -26,7 +26,7 @@ $p01contact_lang = array(
 'nosubject'=> '(Bez předmětu)',
 'fromsite' => 'E-mail odeslán z',
 'sentfrom' => 'Tento e-mail byl odeslán ze stránky',
-        
+
 // status messages
 'sent'    => 'E-mail odeslán.',
 'error'   => 'Chyba: zpráva nebyla odeslána.',
@@ -37,8 +37,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Musíte vyplnit toto pole',
 'field_email'   => 'Prosím vložte platný e-mail',
-'field_phone'   => 'Prosím vložte platné telefonní číslo',
-'field_website' => 'Prosím vložte platnou webovou adresu',
+'field_tel'   => 'Prosím vložte platné telefonní číslo',
+'field_url' => 'Prosím vložte platnou webovou adresu',
 'field_message' => 'Prosím napište delší zprávu',
 'field_captcha' => 'Prosím přepište následující text',
 'field_fieldcaptcha' => 'Prosím nevyplňujte následující pole',
@@ -52,11 +52,11 @@ $p01contact_lang = array(
 'config_updated' => 'Změny byly uloženy.',
 
 'config_error_open' =>
-'<b>Nelze otevřít konfigurační soubor.</b> 
+'<b>Nelze otevřít konfigurační soubor.</b>
 Zkontrolujte zda soubor existuje a má oprávnění:',
 
-'config_error_modify' => 
-'<b>Nelze upravit konfigurační soubor.</b> 
+'config_error_modify' =>
+'<b>Nelze upravit konfigurační soubor.</b>
 Zkontrolujte oprávnění souboru:',
 
 // New release alert
