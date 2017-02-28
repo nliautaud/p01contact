@@ -324,7 +324,7 @@ class P01contact
                 $val[$key] = $this->format_data($v);
             return $val;
         }
-        if(function_exists('mb_convert_encoding'))
+        if(extension_loaded('mbstring'))
             $val = mb_convert_encoding($val, 'UTF-8', 'UTF-8');
         $val = htmlentities($val, ENT_QUOTES, 'UTF-8');
         return $val;
