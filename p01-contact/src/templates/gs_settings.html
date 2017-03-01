@@ -59,6 +59,12 @@
     .p01contact_panel .submit {
         float: right;
     }
+    .logs {
+        margin-top: 5em;
+    }
+    .logs table {
+        max-height: 30em;
+    }
 </style>
 <div class="p01contact_panel">
     <form action="" method="post">
@@ -89,6 +95,10 @@
         <label class="field">
             <div><strong>lang(separator)</strong><em>lang(separator_sub)</em></div>
             <input type="text" class="text" name="p01-contact[settings][separator]" value="config(separator)"/>
+        </label>
+        <label class="field">
+            <div><strong>lang(logs_count)</strong><em>lang(logs_count_sub)</em></div>
+            <input type="number" class="text" name="p01-contact[settings][logs_count]" value="config(logs_count)" min=0 />
         </label>
         <fieldset>
             <h3>lang(checklists)</h3>

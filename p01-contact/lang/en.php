@@ -95,6 +95,8 @@ Check the file permissions :',
 'separator'     => 'Separator',
 'separator_sub' => 'Parameters separator in forms markup. Ex: comma, semicolon, double-pipe...',
 
+'logs_count'     => 'Logs number',
+'logs_count_sub' => 'Maximum number of entries to keep on logs.',
 
 'checklists'     => 'Fields checklists',
 'blacklist'      => 'Blacklist',

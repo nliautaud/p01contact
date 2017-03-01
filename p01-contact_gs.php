@@ -13,8 +13,8 @@
  * @version 1.0.0
  */
 
-require_once GSPLUGINPATH . 'p01-contact/p01-contact.php';
-$p01contact = new P01contact();
+require_once GSPLUGINPATH . 'p01-contact/src/P01contact.php';
+$p01contact = new P01C\P01contact();
 $p01contact->default_lang = substr($LANG, 0, 2);
 
 $thisfile = basename(__FILE__, '.php');
