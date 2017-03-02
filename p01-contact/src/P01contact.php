@@ -2,14 +2,17 @@
 /**
  * p01-contact - A simple contact forms manager
  *
+ * @package p01-contact
  * @link https://github.com/nliautaud/p01contact
  * @author Nicolas Liautaud
- * @package p01-contact
  */
 namespace P01C;
+
 require 'P01contact_Form.php';
 
-if(session_id()=='') session_start();
+if (session_id() === '') {
+    session_start();
+}
 
 class P01contact
 {
@@ -21,23 +24,23 @@ class P01contact
     {
         $this->version = '1.0.0';
 
-        define('P01C\SERVER',      'http://' . $_SERVER['SERVER_NAME']);
-        define('P01C\PAGEURI',     $_SERVER['REQUEST_URI']);
-        define('P01C\PAGEURL',     SERVER . PAGEURI);
+        define('P01C\SERVER', 'http://' . $_SERVER['SERVER_NAME']);
+        define('P01C\PAGEURI', $_SERVER['REQUEST_URI']);
+        define('P01C\PAGEURL', SERVER . PAGEURI);
 
-        define('P01C\PATH',        dirname(dirname(__FILE__)) . '/');
-        define('P01C\RELPATH',     substr(PATH, strlen($_SERVER['DOCUMENT_ROOT'])));
+        define('P01C\PATH', dirname(dirname(__FILE__)) . '/');
+        define('P01C\RELPATH', substr(PATH, strlen($_SERVER['DOCUMENT_ROOT'])));
 
-        define('P01C\LANGSPATH',   PATH . 'lang/');
-        define('P01C\CONFIGPATH',  PATH . 'config.json');
-        define('P01C\LOGPATH',     PATH . 'log.json');
+        define('P01C\LANGSPATH', PATH . 'lang/');
+        define('P01C\CONFIGPATH', PATH . 'config.json');
+        define('P01C\LOGPATH', PATH . 'log.json');
 
-        define('P01C\REPOURL',     'https://github.com/nliautaud/p01contact');
-        define('P01C\WIKIURL',     'https://github.com/nliautaud/p01contact/wiki');
-        define('P01C\ISSUESURL',   'https://github.com/nliautaud/p01contact/issues');
-        define('P01C\APILATEST',   'https://api.github.com/repos/nliautaud/p01contact/releases/latest');
+        define('P01C\REPOURL', 'https://github.com/nliautaud/p01contact');
+        define('P01C\WIKIURL', 'https://github.com/nliautaud/p01contact/wiki');
+        define('P01C\ISSUESURL', 'https://github.com/nliautaud/p01contact/issues');
+        define('P01C\APILATEST', 'https://api.github.com/repos/nliautaud/p01contact/releases/latest');
 
-        $this->load_config();
+        $this->loadConfig();
     }
 
     /**
@@ -46,15 +49,21 @@ class P01contact
      * @see https://developer.github.com/v3/repos/releases/#get-the-latest-release
      * @return object the release infos
      */
-    function get_new_release() {
+    public function getNewRelease()
+    {
         $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
         $context  = stream_context_create($options);
         $resp = file_get_contents(APILATEST, false, $context);
-        if(!$resp) return;
+        if (!$resp) {
+            return;
+        }
         $resp = json_decode($resp);
-        if(!$resp->name) return;
-        if(version_compare($resp->name, $this->version) > 0)
+        if (!$resp->name) {
+            return;
+        }
+        if (version_compare($resp->name, $this->version) > 0) {
             return $resp;
+        }
         return;
     }
 
@@ -71,15 +80,15 @@ class P01contact
         preg_match_all($pattern, $contents, $tags, PREG_SET_ORDER);
 
         static $once;
-        if(!$once) {
+        if (!$once) {
             $inc = '<link rel="stylesheet" href="'.SERVER.RELPATH.'style.css"/>';
             $contents = $inc . $contents;
             $once = true;
         }
 
-        foreach($tags as $tag) {
-            $form = new P01contact_Form($this);
-            $form->parse_tag($tag[2]);
+        foreach ($tags as $tag) {
+            $form = new P01contactForm($this);
+            $form->parseTag($tag[2]);
             $form->lang = $tag[1];
             $form->post();
             $contents = preg_replace($pattern, $form->html(), $contents, 1);
@@ -107,15 +116,15 @@ class P01contact
         preint($health);
 
         echo'<h3>Constants :</h3>';
-        preint(array_filter(get_defined_constants(TRUE)['user'], function ($n) {
+        preint(array_filter(get_defined_constants(true)['user'], function ($n) {
             return 0 === strpos($n, __namespace__);
         }, ARRAY_FILTER_USE_KEY));
 
-        if(!empty($_SESSION)) {
+        if (!empty($_SESSION)) {
             echo'<h3>$_SESSION :</h3>';
             preint($_SESSION);
         }
-        if(!empty($_POST)) {
+        if (!empty($_POST)) {
             echo'<h3>$_POST :</h3>';
             preint($_POST);
         }
@@ -134,21 +143,23 @@ class P01contact
     {
         global $p01contact_lang;
 
-        if(!$lang) {
+        if (!$lang) {
             $lang = $this->config('lang');
             $lang = empty($lang) ? $this->default_lang : $lang;
         }
 
         $path = LANGSPATH . $lang . '.php';
-        if(!file_exists($path))
+        if (!file_exists($path)) {
             $path = LANGSPATH . 'en.php';
+        }
         include_once $path;
 
-        if(!isset($p01contact_lang[$key]))
+        if (!isset($p01contact_lang[$key])) {
             include_once LANGSPATH . 'en.php';
-
-        if(isset($p01contact_lang[$key]))
+        }
+        if (isset($p01contact_lang[$key])) {
             return $p01contact_lang[$key];
+        }
         return ucfirst($key);
     }
     /**
@@ -170,16 +181,17 @@ class P01contact
     /**
      * Load the JSON configuration file.
      */
-    private function load_config()
+    private function loadConfig()
     {
         $this->config = json_decode(@file_get_contents(CONFIGPATH));
-        $this->default_config();
+        $this->setDefaultConfig();
     }
 
     /**
      * Set the obligatory settings if missing.
      */
-    function default_config() {
+    private function setDefaultConfig()
+    {
         $default = array(
             'default_params' => 'name!, email!, subject!, message!',
             'separator' => ',',
@@ -190,27 +202,28 @@ class P01contact
             'min_sec_between_posts' => '5',
         );
         foreach ($default as $key => $value) {
-            if(empty($this->config->{$key}))
+            if (empty($this->config->{$key})) {
                 $this->config->{$key} = $value;
+            }
         }
     }
 
     /**
      * Add an entry to the logs.
      */
-    function log($data)
+    public function log($data)
     {
-        if(!$this->config('logs_count'))
+        if (!$this->config('logs_count')) {
             return;
-
+        }
         $logs = json_decode(@file_get_contents(LOGPATH));
         $logs[] = $data;
         $max = max(0, intval($this->config('logs_count')));
 
-        while(count($logs) > $max)
+        while (count($logs) > $max) {
             array_shift($logs);
-
-        $this->update_json(LOGPATH, $logs);
+        }
+        $this->updateJSON(LOGPATH, $logs);
     }
 
     /**
@@ -221,7 +234,7 @@ class P01contact
      * @param array $old_values the values to change
      * @return boolean file edition sucess
      */
-    private function update_json($path, $new_values)
+    private function updateJSON($path, $new_values)
     {
         if ($file = fopen($path, 'w')) {
             fwrite($file, json_encode($new_values, JSON_PRETTY_PRINT));
@@ -236,15 +249,21 @@ class P01contact
      */
     public function config($key)
     {
-        if(!is_array($key)) $key = array($key);
+        if (!is_array($key)) {
+            $key = array($key);
+        }
         $curr = $this->config;
-        foreach($key as $k) {
-            if(is_numeric($k)) {
+        foreach ($key as $k) {
+            if (is_numeric($k)) {
                 $k = intval($k);
-                if(!isset($curr[$k])) return;
+                if (!isset($curr[$k])) {
+                    return;
+                }
                 $curr = $curr[$k];
             } else {
-                if(!isset($curr->$k)) return;
+                if (!isset($curr->$k)) {
+                    return;
+                }
                 $curr = $curr->$k;
             }
             $k = $curr;
@@ -264,14 +283,18 @@ class P01contact
      */
     public function panel()
     {
-        if(isset($_POST['p01-contact']['settings'])) {
-            $success = $this->update_json(CONFIGPATH, $_POST['p01-contact']['settings']);
-            $this->load_config();
+        if (isset($_POST['p01-contact']['settings'])) {
+            $success = $this->updateJSON(CONFIGPATH, $_POST['p01-contact']['settings']);
+            $this->loadConfig();
 
-            if($success)  echo '<div class="updated">' . $this->lang('config_updated') . '</div>';
-            else echo '<div class="error">'.$this->lang('config_error_modify').'<pre>'.CONFIGPATH.'</pre></div>';
+            if ($success) {
+                echo '<div class="updated">' . $this->lang('config_updated') . '</div>';
+            } else {
+                echo '<div class="error">'.$this->lang('config_error_modify');
+                echo '<pre>'.CONFIGPATH.'</pre></div>';
+            }
         }
-        echo $this->panel_content();
+        echo $this->panelContent();
     }
 
     /**
@@ -284,7 +307,7 @@ class P01contact
      *
      * @return string
      */
-    private function panel_content($system = 'gs')
+    private function panelContent($system = 'gs')
     {
         $others = array();
         $others['disablechecked'] = $this->config('disable') ? 'checked="checked" ' : '';
@@ -293,48 +316,58 @@ class P01contact
         $others['default_lang'] = $this->default_lang;
         $others['version'] = $this->version;
 
-        foreach($this->config('checklist') as $i => $cl) {
+        foreach ($this->config('checklist') as $i => $cl) {
             $others['cl'.$i.'bl'] = isset($cl->type) && $cl->type == 'whitelist' ? '' : 'checked';
             $others['cl'.$i.'wl'] = $others['cl'.$i.'bl'] ? '' : 'checked';
         }
 
         $lang = $this->config('lang');
         $others['langsoptions'] = '<option value=""'.($lang==''?' selected="selected" ':'').'>Default</option>';
-        foreach($this->langs() as $iso => $name) {
+        foreach ($this->langs() as $iso => $name) {
             $others['langsoptions'] .= '<option value="' . $iso . '" ';
-            if($lang == $iso) $others['langsoptions'] .= 'selected="selected" ';
+            if ($lang == $iso) {
+                $others['langsoptions'] .= 'selected="selected" ';
+            }
             $others['langsoptions'] .= '/>' . $name . '</option>';
         }
 
+        $pattern = '`(const|lang|config|other)\(([^)]+)\)`';
         $template = file_get_contents(PATH.'/src/templates/'.$system.'_settings.html');
-        $template = preg_replace_callback('`(const|lang|config|other)\(([^)]+)\)`',
-            function ($matches) use($others) {
-                switch ($matches[1]) {
-                    case 'lang': return $this->lang($matches[2]);
-                    case 'config': return $this->config(explode(',', $matches[2]));
-                    case 'other': if(isset($others[$matches[2]])) return $others[$matches[2]];
-                    case 'const': return constant($matches[2]);
-                }
-            }, $template);
+        $template = preg_replace_callback($pattern, function ($matches) use ($others) {
+            switch ($matches[1]) {
+                case 'lang':
+                    return $this->lang($matches[2]);
+                case 'config':
+                    return $this->config(explode(',', $matches[2]));
+                case 'other':
+                    if (isset($others[$matches[2]])) {
+                        return $others[$matches[2]];
+                    }
+                    return '';
+                case 'const':
+                    return constant($matches[2]);
+            }
+        }, $template);
 
         //new release
         $versionblock = '';
-        if($new = $this->get_new_release()) {
+        if ($new = $this->getNewRelease()) {
             $versionblock .= '<div class="updated">' . $this->lang('new_release');
             $versionblock .= '<br /><a href="' . $new->html_url . '">';
             $versionblock .= $this->lang('download') . ' (' . $new->name . ')</a></div>';
         }
 
-        $logsblock = $this->logs_table();
+        $logsblock = $this->logsTable();
 
         return $versionblock . $template . $logsblock;
     }
 
-    private function logs_table()
+    private function logsTable()
     {
         $logs = json_decode(@file_get_contents(LOGPATH));
-        if(!$logs) return;
-
+        if (!$logs) {
+            return;
+        }
         $html = '';
         foreach ($logs as $log) {
             $html .= '<tr><td>';
@@ -343,5 +376,4 @@ class P01contact
         }
         return '<div class="logs"><h2>Logs</h2><table>'.$html.'</table></div>';
     }
-
 }

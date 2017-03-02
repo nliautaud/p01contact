@@ -54,31 +54,20 @@ $p01contact_lang = array(
 // configuration panel
 
 'config_title' => 'p01contact configuration',
-
-// messages
 'config_updated' => 'Your changes were saved successfully.',
+'config_error_open' => '<b>Unable to open config file.</b> Check if the file exists and its permissions :',
+'config_error_modify' =>'<b>Unable to modify config file.</b> Check the file permissions :',
 
-'config_error_open' =>
-'<b>Unable to open config file.</b>
-Check if the file exists and its permissions :',
-
-'config_error_modify' =>
-'<b>Unable to modify config file.</b>
-Check the file permissions :',
-
-// New release alert
 'new_release' => 'There is a new release!',
 'download' => 'Download the last version',
 
-// Links
 'repo' => 'Github',
 'wiki' => 'Documentation / Wiki',
 'issues' => 'Help / report a bug',
 
 // Parameters
 'disable'     => 'Disable all forms',
-'disable_sub' =>
-'Disable mail sending, without hiding the contact forms.',
+'disable_sub' => 'Disable mail sending, without hiding the contact forms.',
 
 'default_email'     => 'Default emails',
 'default_email_sub' => 'One ore more email addresses, separated by commas, that will receive mails from every forms.',
@@ -124,4 +113,3 @@ Check the file permissions :',
 the email that would have been sent.',
 'debug_warn'=> 'Don\'t active that on production website!'
 );
-?>

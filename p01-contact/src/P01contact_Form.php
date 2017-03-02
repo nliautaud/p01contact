@@ -7,9 +7,10 @@
  * @package p01-contact
  */
 namespace P01C;
+
 require 'P01contact_Field.php';
 
-class P01contact_Form
+class P01contactForm
 {
     private $manager;
 
@@ -42,7 +43,7 @@ class P01contact_Form
      *
      * @param string $params the params
      */
-    function parse_tag($params)
+    public function parseTag($params)
     {
         // assure encoding
         $params = str_replace('&nbsp;', ' ', $params);
@@ -53,25 +54,25 @@ class P01contact_Form
         $params = array_filter(explode($sep, $params));
 
         // emails
-        foreach($params as $id => $param) {
-            if(filter_var($param, FILTER_VALIDATE_EMAIL)) {
-                $this->add_target($param);
+        foreach ($params as $id => $param) {
+            if (filter_var($param, FILTER_VALIDATE_EMAIL)) {
+                $this->addTarget($param);
                 unset($params[$id]);
             }
         }
         // default params
-        if(empty($params)) {
+        if (empty($params)) {
             $default = $this->config('default_params');
             $params = array_filter(explode(',', $default));
         }
         // create fields
-        foreach($params as $id => $param) {
-            $this->parse_param($id, $param);
+        foreach ($params as $id => $param) {
+            $this->parseParam($id, $param);
         }
         // default email addresses
-        $default_emails = $this->get_valid_emails($this->config('default_email'));
+        $default_emails = $this->getValidEmails($this->config('default_email'));
         foreach ($default_emails as $email) {
-            $this->add_target($email);
+            $this->addTarget($email);
         }
     }
     /**
@@ -81,7 +82,7 @@ class P01contact_Form
      * @param int $id the field id
      * @param string $param the param to parse
      */
-    function parse_param($id, $param)
+    private function parseParam($id, $param)
     {
         $param_pattern = '`\s*([^ ,"=!]+)';     // type
         $param_pattern.= '\s*(!)?';             // required
@@ -95,7 +96,7 @@ class P01contact_Form
         preg_match($param_pattern, $param, $param);
         list(, $type, $required, , $title, , $desc, , $assign, $values) = $param;
 
-        $field = new P01contact_Field($this, $id, $type);
+        $field = new P01contactField($this, $id, $type);
 
         // values
         switch ($type) {
@@ -120,14 +121,18 @@ class P01contact_Form
                 $field->value = $values;
         }
         // required
-        if($type != 'password') $field->required = $required == '!';
-        if($type == 'captcha') $field->required = true;
+        if ($type != 'password') {
+            $field->required = $required == '!';
+        }
+        if ($type == 'captcha') {
+            $field->required = true;
+        }
 
         $field->title = $title;
         $field->description = $desc;
         $field->locked = $assign == '=&gt;';
 
-        $this->add_field($field);
+        $this->addField($field);
     }
 
     /**
@@ -137,64 +142,49 @@ class P01contact_Form
      * define fields errors and form status.
      * At least, if there is no errors, try to send mail.
      */
-    function post()
+    public function post()
     {
-        if( empty($_POST['p01-contact_form'])
-         || $_POST['p01-contact_form']['id'] != $this->id )
+        if (empty($_POST['p01-contact_form'])
+         || $_POST['p01-contact_form']['id'] != $this->id ) {
             return;
+        }
 
-        $posted = $this->format_data($_POST['p01-contact_fields']);
+        $posted = $this->format($_POST['p01-contact_fields']);
 
         // check token and spam
-        if(!$this->check_token()) {
-            $this->set_status('sent_already');
-            $this->set_token();
+        if (!$this->checkToken()) {
+            $this->setStatus('sent_already');
+            $this->setToken();
             $this->reset();
             return;
         }
-        if(!$this->check_spam($posted)) return;
-
-        $fields = $this->get_fields();
-        foreach($fields as $id => $field)
-        {
-            $field_post = $posted[$field->id];
-
-            // for multiple-values fields, posted value define selection
-            $value = $field->value;
-            if(is_array($value)) {
-                // selections need to be an array
-                if(!is_array($field_post)) $selections = array($field_post);
-                else $selections = $field_post;
-                // reset value selection
-                foreach($value as $key => $val) {
-                    $value[$key][2] = '';
-                }
-                // set value selection from POST
-                foreach($selections as $selection) {
-                    foreach($value as $key => $val) {
-                        if(trim($val[1]) == trim($selection))
-                            $value[$key][2] = 'selected';
-                    }
-                }
-                $field->value = $value;
-            }
-            // for unique value fields, posted value define value
-            else $field->value = $field_post;
-
-            $check = $field->check_content();
-            $field->error = $check;
-            if($check) $errors = true;
+        if (!$this->checkSpam($posted)) {
+            return;
         }
 
-        if($errors) return;
+        $fields = $this->getFields();
+        foreach ($fields as $id => $field) {
+            $posted_val = $posted[$field->id];
+            $field->setValue($posted_val);
+            $field->validate();
+            if ($field->error) {
+                $errors = true;
+            }
+        }
 
-        if($this->config('disable'))
-            return $this->set_status('disable');
-        if($this->count_targets() == 0)
-            return $this->set_status('target');
+        if ($errors) {
+            return;
+        }
 
-        $this->send_mail();
-        $this->set_token();
+        if ($this->config('disable')) {
+            return $this->setStatus('disable');
+        }
+        if (count($this->targets) == 0) {
+            return $this->setStatus('target');
+        }
+
+        $this->sendMail();
+        $this->setToken();
         $this->reset();
     }
 
@@ -213,28 +203,28 @@ class P01contact_Form
      * @param array $post Sanitized p01-contact data of $_POST
      * @return bool the result status
      */
-    public function check_spam($post)
+    public function checkSpam($post)
     {
         $s = $_SESSION['p01-contact'];
-        if(!isset($s['first_post']) || time() - $s['first_post'] > 3600) {
+        if (!isset($s['first_post']) || time() - $s['first_post'] > 3600) {
             $s['first_post'] = time();
             $s['post_count'] = 0;
         }
 
-        if(isset($post['totally_legit'])) {
-            $this->set_status('honeypot');
+        if (isset($post['totally_legit'])) {
+            $this->setStatus('honeypot');
             return false;
         }
-        if(time() - $s['last_page_load'] < $this->config('min_sec_after_load')) {
-            $this->set_status('wait_load');
+        if (time() - $s['last_page_load'] < $this->config('min_sec_after_load')) {
+            $this->setStatus('wait_load');
             return false;
         }
-        if(time() - $s['last_post'] < $this->config('min_sec_between_posts')) {
-            $this->set_status('sent_recently');
+        if (time() - $s['last_post'] < $this->config('min_sec_between_posts')) {
+            $this->setStatus('sent_recently');
             return false;
         }
-        if(!$this->config('debug') && $s['post_count'] > $this->config('max_posts_by_hour')) {
-            $this->set_status('wait_hour');
+        if (!$this->config('debug') && $s['post_count'] > $this->config('max_posts_by_hour')) {
+            $this->setStatus('wait_hour');
             return false;
         }
 
@@ -249,24 +239,28 @@ class P01contact_Form
     /**
      * Create an unique hash in SESSION
      */
-    private static function set_token() {
+    private static function setToken()
+    {
         $_SESSION['p01-contact']['token'] = uniqid(md5(microtime()), true);
     }
     /**
      * Get the token in SESSION (create it if not exists)
      * @return string
      */
-    public function get_token() {
-        if(!isset($_SESSION['p01-contact']['token']))
-            $this->set_token();
+    public function getToken()
+    {
+        if (!isset($_SESSION['p01-contact']['token'])) {
+            $this->setToken();
+        }
         return $_SESSION['p01-contact']['token'];
     }
     /**
      * Compare the POSTed token to the SESSION one
      * @return boolean
      */
-    private function check_token() {
-        return $this->get_token() === $_POST['p01-contact_form']['token'];
+    private function checkToken()
+    {
+        return $this->getToken() === $_POST['p01-contact_form']['token'];
     }
 
 
@@ -284,23 +278,25 @@ class P01contact_Form
         $html  = '<form action="'.PAGEURL.'#p01-contact'.$this->id.'" autocomplete="off" ';
         $html .= 'id="p01-contact' . $this->id . '" class="p01-contact" method="post">';
 
-        if($this->status)
-            $html .= $this->html_status();
-
-        if(!$this->sent) {
-            foreach($this->fields as $id => $field) $html .= $field->html();
-
-            if($this->config('use_honeypot'))
+        if ($this->status) {
+            $html .= $this->htmlStatus();
+        }
+        if (!$this->sent) {
+            foreach ($this->fields as $id => $field) {
+                $html .= $field->html();
+            }
+            if ($this->config('use_honeypot')) {
                 $html .= '<input type="checkbox" name="p01-contact_fields[totally_legit]" value="1" style="display:none !important" tabindex="-1" autocomplete="false">';
-
+            }
             $html .= '<div><input name="p01-contact_form[id]" type="hidden" value="' . $this->id . '" />';
-            $html .= '<input name="p01-contact_form[token]" type="hidden" value="' . $this->get_token() . '" />';
+            $html .= '<input name="p01-contact_form[token]" type="hidden" value="' . $this->getToken() . '" />';
             $html .= '<input class="submit" type="submit" value="' . $this->lang('send') . '" /></div>';
         }
         $html .= '</form>';
 
-        if($this->config('debug')) $html .= $this->debug();
-
+        if ($this->config('debug')) {
+            $html .= $this->debug();
+        }
         return $html;
     }
 
@@ -308,34 +304,22 @@ class P01contact_Form
      * Return an html display of the form status
      * @return string the <div>
      */
-    private function html_status()
+    private function htmlStatus()
     {
         $statusclass = $this->sent ? 'alert success' : 'alert failed';
         return '<div class="' . $statusclass . '">' . $this->lang($this->status) . '</div>';
     }
 
     /**
-     * Return an html http:// link
+     * Return an html link
      * @param string $href the link address
      * @param string $title if not used, the link title will be the address
+     * @param string $protocol Default http://
      * @return string the <a>
      */
-    private function html_link($href, $title = False)
+    private function htmlLink($href, $title = false, $protocol = 'http://')
     {
-        if(!$title) $title = $href;
-        return '<a href="http://' . $href . '">' . $title . '</a>';
-    }
-
-    /**
-     * Return an html mailto: link
-     * @param string $href the email
-     * @param string $title if not used, the link title will be the email
-     * @return string the <a>
-     */
-    private function html_mail_link($href, $title = False)
-    {
-        if(!$title) $title = $href;
-        return '<a href="mailto:' . $href . '">' . $title . '</a>';
+        return "<a href=\"$protocol$href\">".($title ? $title : $href).'</a>';
     }
 
     /**
@@ -346,11 +330,11 @@ class P01contact_Form
     {
         $out = '<div class="debug debug_form">';
         static $post;
-        if($set_infos) {
+        if ($set_infos) {
             $post = $set_infos;
             return;
         }
-        if($post) {
+        if ($post) {
             list($headers, $targets, $subject, $text_content, $html_content) = $post;
             $out.= '<h3>Virtually sent mail :</h3>';
             $out.= '<pre>'.htmlspecialchars($headers).'</pre>';
@@ -377,71 +361,87 @@ class P01contact_Form
      * Create the mail content and headers along to settings, form
      * and fields datas; and update the form status (sent|error).
      */
-    public function send_mail()
+    public function sendMail()
     {
         $body = '';
         $skip_in_message = array('name','email','subject','captcha');
-        foreach($this->fields as $field)
-        {
-            if(in_array($field->type, $skip_in_message) || empty($field->value))
+        foreach ($this->fields as $field) {
+            if (in_array($field->type, $skip_in_message) || empty($field->value)) {
                 continue;
-
-            if($field->type == 'name') $name = $field->value;
-            if($field->type == 'email') $email = $field->value;
-            if($field->type == 'subject') $subject = $field->value;
+            }
+            switch ($field->type) {
+                case 'name':
+                    $name = $field->value;
+                    break;
+                case 'email':
+                    $email = $field->value;
+                    break;
+                case 'subject':
+                    $subject = $field->value;
+                    break;
+            }
 
             // field name
             $title = !empty($field->title) ? $field->title : $field->type;
             $body .= '<p><strong>' . $this->lang($field->title).'</strong> :';
 
-            switch($field->type)
-            {
-                case 'message' :
-                case 'textarea' :
+            switch ($field->type) {
+                case 'message':
+                case 'textarea':
                     $body .= '<p style="margin:10px;padding:10px;border:1px solid silver">';
                     $body .= nl2br($field->value) . '</p>';
                     break;
-                case 'url' :
-                    $body .= $this->html_link($field->value);
+                case 'url':
+                    $body .= $this->htmlLink($field->value);
                     break;
-                case 'checkbox' :
-                case 'select' :
-                case 'radio' :
+                case 'checkbox':
+                case 'select':
+                case 'radio':
                     $body .= '<ul>';
-                    foreach($field->value as $v)
-                        if(isset($v[2]) && $v[2] == 'selected')
+                    foreach ($field->value as $v) {
+                        if (isset($v[2]) && $v[2] == 'selected') {
                             $body .=  '<li>' . $v[1] . '</li>';
+                        }
+                    }
                     $body .= '</ul>';
                     break;
-                case 'askcopy' :
-                    if(!in_array('selected', $field->value[0])) break;
+                case 'askcopy':
+                    if (!in_array('selected', $field->value[0])) {
+                        break;
+                    }
                     $body .= '<p><strong>' . $this->lang('askedcopy').'.</strong></p>';
                     break;
-                default :
+                default:
                     $body .=  $field->value;
             }
             $body .= '</p>';
         }
 
-        if(empty($name)) $name = $this->lang('anonymous');
-        if(empty($subject)) $subject = $this->lang('nosubject');
+        if (empty($name)) {
+            $name = $this->lang('anonymous');
+        }
+        if (empty($subject)) {
+            $subject = $this->lang('nosubject');
+        }
 
-        // title
+        // header
         $head .= '<h2>' . $this->lang('fromsite') . ' <em>' . SERVER . '</em></h2>';
         $head .= '<h3>' . date('r') . '</h3>';
         $head .= "<p><strong>From :</strong> $name";
-        if($email) $head .= " (<a href=\"mailto:$email\">$email</a>)";
+        if ($email) {
+            $head .= " (<a href=\"mailto:$email\">$email</a>)";
+        }
         $head .= '</p>';
 
-        // footer infos
+        // footer
         $foot  = '<p><em>';
         $foot .= $this->lang('sentfrom') . ' ';
-        $foot .= $this->html_link(PAGEURL, PAGEURI);
+        $foot .= $this->htmlLink(PAGEURL, PAGEURI);
         $foot .= '<br>If this mail should not be for you, please contact ';
-        $foot .= $this->html_mail_link($this->targets[0]);
+        $foot .= $this->htmlLink($this->targets[0], false, 'mailto:');
         $foot .= '</em></p>';
 
-        if(extension_loaded('mbstring')) {
+        if (extension_loaded('mbstring')) {
             $subject = mb_encode_mimeheader(html_entity_decode($subject, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
             $name = mb_encode_mimeheader(html_entity_decode($name, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
         }
@@ -449,7 +449,7 @@ class P01contact_Form
         $mime_boundary = '----'.md5(time());
 
         $headers  = "From: $name";
-        if($email) {
+        if ($email) {
             $headers .= " <$email>\n";
             $headers .= "Reply-To: $name <$email>\n";
             $headers .= "Return-Path: $name <$email>";
@@ -477,9 +477,9 @@ class P01contact_Form
         $targets = implode(',', $this->targets);
 
         // debug
-        if($this->config('debug')) {
+        if ($this->config('debug')) {
             $this->debug(array($headers, $targets, $subject, $text, $html));
-            return $this->set_status('sent_debug');
+            return $this->setStatus('sent_debug');
         }
 
         // send mail
@@ -490,12 +490,16 @@ class P01contact_Form
             date('r'), $targets, $subject, $success ? 'success':'error'
         ));
 
-        if(!$success) return $this->set_status('error');
-        if(!$email || !$askcopy) return $this->set_status('sent');
+        if (!$success) {
+            return $this->setStatus('error');
+        }
+        if (!$email || !$askcopy) {
+            return $this->setStatus('sent');
+        }
 
         // mail copy
         $copy = mail($email, $subject, $content, $headers);
-        $this->set_status($copy ? 'sent_copy' : 'sent_copy_error');
+        $this->setStatus($copy ? 'sent_copy' : 'sent_copy_error');
     }
 
     /*
@@ -507,8 +511,9 @@ class P01contact_Form
      * @param string $emails
      * @return array
      */
-    public static function get_valid_emails($emails) {
-        return array_filter(explode(',', $emails), function($email) {
+    public static function getValidEmails($emails)
+    {
+        return array_filter(explode(',', $emails), function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL);
         });
     }
@@ -520,11 +525,12 @@ class P01contact_Form
      * @param array $val
      * @return array
      */
-    private function format_data($val)
+    private function format($val)
     {
-        if(is_array($val)) {
-            foreach($val as $key => $v)
-                $val[$key] = $this->format_data($v);
+        if (is_array($val)) {
+            foreach ($val as $key => $v) {
+                $val[$key] = $this->format($v);
+            }
             return $val;
         }
         // mb_convert_encoding
@@ -536,38 +542,62 @@ class P01contact_Form
      * GETTERS / SETTERS
      */
 
-
     /*
      * Reset all fields values and errors
      */
     public function reset()
     {
-        foreach($this->fields as $id => $field) {
+        foreach ($this->fields as $id => $field) {
             $field->value = '';
             $field->error = '';
         }
     }
-    public function add_target($tget) {
-        if(in_array($tget, $this->targets) === false)
+    public function getTargets()
+    {
+        return $this->targets;
+    }
+    public function addTarget($tget)
+    {
+        if (in_array($tget, $this->targets) === false) {
             $this->targets[] = $tget;
+        }
     }
-    public function set_targets(array $targets) {$this->targets = $targets;}
-    public function count_targets() {return count($this->targets);}
-
-    public function get_field($id) {return $this->fields[$id];}
-    public function get_fields() {return $this->fields;}
-    public function add_field($field) {$this->fields[] = $field;}
-
-    public function set_status($status) {
-        if(!is_string($status)) return;
+    public function getField($id)
+    {
+        return $this->fields[$id];
+    }
+    public function getFields()
+    {
+        return $this->fields;
+    }
+    public function addField($field)
+    {
+        $this->fields[] = $field;
+    }
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    public function setStatus($status)
+    {
+        if (!is_string($status)) {
+            return;
+        }
         $this->status = $status;
-        if(substr($status, 0, 4) == 'sent')
+        if (substr($status, 0, 4) == 'sent') {
             $this->sent = true;
+        }
     }
-
-    public function get_id() {return $this->id;}
-    public function get_status() {return $this->status;}
-
-    public function config($key) {return $this->manager->config($key);}
-    public function lang($key) {return $this->manager->lang($key, $this->lang);}
+    public function getId()
+    {
+        return $this->id;
+    }
+    public function config($key)
+    {
+        return $this->manager->config($key);
+    }
+    public function lang($key)
+    {
+        return $this->manager->lang($key, $this->lang);
+    }
 }

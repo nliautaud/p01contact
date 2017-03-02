@@ -8,7 +8,7 @@
  */
 namespace P01C;
 
-class P01contact_Field
+class P01contactField
 {
     private $form;
 
@@ -34,28 +34,57 @@ class P01contact_Field
     }
 
     /**
-     * Check field value
+     * Set field value
      *
      * Check if field is empty and required or
      * not empty but not valid.
      * @return string the error key, or empty
      */
-    public function check_content()
+    public function setValue($value)
+    {
+        // simple value
+        if (!is_array($this->value)) {
+            $field->value = $value;
+            return;
+        }
+        // multiple-values
+        // selections need to be an array
+        $selections = $value;
+        if (!is_array($selections)) {
+            $selections = array($value);
+        }
+        // reset value selection
+        foreach ($field->value as $key => $val) {
+            $field->value[$key][2] = '';
+        }
+        // set value selection
+        foreach ($selections as $selection) {
+            foreach ($field->value as $key => $val) {
+                if (trim($val[1]) == trim($selection)) {
+                    $field->value[$key][2] = 'selected';
+                }
+            }
+        }
+    }
+    /**
+     * Check field value.
+     */
+    public function validate()
     {
         // empty and required
-        if(empty($this->value) && $this->required) {
-            return 'field_required';
+        if (empty($this->value) && $this->required) {
+            $this->error = 'field_required';
+            return;
         }
         // value blacklisted or not in whitelist
-        if($reason = $this->check_blacklisted()) {
-            return 'field_' . $reason;
+        if ($reason = $this->isBlacklisted()) {
+            $this->error = 'field_' . $reason;
         }
         // not empty but not valid
-        if(!empty($this->value) && !$this->check_validity()) {
-            return 'field_' . $this->type;
+        if (!empty($this->value) && !$this->isValid()) {
+            $this->error = 'field_' . $this->type;
+            return;
         }
-
-        return '';
     }
 
     /**
@@ -63,9 +92,9 @@ class P01contact_Field
      * Mean different things depending on field type
      * @return boolean
      */
-    public function check_validity()
+    public function isValid()
     {
-        switch($this->type) {
+        switch ($this->type) {
             case 'email':
                 return filter_var($this->value, FILTER_VALIDATE_EMAIL);
             case 'tel':
@@ -76,7 +105,7 @@ class P01contact_Field
             case 'message':
                 return strlen($this->value) > $this->form->config('message_len');
             case 'captcha':
-                return $this->reCaptcha_validity($_POST['g-recaptcha-response']);
+                return $this->reCaptchaValidity($_POST['g-recaptcha-response']);
             case 'password':
                 return $this->value == $this->required;
             default:
@@ -88,9 +117,11 @@ class P01contact_Field
      * Check if reCaptcha is valid
      * @return boolean
      */
-    public function reCaptcha_validity($answer)
+    public function reCaptchaValidity($answer)
     {
-        if (!$answer) return false;
+        if (!$answer) {
+            return false;
+        }
         $params = [
             'secret'    => $this->form->config('recaptcha_secret_key'),
             'response'  => $answer
@@ -122,16 +153,21 @@ class P01contact_Field
      *
      * @return boolean
      */
-    public function check_blacklisted()
+    public function isBlacklisted()
     {
         $list = $this->form->config('checklist');
         foreach ($list as $i => $cl) {
-            if($cl->name != $this->type) continue;
+            if ($cl->name != $this->type) {
+                continue;
+            }
             $content = array_filter(explode(',', $cl->content));
-            foreach($content as $avoid) {
+            foreach ($content as $avoid) {
                 $found = preg_match("`$avoid`", $this->value);
-                if($cl->type == 'blacklist' && $found) return $cl->type;
-                if($cl->type == 'whitelist' && !$found) return $cl->type;
+                $foundBlacklisted = $found && $cl->type == 'blacklist';
+                $notFoundWhitelisted = !$found && $cl->type == 'whitelist';
+                if ($foundBlacklisted || $notFoundWhitelisted) {
+                    return $cl->type;
+                }
             }
         }
         return false;
@@ -145,33 +181,36 @@ class P01contact_Field
      */
     public function html()
     {
-        $id  = 'p01-contact' . $this->form->get_id() . '_field' . $this->id;
+        $id  = 'p01-contact' . $this->form->getId() . '_field' . $this->id;
         $name = 'p01-contact_fields[' . $this->id . ']';
-        $type = $this->general_type();
+        $type = $this->getGeneralType();
         $value = $this->value;
         $disabled = $this->locked ? ' disabled="disabled"' : '';
         $required = $this->required ? ' required ' : '';
 
         $html  = '<div class="field ' . $type.$required. '">';
-        if($this->type != 'askcopy') // not needed here, the value say everything
-            $html .= $this->html_label($id);
+        if ($this->type != 'askcopy') {// not needed here, the value say everything
+            $html .= $this->htmlLabel($id);
+        }
 
-        switch($type)
-        {
-            case 'textarea' :
+        switch ($type) {
+            case 'textarea':
                 $html .= '<textarea id="' . $id . '" rows="10" ';
                 $html .= 'name="' . $name . '"' . $disabled.$required;
                 $html .= '>' . $value . '</textarea>';
                 break;
-            case 'captcha' :
+            case 'captcha':
                 $key = $this->form->config('recaptcha_public_key');
-                if(!$key) break;
-                if($this->form->get_id() == 1)
+                if (!$key) {
+                    break;
+                }
+                if ($this->form->getId() == 1) {
                     $html .= '<script src="https://www.google.com/recaptcha/api.js"></script>';
+                }
                 $html .='<div class="g-recaptcha" id="'.$id.'" data-sitekey="'.$key.'"></div>';
                 break;
-            case 'checkbox' :
-                foreach($this->value as $i => $v) {
+            case 'checkbox':
+                foreach ($this->value as $i => $v) {
                     $value = !empty($v[1]) ? ' ' . $v[1] : '';
                     $selected = !empty($v[2]) && $v[2] == 'selected' ? ' checked' : '';
                     $html .= '<input id="' . $id . '_option' . $i . '"';
@@ -180,9 +219,9 @@ class P01contact_Field
                     $html .= ' />' . $value;
                 }
                 break;
-            case 'select' :
+            case 'select':
                 $html .= '<select id="' . $id . '" name="' . $name . '"' . $disabled.$required . '>';
-                foreach($this->value as $i => $v) {
+                foreach ($this->value as $i => $v) {
                     $value = !empty($v[1]) ? ' ' . $v[1] : ' Default';
                     $selected = !empty($v[2]) && $v[2] == 'selected' ? 'selected="selected"' : '';
                     $html .= '<option id="' . $id . '_option' . $i . '" value="' . $value;
@@ -190,8 +229,8 @@ class P01contact_Field
                 }
                 $html.= '</select>';
                 break;
-            case 'radio' :
-                foreach($this->value as $i => $v) {
+            case 'radio':
+                foreach ($this->value as $i => $v) {
                     $value = !empty($v[1]) ? ' ' . $v[1] : ' Default';
                     $selected = !empty($v[2]) && $v[2] == 'selected' ? ' checked' : '';
                     $html .= '<input id="' . $id . '_option' . $i . '" type="radio" ';
@@ -199,7 +238,7 @@ class P01contact_Field
                     $html .= $disabled.$required.$selected . ' />' . $value;
                 }
                 break;
-            default :
+            default:
                 $html .= '<input id="' . $id . '" ';
                 $html .= 'name="' . $name . '" type="'.$type.'" ';
                 $html .= 'value="' . $value . '"' . $disabled.$required . ' />';
@@ -214,17 +253,18 @@ class P01contact_Field
      * @param string $for id of the target field
      * @return string the <div> (unclosed for captcha)
      */
-    private function html_label($for)
+    private function htmlLabel($for)
     {
         $html = '<label for="' . $for . '">';
-        if($this->title) {
+        if ($this->title) {
             $html .= $this->title;
-        } else $html .= ucfirst($this->form->lang($this->type));
-
-        if($this->description) {
+        } else {
+            $html .= ucfirst($this->form->lang($this->type));
+        }
+        if ($this->description) {
             $html .= ' <em class="description">' . $this->description . '</em>';
         }
-        if($this->error) {
+        if ($this->error) {
             $html .= ' <span class="error-msg">' . $this->form->lang($this->error) . '</span>';
         }
         $html .= '</label>';
@@ -234,7 +274,7 @@ class P01contact_Field
     /**
      * Return the general type of a field, even of specials fields.
      */
-    function general_type()
+    private function getGeneralType()
     {
         $types = array(
             'name'    => 'text',
@@ -242,25 +282,33 @@ class P01contact_Field
             'message' => 'textarea',
             'askcopy' => 'checkbox'
         );
-        if(isset($types[$this->type]))
+        if (isset($types[$this->type])) {
             return $types[$this->type];
-        else return $this->type;
+        }
+        return $this->type;
     }
 }
 
-function preint($arr, $return = false) {
+function preint($arr, $return = false)
+{
     $out = '<pre class="test" style="white-space:pre-wrap;">' . print_r(@$arr, true) . '</pre>';
-    if($return) return $out;
+    if ($return) {
+        return $out;
+    }
     echo $out;
 }
-function predump($arr) {
+function predump($arr)
+{
     echo'<pre class="test" style="white-space:pre-wrap;">';
     var_dump($arr);
     echo'</pre>';
 }
-function unset_r($a,$i) {
-    foreach($a as $k=>$v)
-        if(isset($v[$i]))
+function unset_r($a, $i)
+{
+    foreach ($a as $k => $v) {
+        if (isset($v[$i])) {
             unset($a[$k][$i]);
+        }
+    }
     return $a;
 }

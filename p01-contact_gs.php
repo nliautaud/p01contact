@@ -30,8 +30,8 @@ register_plugin(
     'p01contact_action'     // Function that displays content
 );
 
-add_filter('content','p01contact_filter');
-add_action('plugins-sidebar','createSideMenu',array($thisfile,'p01-contact'));
+add_filter('content', 'p01contact_filter');
+add_action('plugins-sidebar', 'createSideMenu', array($thisfile,'p01-contact'));
 
 /*
  * Handle for GS content filter (parse GS pages)
@@ -42,7 +42,7 @@ function p01contact_filter($contents)
 
     $contents = $p01contact->parse($contents);
 
-    if($p01contact->config('debug')) {
+    if ($p01contact->config('debug')) {
         $p01contact->debug();
     }
     return $contents;
@@ -55,4 +55,3 @@ function p01contact_action()
     global $p01contact;
     echo $p01contact->panel();
 }
-?>
