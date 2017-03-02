@@ -45,8 +45,9 @@ class P01contactForm
      */
     public function parseTag($params)
     {
-        // assure encoding
+        // assure formating
         $params = str_replace('&nbsp;', ' ', $params);
+        $params = strip_tags(str_replace("\n", '', $params));
         $params = html_entity_decode($params, ENT_QUOTES, 'UTF-8');
 
         // explode
@@ -55,7 +56,7 @@ class P01contactForm
 
         // emails
         foreach ($params as $id => $param) {
-            if (filter_var($param, FILTER_VALIDATE_EMAIL)) {
+            if (filter_var(trim($param), FILTER_VALIDATE_EMAIL)) {
                 $this->addTarget($param);
                 unset($params[$id]);
             }
@@ -67,7 +68,7 @@ class P01contactForm
         }
         // create fields
         foreach ($params as $id => $param) {
-            $this->parseParam($id, $param);
+            $this->parseParam($id, trim($param));
         }
         // default email addresses
         $default_emails = $this->getValidEmails($this->config('default_email'));

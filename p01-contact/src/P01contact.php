@@ -76,7 +76,8 @@ class P01contact
      */
     public function parse($contents)
     {
-        $pattern = '`(?<!<code>)\(%\s*contact\s*(\w*)\s*:?\s*(.*)\s*%\)`';
+        $sp = '(?:\s|</?p>)*';
+        $pattern = "`(?<!<code>)\(%\s*contact\s*(\w*)\s*:?$sp(.*?)$sp%\)`s";
         preg_match_all($pattern, $contents, $tags, PREG_SET_ORDER);
 
         static $once;
