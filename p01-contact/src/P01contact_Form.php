@@ -85,16 +85,16 @@ class P01contactForm
     private function parseParam($id, $param)
     {
         $param_pattern = '`\s*([^ ,"=!]+)';     // type
-        $param_pattern.= '\s*(!)?';             // required
-        $param_pattern.= '\s*("([^"]*)")?';     // title
-        $param_pattern.= '\s*(\(([^"]*)\))?';   // description
-        $param_pattern.= '\s*((=&gt;|=)?';      // assign
-        $param_pattern.= '\s*([^,]*))?\s*`';    // values
+        $param_pattern.= '\s*(!)?';             // required!
+        $param_pattern.= '\s*(?:"([^"]*)")?';   // "title"
+        $param_pattern.= '\s*(?:\(([^"]*)\))?'; // (description)
+        $param_pattern.= '\s*(?:(=[><]?)?';     // =value, =>locked, =<placeholder
+        $param_pattern.= '\s*(.*))?\s*`';       // value
 
         $values_pattern = '`(?:^|\|)\s*(?:"([^"]+)")?\s*([^| ]+)?`';
 
         preg_match($param_pattern, $param, $param);
-        list(, $type, $required, , $title, , $desc, , $assign, $values) = $param;
+        list(, $type, $required, $title, $desc, $assign, $values) = $param;
 
         $field = new P01contactField($this, $id, $type);
 
@@ -117,8 +117,12 @@ class P01contactForm
                 $field->required = $values;
                 break;
             default:
-                // simple value
-                $field->value = $values;
+                if ($assign == '=<') {
+                    $field->placeholder = $values;
+                } else {
+                    // simple value
+                    $field->value = $values;
+                }
         }
         // required
         if ($type != 'password') {
@@ -127,10 +131,9 @@ class P01contactForm
         if ($type == 'captcha') {
             $field->required = true;
         }
-
         $field->title = $title;
         $field->description = $desc;
-        $field->locked = $assign == '=&gt;';
+        $field->locked = $assign == '=>';
 
         $this->addField($field);
     }

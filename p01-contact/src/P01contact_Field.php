@@ -17,6 +17,7 @@ class P01contactField
     public $title;
     public $description;
     public $value;
+    public $placeholder;
     public $required;
     public $locked;
     public $error;
@@ -187,6 +188,7 @@ class P01contactField
         $value = $this->value;
         $disabled = $this->locked ? ' disabled="disabled"' : '';
         $required = $this->required ? ' required ' : '';
+        $placeholder = $this->placeholder ? ' placeholder="'.$this->placeholder.'"' : '';
 
         $html  = '<div class="field ' . $type.$required. '">';
         if ($this->type != 'askcopy') {// not needed here, the value say everything
@@ -196,7 +198,7 @@ class P01contactField
         switch ($type) {
             case 'textarea':
                 $html .= '<textarea id="' . $id . '" rows="10" ';
-                $html .= 'name="' . $name . '"' . $disabled.$required;
+                $html .= 'name="' . $name . '"' . $disabled.$required.$placeholder;
                 $html .= '>' . $value . '</textarea>';
                 break;
             case 'captcha':
@@ -241,7 +243,7 @@ class P01contactField
             default:
                 $html .= '<input id="' . $id . '" ';
                 $html .= 'name="' . $name . '" type="'.$type.'" ';
-                $html .= 'value="' . $value . '"' . $disabled.$required . ' />';
+                $html .= 'value="' . $value . '"' . $disabled.$required.$placeholder . ' />';
                 break;
         }
         $html .= '</div>';
