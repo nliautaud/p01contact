@@ -63,7 +63,7 @@ class P01contactForm
         // default params
         if (empty($params)) {
             $default = $this->config('default_params');
-            $params = array_filter(explode(',', $default));
+            $params = array_filter(explode($sep, $default));
         }
         // create fields
         foreach ($params as $id => $param) {
