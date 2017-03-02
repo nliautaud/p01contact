@@ -6,16 +6,22 @@
     max-width: 26em;
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
-.p01-contact label{
-    font-weight: normal;
+.p01-contact .field {
     margin-top: .5em;
+}
+.p01-contact .field.inline {
+    margin-top: 1em;
+}
+.p01-contact label {
+    display: block;
+    font-weight: normal;
 }
 .p01-contact label .description{
     font-size: .875em;
     color: #888;
     float: right;
 }
-.p01-contact input,
+.p01-contact input:not([type=radio]):not([type=checkbox]),
 .p01-contact textarea,
 .p01-contact select{
     border:1px solid #BEBEBE;
@@ -31,10 +37,11 @@
     box-shadow: 0 0 8px #88D5E9;
     border: 1px solid #88D5E9;
 }
-.p01-contact input[type=submit],
-.p01-contact input[type=button]{
+.p01-contact input[type=submit]:not([type=radio]):not([type=checkbox]),
+.p01-contact input[type=button]:not([type=radio]):not([type=checkbox]){
     background: #4B99AD;
     padding: 8px 15px 8px 15px;
+    margin: 1em 0;
     border: none;
     color: #fff;
 }
@@ -47,6 +54,22 @@
     content: ' *';
     color: #4B99AD;
     font-weight: bold;
+}
+.p01-contact input[type=radio],
+.p01-contact input[type=checkbox] {
+    vertical-align: middle;
+}
+.p01-contact :not(.inline) .options {
+    display: flex;
+    border: 1px solid #ddd;
+    padding: .5em;
+}
+.p01-contact :not(.inline) .options .option {
+    margin: 0 1em;
+}
+.p01-contact .options input {
+    display: inline-block;
+    margin-right: .5em;
 }
 .p01-contact .error-msg {
     color: red;

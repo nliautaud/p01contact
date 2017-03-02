@@ -67,7 +67,7 @@ class P01contactForm
             $params = array_filter(explode($sep, $default));
         }
         // create fields
-        foreach ($params as $id => $param) {
+        foreach (array_values($params) as $id => $param) {
             $this->parseParam($id, trim($param));
         }
         // default email addresses
@@ -104,14 +104,12 @@ class P01contactForm
             case 'select':
             case 'radio':
             case 'checkbox':
-                // fields with multiples values
-                preg_match_all($values_pattern, $values, $values, PREG_SET_ORDER);
-                $values = unset_r($values, 0);
-                $field->value = $values;
+                $field->value = explode('|', $values);
+                $field->resetSelectedValues();
                 break;
             case 'askcopy':
                 // checkbox-like structure
-                $field->value = array(array(1 => $this->lang('askcopy')));
+                $field->value = array($this->lang('askcopy'));
                 break;
             case 'password':
                 // password value is required value

@@ -17,6 +17,7 @@ class P01contactField
     public $title;
     public $description;
     public $value;
+    public $selected_values;
     public $placeholder;
     public $required;
     public $locked;
@@ -35,38 +36,41 @@ class P01contactField
     }
 
     /**
-     * Set field value
+     * Set the field value or selected value
      *
-     * Check if field is empty and required or
-     * not empty but not valid.
-     * @return string the error key, or empty
+     * @param mixed $new_value the value, or an array of selected values ids
      */
-    public function setValue($value)
+    public function setValue($new_value)
     {
         // simple value
         if (!is_array($this->value)) {
-            $field->value = $value;
+            $this->value = $new_value;
             return;
         }
-        // multiple-values
-        // selections need to be an array
-        $selections = $value;
-        if (!is_array($selections)) {
-            $selections = array($value);
+        // multiples-values (checkbox, radio, select)
+        if (!is_array($new_value)) {
+            $new_value = array($new_value);
         }
-        // reset value selection
-        foreach ($field->value as $key => $val) {
-            $field->value[$key][2] = '';
+        foreach ($new_value as $i) {
+            $this->selected_values[intval($i)] = true;
         }
-        // set value selection
-        foreach ($selections as $selection) {
-            foreach ($field->value as $key => $val) {
-                if (trim($val[1]) == trim($selection)) {
-                    $field->value[$key][2] = 'selected';
-                }
+    }
+
+    /**
+     * Reset the selected values by finding ones who starts or end with ":"
+     */
+    public function resetSelectedValues()
+    {
+        $this->selected_values = array();
+        foreach ($this->value as $i => $val) {
+            $value = preg_replace('`(^\s*:|:\s*$)`', '', $val, -1, $count);
+            if ($count) {
+                $this->value[$i] = $value;
+                $this->selected_values[$i] = true;
             }
         }
     }
+
     /**
      * Check field value.
      */
@@ -185,13 +189,17 @@ class P01contactField
         $id  = 'p01-contact' . $this->form->getId() . '_field' . $this->id;
         $name = 'p01-contact_fields[' . $this->id . ']';
         $type = $this->getGeneralType();
+        $orig = $type != $this->type ? $this->type : '';
         $value = $this->value;
         $disabled = $this->locked ? ' disabled="disabled"' : '';
         $required = $this->required ? ' required ' : '';
         $placeholder = $this->placeholder ? ' placeholder="'.$this->placeholder.'"' : '';
 
-        $html  = '<div class="field ' . $type.$required. '">';
-        if ($this->type != 'askcopy') {// not needed here, the value say everything
+        $is_single_option = is_array($this->value) && count($this->value) == 1;
+        if ($is_single_option) {
+            $html  = "<div class=\"field inline $type $orig $required\">";
+        } else {
+            $html  = "<div class=\"field $type $orig $required\">";
             $html .= $this->htmlLabel($id);
         }
 
@@ -212,33 +220,30 @@ class P01contactField
                 $html .='<div class="g-recaptcha" id="'.$id.'" data-sitekey="'.$key.'"></div>';
                 break;
             case 'checkbox':
+                $name = "{$name}[$i]";
+                // post every checkboxes values
+            case 'radio':
+                $html .= '<div class="options">';
                 foreach ($this->value as $i => $v) {
-                    $value = !empty($v[1]) ? ' ' . $v[1] : '';
-                    $selected = !empty($v[2]) && $v[2] == 'selected' ? ' checked' : '';
-                    $html .= '<input id="' . $id . '_option' . $i . '"';
-                    $html .= ' type="checkbox" name="' . $name . '[' . $i . ']"';
-                    $html .= ' value="' . $value . '"' . $disabled.$required.$selected;
-                    $html .= ' />' . $value;
+                    $selected = $this->isSelected($i) ? ' checked' : '';
+                    $v = !empty($v) ? $v : 'Default';
+                    $html .= '<label class="option">';
+                    $html .= "<input id=\"{$id}_option{$i}\"";
+                    $html .= " type=\"$type\" class=\"$type\" name=\"$name\"";
+                    $html .= " value=\"$i\"$disabled$required$selected />$v";
+                    $html .= '</label>';
                 }
+                $html .= '</div>';
                 break;
             case 'select':
-                $html .= '<select id="' . $id . '" name="' . $name . '"' . $disabled.$required . '>';
+                $html .= "<select id=\"$id\" name=\"$name\"$disabled$required>";
                 foreach ($this->value as $i => $v) {
-                    $value = !empty($v[1]) ? ' ' . $v[1] : ' Default';
-                    $selected = !empty($v[2]) && $v[2] == 'selected' ? 'selected="selected"' : '';
-                    $html .= '<option id="' . $id . '_option' . $i . '" value="' . $value;
-                    $html .= '"' . $selected . ' >' . $value . '</option>';
+                    $value = !empty($v) ? $v : 'Default';
+                    $selected = $this->isSelected($i) ? ' selected="selected"' : '';
+                    $html .= "<option id=\"{$id}_option{$i}\" value=\"$i\"$selected>";
+                    $html .= $value . '</option>';
                 }
                 $html.= '</select>';
-                break;
-            case 'radio':
-                foreach ($this->value as $i => $v) {
-                    $value = !empty($v[1]) ? ' ' . $v[1] : ' Default';
-                    $selected = !empty($v[2]) && $v[2] == 'selected' ? ' checked' : '';
-                    $html .= '<input id="' . $id . '_option' . $i . '" type="radio" ';
-                    $html .= 'name="' . $name . '" value="' . $value . '"';
-                    $html .= $disabled.$required.$selected . ' />' . $value;
-                }
                 break;
             default:
                 $html .= '<input id="' . $id . '" ';
@@ -248,6 +253,11 @@ class P01contactField
         }
         $html .= '</div>';
         return $html;
+    }
+
+    private function isSelected($i)
+    {
+        return is_int($i) && is_array($this->selected_values) && isset($this->selected_values[$i]);
     }
 
     /*
