@@ -26,10 +26,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Der er blevet bedt om en kopi af denne mail',
-'nofrom'   => 'Uden afsender',
+'anonymous'   => 'Uden afsender',
 'nosubject'=> '(Intet emne)',
-'fromsite' => 'Mail afsendt fra',
-'sentfrom' => 'Denne mail er afsendt fra side',
+'email_title' => 'Mail afsendt fra',
 
 // status messages
 'sent'    => 'Mail afsendt.',

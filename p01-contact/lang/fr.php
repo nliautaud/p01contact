@@ -22,10 +22,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Une copie de cet email a été demandée',
-'nofrom'   => 'Anonyme',
+'anonymous'   => 'Anonyme',
 'nosubject'=> '(Pas d\'objet)',
-'fromsite' => 'Email envoyé depuis',
-'sentfrom' => 'Cet email a été envoyé depuis la page',
+'email_title' => 'Email envoyé depuis',
 
 // status messages
 'sent'    => 'Email envoyé.',
@@ -103,4 +102,3 @@ Séparées par des virgules.',
 les informations envoyées par POST et le mail qui aurait été envoyé.',
 'debug_warn'=> 'A ne pas activer sur un site en production!'
 );
-?>

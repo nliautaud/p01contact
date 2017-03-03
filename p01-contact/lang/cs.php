@@ -22,10 +22,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Kopie tohoto e-mailu je požadována',
-'nofrom'   => 'Anonym',
+'anonymous'   => 'Anonym',
 'nosubject'=> '(Bez předmětu)',
-'fromsite' => 'E-mail odeslán z',
-'sentfrom' => 'Tento e-mail byl odeslán ze stránky',
+'email_title' => 'E-mail odeslán z',
 
 // status messages
 'sent'    => 'E-mail odeslán.',

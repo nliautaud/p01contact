@@ -20,10 +20,9 @@ $p01contact_lang = array(
 'send'    => 'Send',
 
 // email words
-'nofrom'   => 'Anonym',
+'anonymous'   => 'Anonym',
 'nosubject'=> '(Inget ämne)',
-'fromsite' => 'Mail skickat från',
-'sentfrom' => 'Detta email har skickats från',
+'email_title' => 'Mail skickat från',
 
 // status messages
 'sent'    => 'Email skickat.',

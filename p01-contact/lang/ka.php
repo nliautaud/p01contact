@@ -22,10 +22,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'ამ წერილის ასლი მიუვიდა გამომგზავნს',
-'nofrom'   => 'ანონიმური',
+'anonymous'   => 'ანონიმური',
 'nosubject'=> '(სათაურის გარეშე)',
-'fromsite' => 'წერილის ავტორი',
-'sentfrom' => 'ეს წერილი გამოგზავნილია გვერდიდან',
+'email_title' => 'წერილის ავტორი',
 
 // status messages
 'sent'    => 'წერილი გაიგზავნა.',

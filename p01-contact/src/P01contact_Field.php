@@ -254,6 +254,80 @@ class P01contactField
         $html .= '</div>';
         return $html;
     }
+    /*
+     * Return a html presentation of the field value.
+     */
+    public function htmlMail()
+    {
+        $gen_type = $this->getGeneralType();
+        $properties = array();
+
+        $html = '<table style="width: 100%; margin: 1em 0; border-collapse: collapse;">';
+
+        // name
+        $emphasis = $this->value ? 'font-weight:bold' : 'font-style:italic';
+        $html .= "\n\n\n";
+        $html .= '<tr style="background-color: #eeeeee">';
+        $html .= '<td style="padding: .5em .75em"><span style="'.$emphasis.'">';
+        $html .= $this->title ? $this->title : $this->type;
+        $html .= '</span></td>';
+        $html .= "\t\t";
+
+        // properties
+        $html .= '<td style="padding:.5em 1em; text-transform:lowercase; text-align:right; font-size:.875em; color:#888888; vertical-align: middle"><em>';
+        if (!$this->value) {
+            $html .= $this->form->lang('empty') . ' ';
+        }
+        if ($this->title) {
+            $properties[] = $this->type;
+        }
+        if ($gen_type != $this->type) {
+            $properties[] = $gen_type;
+        }
+        foreach (array('locked', 'required') as $property) {
+            if ($this->$property) {
+                $properties[] = $this->form->lang($property);
+            }
+        }
+        if (count($properties)) {
+            $html .= '(' . implode(', ', $properties) . ') ';
+        }
+        $html .= '#' . $this->id;
+        $html .= '</em></td></tr>';
+        $html .= "\n\n";
+
+        // value
+        if (!$this->value) {
+            return $html . '</table>';
+        }
+        $html .= '<tr><td colspan=2 style="padding:0">';
+        $html .= '<div style="padding:.5em 1.5em;border:1px solid #ccc">';
+        switch ($gen_type) {
+            case 'checkbox':
+            case 'radio':
+            case 'select':
+                foreach ($this->value as $i => $v) {
+                    if ($this->isSelected($i)) {
+                        $html .= '<div>';
+                        $html .= '<span style="font-size:1.5em; vertical-align:middle; margin-right:.5em;">?</span>';
+                    } else {
+                        $html .= '<div style="color:#ccc; font-style:italic">';
+                        $html .= '<span style="font-size:1.5em; vertical-align:middle; margin-right:.5em; font-style:normal">?</span>';
+                    }
+                    $html .= empty($v) ? 'Default' : $v;
+                    $html .= "</div>\n";
+                }
+                break;
+            default:
+                $address = '~[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]~';
+                $val = nl2br(preg_replace($address, '<a href="\\0">\\0</a>', $this->value));
+                $html .= "<p style=\"margin:0\">$val</p>";
+                break;
+        }
+
+        $html .= '</div></td></tr></table>';
+        return $html;
+    }
 
     private function isSelected($i)
     {

@@ -342,7 +342,7 @@ class P01contactForm
             $out.= '<pre>'.htmlspecialchars($headers).'</pre>';
             $out.= "<pre>Targets: $targets\nSubject: $subject</pre>";
             $out.= "Text content : <pre>$text_content</pre>";
-            $out.= "HTML content : <div style=\"border:1px solid #ccc;padding:15px;\">$html_content</div>";
+            $out.= "HTML content : <div style=\"border:1px solid #ccc;\">$html_content</div>";
         }
         $infos = $this;
         unset($infos->manager);
@@ -365,12 +365,14 @@ class P01contactForm
      */
     public function sendMail()
     {
-        $body = '';
-        $skip_in_message = array('name','email','subject','captcha');
+        $tpl_data = (object) null;
+        $tpl_data->date = date('r');
+        $tpl_data->ip = $_SERVER["REMOTE_ADDR"];
+        $tpl_data->contact = $this->targets[0];
+        // fields
+        $tpl_data->fields = '';
         foreach ($this->fields as $field) {
-            if (in_array($field->type, $skip_in_message) || empty($field->value)) {
-                continue;
-            }
+            $tpl_data->fields .= $field->htmlMail();
             switch ($field->type) {
                 case 'name':
                     $name = $field->value;
@@ -382,42 +384,9 @@ class P01contactForm
                     $subject = $field->value;
                     break;
             }
-
-            // field name
-            $title = !empty($field->title) ? $field->title : $field->type;
-            $body .= '<p><strong>' . $this->lang($field->title).'</strong> :';
-
-            switch ($field->type) {
-                case 'message':
-                case 'textarea':
-                    $body .= '<p style="margin:10px;padding:10px;border:1px solid silver">';
-                    $body .= nl2br($field->value) . '</p>';
-                    break;
-                case 'url':
-                    $body .= $this->htmlLink($field->value);
-                    break;
-                case 'checkbox':
-                case 'select':
-                case 'radio':
-                    $body .= '<ul>';
-                    foreach ($field->value as $v) {
-                        if (isset($v[2]) && $v[2] == 'selected') {
-                            $body .=  '<li>' . $v[1] . '</li>';
-                        }
-                    }
-                    $body .= '</ul>';
-                    break;
-                case 'askcopy':
-                    if (!in_array('selected', $field->value[0])) {
-                        break;
-                    }
-                    $body .= '<p><strong>' . $this->lang('askedcopy').'.</strong></p>';
-                    break;
-                default:
-                    $body .=  $field->value;
-            }
-            $body .= '</p>';
         }
+        $html = $this->manager->renderTemplate('mail_template', $tpl_data);
+        $text = strip_tags($html);
 
         if (empty($name)) {
             $name = $this->lang('anonymous');

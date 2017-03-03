@@ -22,10 +22,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Buvo prašymas gauti šios žinutės kopiją',
-'nofrom'   => 'Anonimas',
+'anonymous'   => 'Anonimas',
 'nosubject'=> '(be temos)',
-'fromsite' => 'Išsiųsta iš',
-'sentfrom' => 'Ši žinutė buvo išsiųsta iš puslapio',
+'email_title' => 'Išsiųsta iš',
 
 // status messages
 'sent'    => 'Žinutė išsiųsta sėkmingai.',

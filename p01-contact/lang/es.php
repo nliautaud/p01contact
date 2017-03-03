@@ -21,10 +21,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Se ha solicitado una copia de este mensaje',
-'nofrom'   => 'Anónimo',
+'anonymous'   => 'Anónimo',
 'nosubject'=> '(Sin asunto)',
-'fromsite' => 'Correo electrónico enviado desde',
-'sentfrom' => 'Este correo electrónico ha sido enviado desde la página',
+'email_title' => 'Correo electrónico enviado desde',
 
 // status messages
 'sent'    => 'Correo electrónico enviado.',

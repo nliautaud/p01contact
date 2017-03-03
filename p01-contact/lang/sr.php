@@ -22,10 +22,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Kopija ove poruke je zatražena',
-'nofrom'   => 'Anonimno',
+'anonymous'   => 'Anonimno',
 'nosubject'=> '(No subject)',
-'fromsite' => 'Mail poslao',
-'sentfrom' => 'Ovaj email je poslat sa stranice',
+'email_title' => 'Mail poslao',
 
 // status messages
 'sent'    => 'Email poslat.',

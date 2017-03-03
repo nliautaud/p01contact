@@ -22,10 +22,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Eine Kopie wurde angefordert',
-'nofrom'   => 'Anonym',
+'anonymous'   => 'Anonym',
 'nosubject'=> '(kein Betreff)',
-'fromsite' => 'Nachricht gesendet von',
-'sentfrom' => 'Diese Nachricht wurde gesendet von der Seite',
+'email_title' => 'Nachricht gesendet von',
 
 // status messages
 'sent'    => 'Nachricht verschickt.',

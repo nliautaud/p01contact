@@ -22,10 +22,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Een kopie van deze mail is aangevraagd',
-'nofrom'   => 'Anoniem',
+'anonymous'   => 'Anoniem',
 'nosubject'=> '(Geen onderwerp)',
-'fromsite' => 'Mail verstuurd vanaf',
-'sentfrom' => 'Deze mail is verstuurd vanaf pagina',
+'email_title' => 'Mail verstuurd vanaf',
 
 // status messages
 'sent'    => 'Bericht verzonden.',

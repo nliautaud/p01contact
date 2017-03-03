@@ -22,10 +22,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'A fost solicitata o copie al acestui email',
-'nofrom'   => 'Anonim',
+'anonymous'   => 'Anonim',
 'nosubject'=> '(Fara subiect)',
-'fromsite' => 'Mesaj trimis de',
-'sentfrom' => 'Acest email a fost trimis de pe pagina',
+'email_title' => 'Mesaj trimis de',
 
 // status messages
 'sent'    => 'Mesajul a fost trimis.',

@@ -22,9 +22,11 @@ class P01contact
 
     public function __construct()
     {
-        $this->version = '1.0.0';
+        define('P01C\VERSION', '1.0.0');
+        $this->version = VERSION;
 
-        define('P01C\SERVER', 'http://' . $_SERVER['SERVER_NAME']);
+        define('P01C\SERVERNAME', $_SERVER['SERVER_NAME']);
+        define('P01C\SERVER', 'http://' . SERVERNAME);
         define('P01C\PAGEURI', $_SERVER['REQUEST_URI']);
         define('P01C\PAGEURL', SERVER . PAGEURI);
 
@@ -32,6 +34,7 @@ class P01contact
         define('P01C\RELPATH', substr(PATH, strlen($_SERVER['DOCUMENT_ROOT'])));
 
         define('P01C\LANGSPATH', PATH . 'lang/');
+        define('P01C\TPLPATH', PATH . 'src/templates/');
         define('P01C\CONFIGPATH', PATH . 'config.json');
         define('P01C\LOGPATH', PATH . 'log.json');
 
@@ -274,6 +277,53 @@ class P01contact
 
 
     /*
+     *  TEMPLATES
+     */
+
+
+    /**
+     * Return a template file content
+     */
+    public function getTemplate($name)
+    {
+        static $cache;
+        if (isset($cache[$name])) {
+            return $cache[$name];
+        }
+        if (!isset($cache)) {
+            $cache = array();
+        }
+        $cache[$name] = @file_get_contents(TPLPATH . $name . '.html');
+        return $cache[$name];
+    }
+
+    /**
+     * Set the obligatory settings if missing.
+     */
+    public function renderTemplate($name, $data)
+    {
+        $html = $this->getTemplate($name);
+        // config
+        $html = preg_replace_callback('`config\((.+)\)`', function ($matches) {
+            return $this->config(explode(',', $matches[1]));
+        }, $html);
+        // lang
+        $html = preg_replace_callback('`{{lang.(\w+)}}`', function ($matches) {
+            return $this->lang($matches[1]);
+        }, $html);
+        // constants
+        $html = preg_replace_callback('`{{([A-Z]{3,})}}`', function ($matches) {
+            return constant(__namespace__.'\\'.$matches[1]);
+        }, $html);
+        // data
+        $html = preg_replace_callback('`{{(\w+)}}`', function ($matches) use ($data) {
+            return @$data->{$matches[1]};
+        }, $html);
+        return $html;
+    }
+
+
+    /*
      *  PANEL
      */
 
@@ -310,45 +360,31 @@ class P01contact
      */
     private function panelContent($system = 'gs')
     {
-        $others = array();
-        $others['disablechecked'] = $this->config('disable') ? 'checked="checked" ' : '';
-        $others['debugchecked'] = $this->config('debug') ? 'checked="checked" ' : '';
-        $others['honeypotchecked'] = $this->config('use_honeypot') ? 'checked="checked" ' : '';
-        $others['default_lang'] = $this->default_lang;
-        $others['version'] = $this->version;
+        $tpl_data = (object) null;
+        $tpl_data->disablechecked = $this->config('disable') ? 'checked="checked" ' : '';
+        $tpl_data->debugchecked = $this->config('debug') ? 'checked="checked" ' : '';
+        $tpl_data->honeypotchecked = $this->config('use_honeypot') ? 'checked="checked" ' : '';
+        $tpl_data->default_lang = $this->default_lang;
+        $tpl_data->version = $this->version;
 
         foreach ($this->config('checklist') as $i => $cl) {
-            $others['cl'.$i.'bl'] = isset($cl->type) && $cl->type == 'whitelist' ? '' : 'checked';
-            $others['cl'.$i.'wl'] = $others['cl'.$i.'bl'] ? '' : 'checked';
+            $bl = 'cl'.$i.'bl';
+            $wl = 'cl'.$i.'wl';
+            $tpl_data->$bl = isset($cl->type) && $cl->type == 'whitelist' ? '' : 'checked';
+            $tpl_data->$wl = $tpl_data->$bl ? '' : 'checked';
         }
 
         $lang = $this->config('lang');
-        $others['langsoptions'] = '<option value=""'.($lang==''?' selected="selected" ':'').'>Default</option>';
+        $tpl_data->langsoptions = '<option value=""'.($lang==''?' selected="selected" ':'').'>Default</option>';
         foreach ($this->langs() as $iso => $name) {
-            $others['langsoptions'] .= '<option value="' . $iso . '" ';
+            $tpl_data->langsoptions .= '<option value="' . $iso . '" ';
             if ($lang == $iso) {
-                $others['langsoptions'] .= 'selected="selected" ';
+                $tpl_data->langsoptions .= 'selected="selected" ';
             }
-            $others['langsoptions'] .= '/>' . $name . '</option>';
+            $tpl_data->langsoptions .= '/>' . $name . '</option>';
         }
 
-        $pattern = '`(const|lang|config|other)\(([^)]+)\)`';
-        $template = file_get_contents(PATH.'/src/templates/'.$system.'_settings.html');
-        $template = preg_replace_callback($pattern, function ($matches) use ($others) {
-            switch ($matches[1]) {
-                case 'lang':
-                    return $this->lang($matches[2]);
-                case 'config':
-                    return $this->config(explode(',', $matches[2]));
-                case 'other':
-                    if (isset($others[$matches[2]])) {
-                        return $others[$matches[2]];
-                    }
-                    return '';
-                case 'const':
-                    return constant($matches[2]);
-            }
-        }, $template);
+        $html = $this->renderTemplate($system.'_settings', $tpl_data);
 
         //new release
         $versionblock = '';
@@ -360,7 +396,7 @@ class P01contact
 
         $logsblock = $this->logsTable();
 
-        return $versionblock . $template . $logsblock;
+        return $versionblock . $html . $logsblock;
     }
 
     private function logsTable()
