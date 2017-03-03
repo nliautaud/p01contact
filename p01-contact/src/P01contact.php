@@ -370,7 +370,7 @@ class P01contact
             return;
         }
         $html = '';
-        foreach ($logs as $log) {
+        foreach (array_reverse ($logs) as $log) {
             $html .= '<tr><td>';
             $html .= implode('</td><td>', array_map('htmlentities', $log));
             $html .= '</td></tr>';

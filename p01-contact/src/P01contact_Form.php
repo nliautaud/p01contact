@@ -489,7 +489,7 @@ class P01contactForm
 
         // log
         $this->manager->log(array(
-            date('r'), $targets, $subject, $success ? 'success':'error'
+            date('d/m/Y H:i:s'), $targets, $subject, $name, $success ? 'success':'error'
         ));
 
         if (!$success) {
