@@ -56,7 +56,8 @@ class P01contactForm
 
         // emails
         foreach ($params as $id => $param) {
-            if (filter_var(trim($param), FILTER_VALIDATE_EMAIL)) {
+            $param = trim($param);
+            if (filter_var($param, FILTER_VALIDATE_EMAIL)) {
                 $this->addTarget($param);
                 unset($params[$id]);
             }
