@@ -309,11 +309,12 @@ class P01contactField
                 foreach ($this->value as $i => $v) {
                     if ($this->isSelected($i)) {
                         $html .= '<div>';
-                        $html .= '<span style="font-size:1.5em; vertical-align:middle; margin-right:.5em;">?</span>';
+                        $checkmark = '&#9745;';
                     } else {
                         $html .= '<div style="color:#ccc; font-style:italic">';
-                        $html .= '<span style="font-size:1.5em; vertical-align:middle; margin-right:.5em; font-style:normal">?</span>';
+                        $checkmark = '&#9744;';
                     }
+                    $html .= '<span style="font-size:1.5em; vertical-align:middle; margin-right:.5em; font-style:normal">'.$checkmark.'</span>';
                     $html .= empty($v) ? 'Default' : $v;
                     $html .= "</div>\n";
                 }
