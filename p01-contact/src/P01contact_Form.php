@@ -402,7 +402,6 @@ class P01contactForm
 
         $mime_boundary = '----'.md5(time());
         $headers = $this->mailHeaders($name, $email, $mime_boundary);
-        preint(htmlentities($headers));
 
         $content = $this->mailContent($text, 'plain', $mime_boundary);
         $content .= $this->mailContent($html, 'html', $mime_boundary);
