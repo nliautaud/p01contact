@@ -152,7 +152,7 @@ class P01contactForm
             return;
         }
 
-        $posted = $this->format($_POST['p01-contact_fields']);
+        $posted = $_POST['p01-contact_fields'];
 
         // check token and spam
         if (!$this->checkToken()) {
@@ -488,26 +488,6 @@ class P01contactForm
         return array_filter(explode(',', $emails), function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL);
         });
-    }
-
-    /**
-     * Format values
-     *
-     * For aesthetic and security, and recursive.
-     * @param array $val
-     * @return array
-     */
-    private function format($val)
-    {
-        if (is_array($val)) {
-            foreach ($val as $key => $v) {
-                $val[$key] = $this->format($v);
-            }
-            return $val;
-        }
-        // mb_convert_encoding
-        $val = htmlspecialchars_decode(utf8_decode(htmlentities($val, ENT_COMPAT, 'UTF-8', false)));
-        return $val;
     }
 
     /**

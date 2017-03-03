@@ -44,7 +44,7 @@ class P01contactField
     {
         // simple value
         if (!is_array($this->value)) {
-            $this->value = $new_value;
+            $this->value = htmlentities($new_value, ENT_COMPAT, 'UTF-8', false);
             return;
         }
         // multiples-values (checkbox, radio, select)
