@@ -396,57 +396,18 @@ class P01contactForm
             $subject = $this->lang('nosubject');
         }
 
-        // header
-        $head .= '<h2>' . $this->lang('fromsite') . ' <em>' . SERVER . '</em></h2>';
-        $head .= '<h3>' . date('r') . '</h3>';
-        $head .= "<p><strong>From :</strong> $name";
-        if ($email) {
-            $head .= " (<a href=\"mailto:$email\">$email</a>)";
-        }
-        $head .= '</p>';
-
-        // footer
-        $foot  = '<p><em>';
-        $foot .= $this->lang('sentfrom') . ' ';
-        $foot .= $this->htmlLink(PAGEURL, PAGEURI);
-        $foot .= '<br>If this mail should not be for you, please contact ';
-        $foot .= $this->htmlLink($this->targets[0], false, 'mailto:');
-        $foot .= '</em></p>';
-
-        if (extension_loaded('mbstring')) {
-            $subject = mb_encode_mimeheader(html_entity_decode($subject, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
-            $name = mb_encode_mimeheader(html_entity_decode($name, ENT_COMPAT, 'UTF-8'), 'UTF-8', 'Q');
-        }
+        // targets, subject, headers and multipart content
+        $targets = implode(',', $this->targets);
+        $encoded_subject = $this->encodeHeader($subject);
 
         $mime_boundary = '----'.md5(time());
+        $headers = $this->mailHeaders($name, $email, $mime_boundary);
+        preint(htmlentities($headers));
 
-        $headers  = "From: $name";
-        if ($email) {
-            $headers .= " <$email>\n";
-            $headers .= "Reply-To: $name <$email>\n";
-            $headers .= "Return-Path: $name <$email>";
-        }
-        $headers .= "\n";
-        $headers .= "MIME-Version: 1.0\n";
-        $headers .= "Content-type: multipart/alternative; boundary=\"$mime_boundary\"\n";
-        $headers .= "X-Mailer: PHP/" . phpversion() . "\n";
-
-        $html = $head . $body . $foot;
-        $text = strip_tags(preg_replace('`<(/?p|br|h\d)[^>]*>`i', "\n", $html));
-
-        //plain text version
-        $content  = "--$mime_boundary\n";
-        $content .= "Content-Type: text/plain; charset=UTF-8\n";
-        $content .= "Content-Transfer-Encoding: 7bit\n";
-        $content .= $text."\n";
-        //html version
-        $content .= "--$mime_boundary\n";
-        $content .= "Content-Type: text/html; charset=UTF-8\n";
-        $content .= "Content-Transfer-Encoding: 7bit\n\n";
-        $content .= $html."\n\n";
+        $content = $this->mailContent($text, 'plain', $mime_boundary);
+        $content .= $this->mailContent($html, 'html', $mime_boundary);
         $content .= "--$mime_boundary--\n\n";
 
-        $targets = implode(',', $this->targets);
 
         // debug
         if ($this->config('debug')) {
@@ -455,7 +416,7 @@ class P01contactForm
         }
 
         // send mail
-        $success = mail($targets, $subject, $content, $headers);
+        $success = mail($targets, $encoded_subject, $content, $headers);
 
         // log
         $this->manager->log(array(
@@ -470,13 +431,58 @@ class P01contactForm
         }
 
         // mail copy
-        $copy = mail($email, $subject, $content, $headers);
+        $copy = mail($email, $encoded_subject, $content, $headers);
         $this->setStatus($copy ? 'sent_copy' : 'sent_copy_error');
     }
 
-    /*
-     * HELPERS
+    /**
+     * Return the mail headers
+     * @param string $name
+     * @param string $email
+     * @param string $mime_boundary
+     * @return string
      */
+    private function mailHeaders($name, $email, $mime_boundary)
+    {
+        $encoded_name = $this->encodeHeader($name);
+        $headers  = "From: $encoded_name";
+        if ($email) {
+            $headers .= " <$email>\n";
+            $headers .= "Reply-To: $encoded_name <$email>\n";
+            $headers .= "Return-Path: $encoded_name <$email>";
+        }
+        $headers .= "\n";
+        $headers .= "MIME-Version: 1.0\n";
+        $headers .= "Content-type: multipart/alternative; boundary=\"$mime_boundary\"\n";
+        $headers .= "X-Mailer: PHP/" . phpversion() . "\n";
+        return $headers;
+    }
+
+    /**
+     * Return a multipart/alternative content part.
+     * @param string $content
+     * @param string $type the content type (plain, html)
+     * @param string $mime_boundary
+     * @return string
+     */
+    private function mailContent($content, $type, $mime_boundary)
+    {
+        $head .= "--$mime_boundary\n";
+        $head .= "Content-Type: text/$type; charset=UTF-8\n";
+        $head .= "Content-Transfer-Encoding: 7bit\n\n";
+        return $head.$content."\n";
+    }
+
+    /**
+     * Format a string for UTF-8 email headers.
+     * @param string $string
+     * @return string
+     */
+    private function encodeHeader($string)
+    {
+        $string = base64_encode(html_entity_decode($string, ENT_COMPAT, 'UTF-8'));
+        return "=?UTF-8?B?$string?=";
+    }
 
     /**
      * Return array of valid emails from a comma separated string
