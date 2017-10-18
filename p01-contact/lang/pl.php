@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Imię i nazwisko',
 'email'   => 'Email',
 'address' => 'Adres',
-'phone'   => 'Telefon',
-'website' => 'Strona www',
+'tel'   => 'Telefon',
+'url' => 'Strona www',
 'subject' => 'Temat',
 'message' => 'Wiadomość',
 'file'    => 'Załącznik',
@@ -22,11 +22,10 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'A copy of this email have been requested',
-'nofrom'   => 'Anonymous',
+'anonymous'   => 'Anonymous',
 'nosubject'=> '(bez tematu)',
-'fromsite' => 'Wiadomość wysłana z',
-'sentfrom' => 'Wiadomość została wysłana ze strony',
-        
+'email_title' => 'Wiadomość wysłana z',
+
 // status messages
 'sent'    => 'Wiadomość została wysłana!',
 'error'   => 'Błąd: wiadomość nie została wysłana.',
@@ -37,8 +36,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Wypełnienie tego pola jest wymagane',
 'field_email'   => 'Wprowadź prawidłowy adres email',
-'field_phone'   => 'Wprowadź prawidłowy numer telefonu',
-'field_website' => 'Wprowadź prawidłowy adres www',
+'field_tel'   => 'Wprowadź prawidłowy numer telefonu',
+'field_url' => 'Wprowadź prawidłowy adres www',
 'field_message' => 'Tekst wiadomości jest zbyt krótki',
 'field_captcha' => 'Skopiuj następujący tekst',
 'field_fieldcaptcha' => 'Proszę nie wypełniać tego pola',
@@ -54,11 +53,11 @@ $p01contact_lang = array(
 'config_updated' => 'Twoje ustawienia zostały pomyślnie zapisane.',
 
 'config_error_open' =>
-'<b>Nie można otworzyć pliku konfiguracyjnego.</b> 
+'<b>Nie można otworzyć pliku konfiguracyjnego.</b>
 Sprawdź czy plik istnieje oraz ustawienia do jego zapisu:',
 
-'config_error_modify' => 
-'<b>Nie można zmodyfikować pliku konfiguracyjnego.</b> 
+'config_error_modify' =>
+'<b>Nie można zmodyfikować pliku konfiguracyjnego.</b>
 Sprwdź ustawienia uprawnień tego pliku:',
 
 // New release alert

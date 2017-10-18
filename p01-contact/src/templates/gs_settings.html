@@ -1,0 +1,178 @@
+<style>
+    .p01contact_panel * {
+        box-sizing: border-box;
+        width: auto;
+    }
+    .p01contact_panel {
+        overflow: auto;
+    }
+    .p01contact_panel .version {
+        color: #aaa;
+        float: right;
+        font-weight: bold;
+    }
+    .p01contact_panel fieldset {
+        border: 0;
+        width: 100%;
+        margin: 2em 0;
+    }
+    .p01contact_panel .field {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 1em 0 0 0;
+    }
+    .p01contact_panel .field > :first-child {
+        width: 48%;
+    }
+    .p01contact_panel .field > :last-child {
+        width: 48%;
+    }
+    .p01contact_panel textarea {
+        height: 3em;
+    }
+    .p01contact_panel strong {
+        display: block;
+    }
+    .p01contact_panel p {
+        margin: 1em 0;
+        line-height: 1.2;
+    }
+    .p01contact_panel p,
+    .p01contact_panel .field em {
+        color: #999;
+        font-weight: normal;
+        font-size: .95em;
+        font-style: normal;
+    }
+    .p01contact_panel em label {
+        display: inline;
+        font-size: 1em;
+        font-weight: normal;
+        color: #888;
+        padding: 0 .5em;
+    }
+    .p01contact_panel .text.left {
+        width: 7em;
+        margin-right: 2em;
+    }
+    .p01contact_panel .submit {
+        float: right;
+    }
+    .logs {
+        margin-top: 5em;
+    }
+    .logs table {
+        max-height: 30em;
+    }
+</style>
+<div class="p01contact_panel">
+    <form action="" method="post">
+        <input class="submit" type="submit" value="Save settings" />
+        <h3>{{lang.config_title}}</h3>
+        <p>
+            <a href="{{REPOURL}}">{{lang.repo}}</a> -
+            <a href="{{WIKIURL}}">{{lang.wiki}}</a> -
+            <a href="{{ISSUESURL}}">{{lang.issues}}</a>
+            <span class="version">v{{version}}</span>
+        </p>
+        <label class="field">
+            <div><strong>{{lang.default_email}}</strong><em>{{lang.default_email_sub}}</em></div>
+            <textarea name="p01-contact[settings][default_email]">config(default_email)</textarea>
+        </label>
+        <label class="field">
+            <div><strong>{{lang.lang}}</strong><em>{{lang.lang_sub}} {{default_lang}}</em></div>
+            <select class="text" name="p01-contact[settings][lang]">{{langsoptions}}</select>
+        </label>
+        <label class="field">
+            <div><strong>{{lang.message_len}}</strong><em>{{lang.message_len_sub}}</em></div>
+            <input type="number" class="text" name="p01-contact[settings][message_len]" value="config(message_len)" size=3 maxlength=3 min=0 />
+        </label>
+        <label class="field">
+            <div><strong>{{lang.default_params}}</strong><em>{{lang.default_params_sub}}</em></div>
+            <textarea name="p01-contact[settings][default_params]">config(default_params)</textarea>
+        </label>
+        <label class="field">
+            <div><strong>{{lang.separator}}</strong><em>{{lang.separator_sub}}</em></div>
+            <input type="text" class="text" name="p01-contact[settings][separator]" value="config(separator)"/>
+        </label>
+        <label class="field">
+            <div><strong>{{lang.logs_count}}</strong><em>{{lang.logs_count_sub}}</em></div>
+            <input type="number" class="text" name="p01-contact[settings][logs_count]" value="config(logs_count)" min=0 />
+        </label>
+        <fieldset>
+            <h3>{{lang.checklists}}</h3>
+            <p>{{lang.checklists_sub}}</p>
+            <div class="field">
+                <div>
+                    <input type="text" class="text left" name="p01-contact[settings][checklist][0][name]" value="config(checklist,0,name)"/>
+                    <em>
+                        <label><input name="p01-contact[settings][checklist][0][type]" type="radio" value="blacklist" {{cl0bl}}/> {{lang.blacklist}}</label>
+                        <label><input name="p01-contact[settings][checklist][0][type]" type="radio" value="whitelist" {{cl0wh}}/> {{lang.whitelist}}</label>
+                    </em>
+                </div>
+                <textarea name="p01-contact[settings][checklist][0][content]">config(checklist,0,content)</textarea>
+            </div>
+            <div class="field">
+                <div>
+                    <input type="text" class="text left" name="p01-contact[settings][checklist][1][name]" value="config(checklist,1,name)"/>
+                    <em>
+                        <label><input name="p01-contact[settings][checklist][1][type]" type="radio" value="blacklist" {{cl1bl}}/> {{lang.blacklist}}</label>
+                        <label><input name="p01-contact[settings][checklist][1][type]" type="radio" value="whitelist" {{cl1wh}}/> {{lang.whitelist}}</label>
+                    </em>
+                </div>
+                <textarea name="p01-contact[settings][checklist][1][content]">config(checklist,1,content)</textarea>
+            </div>
+            <div class="field">
+                <div>
+                    <input type="text" class="text left" name="p01-contact[settings][checklist][2][name]" value="config(checklist,2,name)"/>
+                    <em>
+                        <label><input name="p01-contact[settings][checklist][2][type]" type="radio" value="blacklist" {{cl2bl}}/> {{lang.blacklist}}</label>
+                        <label><input name="p01-contact[settings][checklist][2][type]" type="radio" value="whitelist" {{cl2wh}}/> {{lang.whitelist}}</label>
+                    </em>
+                </div>
+                <textarea name="p01-contact[settings][checklist][2][content]">config(checklist,2,content)</textarea>
+            </div>
+        </fieldset>
+        <fieldset>
+        <h3>{{lang.Security}}</h3>
+        <label class="field">
+            <div><strong>{{lang.use_honeypot}}</strong><em>{{lang.use_honeypot_sub}}</em></div>
+            <input type="checkbox" name="p01-contact[settings][use_honeypot]" {{honeypotchecked}}/>
+        </label>
+        <label class="field">
+            <div><strong>{{lang.min_sec_after_load}}</strong><em>{{lang.min_sec_after_load_sub}}</em></div>
+            <input type="number" class="text" name="p01-contact[settings][min_sec_after_load]" value="config(min_sec_after_load)" min=0 />
+        </label>
+        <label class="field">
+            <div><strong>{{lang.min_sec_between_posts}}</strong><em>{{lang.min_sec_between_posts_sub}}</em></div>
+            <input type="number" class="text" name="p01-contact[settings][min_sec_between_posts]" value="config(min_sec_between_posts)" min=0 />
+        </label>
+        <label class="field">
+            <div><strong>{{lang.max_posts_by_hour}}</strong><em>{{lang.max_posts_by_hour_sub}}</em></div>
+            <input type="number" class="text" name="p01-contact[settings][max_posts_by_hour]" value="config(max_posts_by_hour)" min=0 />
+        </label>
+        <p>{{lang.captcha_info}}</p>
+        <label class="field">
+            <div><strong>{{lang.recaptcha_public_key}}</strong><em>{{lang.recaptcha_public_key_sub}}</em></div>
+            <input type="text" class="text" name="p01-contact[settings][recaptcha_public_key]" value="config(recaptcha_public_key)"/>
+        </label>
+        <label class="field">
+            <div><strong>{{lang.recaptcha_secret_key}}</strong><em>{{lang.recaptcha_secret_key_sub}}</em></div>
+            <input type="text" class="text" name="p01-contact[settings][recaptcha_secret_key]" value="config(recaptcha_secret_key)"/>
+        </label>
+        </fieldset>
+        <fieldset>
+            <h3>{{lang.debug}}</h3>
+            <label class="field">
+                <div><strong>{{lang.disable}}</strong><em>{{lang.disable_sub}}</em></div>
+                <input type="checkbox" name="p01-contact[settings][disable]" {{disablechecked}}/>
+            </label>
+            <label class="field">
+                <div><strong>{{lang.debug}}</strong><em>{{lang.debug_sub}} {{lang.debug_warn}}</em></div>
+                <input type="checkbox" name="p01-contact[settings][debug]" {{debugchecked}}/>
+            </label>
+        </fieldset>
+        <input class="submit" type="submit" value="Save settings" />
+    </form>
+</div>

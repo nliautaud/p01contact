@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Naam',
 'email'   => 'Email',
 'address' => 'Postadres',
-'phone'   => 'Telefoonnummer',
-'website' => 'Website',
+'tel'   => 'Telefoonnummer',
+'url' => 'Website',
 'subject' => 'Onderwerp',
 'message' => 'Bericht',
 'file'    => 'Attachment',
@@ -22,11 +22,10 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Een kopie van deze mail is aangevraagd',
-'nofrom'   => 'Anoniem',
+'anonymous'   => 'Anoniem',
 'nosubject'=> '(Geen onderwerp)',
-'fromsite' => 'Mail verstuurd vanaf',
-'sentfrom' => 'Deze mail is verstuurd vanaf pagina',
-        
+'email_title' => 'Mail verstuurd vanaf',
+
 // status messages
 'sent'    => 'Bericht verzonden.',
 'error'   => 'Fout : het bericht is niet verzonden.',
@@ -38,8 +37,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Dit veld is verplicht',
 'field_email'   => 'Voer alstublieft een geldig email-adres in',
-'field_phone'   => 'Voer alstublieft een geldig telefoonnummer in',
-'field_website' => 'Voer alstublieft een geldig webadres in',
+'field_tel'   => 'Voer alstublieft een geldig telefoonnummer in',
+'field_url' => 'Voer alstublieft een geldig webadres in',
 'field_message' => 'Schrijf alstublieft een langer bericht',
 'field_captcha' => 'Kopieer alstublieft de volgende tekst',
 'field_fieldcaptcha' => 'Vult u alstublieft dit veld niet in',
@@ -53,11 +52,11 @@ $p01contact_lang = array(
 'config_updated' => 'Uw wijzigingen zijn opgeslagen.',
 
 'config_error_open' =>
-'<b>Kan het configuratiebestand niet openen.</b> 
+'<b>Kan het configuratiebestand niet openen.</b>
 Controleer of het bestand bestaat en de toegangsrechten erop :',
 
-'config_error_modify' => 
-'<b>Kan het configuratiebestand niet wijzigen.</b> 
+'config_error_modify' =>
+'<b>Kan het configuratiebestand niet wijzigen.</b>
 Controleer de toegangsrechten op het bestand :',
 
 // New release alert

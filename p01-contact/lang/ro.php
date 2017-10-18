@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Nume',
 'email'   => 'Email',
 'address' => 'Adresa postala',
-'phone'   => 'Numar telefon',
-'website' => 'Website',
+'tel'   => 'Numar telefon',
+'url' => 'Website',
 'subject' => 'Subiect',
 'message' => 'Mesaj',
 'file'    => 'Atasament',
@@ -22,11 +22,10 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'A fost solicitata o copie al acestui email',
-'nofrom'   => 'Anonim',
+'anonymous'   => 'Anonim',
 'nosubject'=> '(Fara subiect)',
-'fromsite' => 'Mesaj trimis de',
-'sentfrom' => 'Acest email a fost trimis de pe pagina',
-        
+'email_title' => 'Mesaj trimis de',
+
 // status messages
 'sent'    => 'Mesajul a fost trimis.',
 'error'   => 'Eroare : mesajul nu a fost trimis.',
@@ -37,8 +36,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Acest spatiu trebuie completat',
 'field_email'   => 'Te rog sa completezi o adresa de email valida',
-'field_phone'   => 'Te rog sa folosesti un numar de telefon valid',
-'field_website' => 'Te rog sa introduci o adresa de web valida',
+'field_tel'   => 'Te rog sa folosesti un numar de telefon valid',
+'field_url' => 'Te rog sa introduci o adresa de web valida',
 'field_message' => 'Te rog sa scrii un mesaj mai lung',
 'field_captcha' => 'Te rog copiaza urmatorul text',
 'field_fieldcaptcha' => 'Te rog sa nu completezi urmatorul spatiu',
@@ -52,11 +51,11 @@ $p01contact_lang = array(
 'config_updated' => 'Schimbarile tale au fost salvate.',
 
 'config_error_open' =>
-'<b>Nu a putut fi deschis fisierul de configurare.</b> 
+'<b>Nu a putut fi deschis fisierul de configurare.</b>
 Verifica daca fisierul exista sau daca ai permisiunile corecte :',
 
-'config_error_modify' => 
-'<b>Nu a putut fi modificat fisierul de configurare.</b> 
+'config_error_modify' =>
+'<b>Nu a putut fi modificat fisierul de configurare.</b>
 Verifica permisiunile :',
 
 // New release alert
@@ -98,7 +97,7 @@ Separate de virgula.',
 
 'debug'     => 'Mod Debug',
 'debug_sub' =>
-'Dezactiveaza trimiterea mesajului, afiseaza structura de date p01-contact, date trimise prin POST si 
+'Dezactiveaza trimiterea mesajului, afiseaza structura de date p01-contact, date trimise prin POST si
 email care a fost trimis.',
 'debug_warn'=> 'Nu activa siteul in productie!'
 );

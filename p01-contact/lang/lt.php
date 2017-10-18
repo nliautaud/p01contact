@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Vardas',
 'email'   => 'El. paštas',
 'address' => 'Pašto adresas',
-'phone'   => 'Telefonas',
-'website' => 'Interneto svetainė',
+'tel'   => 'Telefonas',
+'url' => 'Interneto svetainė',
 'subject' => 'Tema',
 'message' => 'Žinutė',
 'file'    => 'Prisegtas failas',
@@ -22,11 +22,10 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Buvo prašymas gauti šios žinutės kopiją',
-'nofrom'   => 'Anonimas',
+'anonymous'   => 'Anonimas',
 'nosubject'=> '(be temos)',
-'fromsite' => 'Išsiųsta iš',
-'sentfrom' => 'Ši žinutė buvo išsiųsta iš puslapio',
-        
+'email_title' => 'Išsiųsta iš',
+
 // status messages
 'sent'    => 'Žinutė išsiųsta sėkmingai.',
 'error'   => 'Klaida: nepavyko išsiųsti žinutės.',
@@ -37,8 +36,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Būtina užpildyti šį lauką',
 'field_email'   => 'Prašome įvesti teisingą el. pašto adresą',
-'field_phone'   => 'Prašome įvesti teisingą telefono numerį',
-'field_website' => 'Prašome įvesti teisingą interneto svetainės adresą',
+'field_tel'   => 'Prašome įvesti teisingą telefono numerį',
+'field_url' => 'Prašome įvesti teisingą interneto svetainės adresą',
 'field_message' => 'Žinutė per trumpa',
 'field_captcha' => 'Prašome įvesti šį apsaugos kodą',
 'field_fieldcaptcha' => 'Prašome nepildyti šio lauko',
@@ -52,11 +51,11 @@ $p01contact_lang = array(
 'config_updated' => 'Jūsų pakeitimai išsaugoti sėkmingai.',
 
 'config_error_open' =>
-'<b>Nepavyko atverti konfigūracijos failo.</b> 
+'<b>Nepavyko atverti konfigūracijos failo.</b>
 Prašome patikrinti kad failas egzistuoja ir turi teisingus leidimus:',
 
-'config_error_modify' => 
-'<b>Nepavyko pakeisti konfigūracijos failo.</b> 
+'config_error_modify' =>
+'<b>Nepavyko pakeisti konfigūracijos failo.</b>
 Prašome patikrinti failo leidimus :',
 
 // New release alert
@@ -98,7 +97,7 @@ Reikšmės atskiriamos kableliais.',
 
 'debug'     => 'Derinimo režimas',
 'debug_sub' =>
-'Išjungiamas laiško siuntimas, vietoje to parodoma p01-contact duomenų struktūra, siunčiami POST duomenys ir 
+'Išjungiamas laiško siuntimas, vietoje to parodoma p01-contact duomenų struktūra, siunčiami POST duomenys ir
 siunčiamo laiško vaizdas.',
 'debug_warn'=> 'Prašome nenaudoti veikiančioje svetainėje!'
 );

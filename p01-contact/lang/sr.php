@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Ime',
 'email'   => 'Email',
 'address' => 'Adresa',
-'phone'   => 'Broj telefona',
-'website' => 'Website',
+'tel'   => 'Broj telefona',
+'url' => 'Website',
 'subject' => 'Tema',
 'message' => 'Poruka',
 'file'    => 'Dodatak',
@@ -22,11 +22,10 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Kopija ove poruke je zatražena',
-'nofrom'   => 'Anonimno',
+'anonymous'   => 'Anonimno',
 'nosubject'=> '(No subject)',
-'fromsite' => 'Mail poslao',
-'sentfrom' => 'Ovaj email je poslat sa stranice',
-        
+'email_title' => 'Mail poslao',
+
 // status messages
 'sent'    => 'Email poslat.',
 'error'   => 'Greška u slanju poruke.',
@@ -37,8 +36,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Ovo polje je obavezno',
 'field_email'   => 'Molimo koristite validnu email adresu',
-'field_phone'   => 'Molimo koristite validan broj telefona',
-'field_website' => 'Molimo koristite validnu web adresu',
+'field_tel'   => 'Molimo koristite validan broj telefona',
+'field_url' => 'Molimo koristite validnu web adresu',
 'field_message' => 'Molimo upišite dužu poruku',
 'field_captcha' => 'Molimo kopirajte sledeći tekst',
 'field_fieldcaptcha' => 'Molimo da ne popunjavate ovo polje',
@@ -52,11 +51,11 @@ $p01contact_lang = array(
 'config_updated' => 'Vaše promene su sačuvane.',
 
 'config_error_open' =>
-'<b>Nije moguće otvoriti konfiguracioni fajl.</b> 
+'<b>Nije moguće otvoriti konfiguracioni fajl.</b>
 Proverite da li fajl postoji i dozvole za pristup :',
 
-'config_error_modify' => 
-'<b>Nije moguće modifikovati konfiguracioni fajl.</b> 
+'config_error_modify' =>
+'<b>Nije moguće modifikovati konfiguracioni fajl.</b>
 Proverite dozvole za pristup :',
 
 // New release alert

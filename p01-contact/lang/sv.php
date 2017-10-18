@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Namn',
 'email'   => 'Email-adress',
 'address' => 'Adress',
-'phone'   => 'Tel. nummer',
-'website' => 'Hemsida',
+'tel'   => 'Tel. nummer',
+'url' => 'Hemsida',
 'subject' => 'Ämne',
 'message' => 'Meddelande',
 'file'    => 'Bilaga',
@@ -20,11 +20,10 @@ $p01contact_lang = array(
 'send'    => 'Send',
 
 // email words
-'nofrom'   => 'Anonym',
+'anonymous'   => 'Anonym',
 'nosubject'=> '(Inget ämne)',
-'fromsite' => 'Mail skickat från',
-'sentfrom' => 'Detta email har skickats från',
-        
+'email_title' => 'Mail skickat från',
+
 // status messages
 'sent'    => 'Email skickat.',
 'error'   => 'Fel : Inget meddelande skickades.',
@@ -34,8 +33,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Detta fält måste fyllas i',
 'field_email'   => 'Vänligen använd en riktig mail-adress',
-'field_phone'   => 'Vänligen använd ett riktigt telefonnummer',
-'field_website' => 'Vänligen skriv en korrekt hemsida',
+'field_tel'   => 'Vänligen använd ett riktigt telefonnummer',
+'field_url' => 'Vänligen skriv en korrekt hemsida',
 'field_message' => 'Meddelandet är för kort.',
 'field_captcha' => 'Kopiera bokstäverna'
 );

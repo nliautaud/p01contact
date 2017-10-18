@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Nom',
 'email'   => 'Adresse email',
 'address' => 'Adresse postale',
-'phone'   => 'Numéro de téléphone',
-'website' => 'Site internet',
+'tel'   => 'Numéro de téléphone',
+'url' => 'Site internet',
 'subject' => 'Objet',
 'message' => 'Message',
 'file'    => 'Pièce jointe',
@@ -22,10 +22,9 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Une copie de cet email a été demandée',
-'nofrom'   => 'Anonyme',
+'anonymous'   => 'Anonyme',
 'nosubject'=> '(Pas d\'objet)',
-'fromsite' => 'Email envoyé depuis',
-'sentfrom' => 'Cet email a été envoyé depuis la page',
+'email_title' => 'Email envoyé depuis',
 
 // status messages
 'sent'    => 'Email envoyé.',
@@ -37,8 +36,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Ce champ est obligatoire',
 'field_email'   => 'Veuillez entrer une adresse email valide',
-'field_phone'   => 'Veuillez entrer un numéro de téléphone valide',
-'field_website' => 'Veuillez entrer une adresse internet valide',
+'field_tel'   => 'Veuillez entrer un numéro de téléphone valide',
+'field_url' => 'Veuillez entrer une adresse internet valide',
 'field_message' => 'Veuillez écrire un message plus long',
 'field_captcha' => 'Veuillez recopier le texte ci-dessous',
 'field_fieldcaptcha' => 'Veuillez ne pas remplir ce champ',
@@ -52,11 +51,11 @@ $p01contact_lang = array(
 'config_updated' => 'Vos modifications ont été enregistrées avec succès.',
 
 'config_error_open' =>
-'<b>Impossible d\'ouvrir le fichier de configuration.</b> 
+'<b>Impossible d\'ouvrir le fichier de configuration.</b>
 Vérifiez s\'il existe et ses permissions :',
 
-'config_error_modify' => 
-'<b>Impossible de modifier le fichier de configuration.</b> 
+'config_error_modify' =>
+'<b>Impossible de modifier le fichier de configuration.</b>
 Vérifiez ses permissions :',
 
 // New release alert
@@ -99,8 +98,7 @@ Séparées par des virgules.',
 
 'debug'     => 'Mode debug',
 'debug_sub' =>
-'Désactive l\'envoi de mails, affiche la structure de données de p01-contact, 
+'Désactive l\'envoi de mails, affiche la structure de données de p01-contact,
 les informations envoyées par POST et le mail qui aurait été envoyé.',
 'debug_warn'=> 'A ne pas activer sur un site en production!'
 );
-?>

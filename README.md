@@ -9,25 +9,11 @@ Live examples, syntax and settings are documented in the [Wiki](https://github.c
 
 ## Installation
 
-Download the [last stable release](http://get-simple.info/extend/plugin/p01-contact/35) or the development code.
+Download the files.
 
 For GetSimple CMS, unzip it in the ``plugins/`` directory.
 
 ## Use
-
-### As a PHP script
-
-Include the script, create a new instance, define a default email address and parse a string containing tags using the [syntax](https://github.com/nliautaud/p01contact/wiki/Syntax).
-
-```php
-include 'path/to/p01-contact/p01-contact.php';
-
-$p01contact = new P01contact();
-$p01contact->default_email = 'address@domain.ext';
-
-$content = 'This is a default contact form : (% contact %)'
-$content = $p01contact->parse($content);
-```
 
 ### As a GetSimple plugin
 
@@ -48,4 +34,17 @@ You can also use it in components or templates by manipulating the variable ``$p
 get_component('sidebar');
 echo $p01contact->parse('(% contact %)');
 ?>
+```
+
+### As a PHP script
+
+Include the script, create a new instance and parse a string containing tags using the [syntax](https://github.com/nliautaud/p01contact/wiki/Syntax).
+
+```php
+include 'path/to/p01-contact/p01-contact.php';
+
+$p01contact = new P01contact();
+
+$content = 'This is a default contact form : (% contact %)'
+$content = $p01contact->parse($content);
 ```

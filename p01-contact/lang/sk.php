@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Meno',
 'email'   => 'Email',
 'address' => 'Poštová adresa',
-'phone'   => 'Telefón',
-'website' => 'WWW',
+'tel'   => 'Telefón',
+'url' => 'WWW',
 'subject' => 'Predmet',
 'message' => 'Správa',
 'file'    => 'Príloha',
@@ -22,11 +22,10 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Kópia tohoto emailu bola vyžiadaná',
-'nofrom'   => 'Anonym',
+'anonymous'   => 'Anonym',
 'nosubject'=> 'Správa z kontaktného formulára',
-'fromsite' => 'Mail odoslaný z',
-'sentfrom' => 'Tento email bol odoslaný zo stránky',
-        
+'email_title' => 'Mail odoslaný z',
+
 // status messages
 'sent'    => 'Správa odoslaná.',
 'error'   => 'Chyba : správa nebola odoslaná.',
@@ -37,8 +36,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Toto pole je povinné',
 'field_email'   => 'Prosím, zadajte platný email',
-'field_phone'   => 'Prosím zadajte platné tel. číslo',
-'field_website' => 'Prosím, zadajte platnú www adresu',
+'field_tel'   => 'Prosím zadajte platné tel. číslo',
+'field_url' => 'Prosím, zadajte platnú www adresu',
 'field_message' => 'Prosím, zadajte dlhšiu správu',
 'field_captcha' => 'Prosím, skopírujte nasledujúci text',
 'field_fieldcaptcha' => 'Prosím, nevypĺňajte toto pole',
@@ -52,11 +51,11 @@ $p01contact_lang = array(
 'config_updated' => 'Vaše zmeny sú úspešne uložené.',
 
 'config_error_open' =>
-'<b>Nemožno otvoriť konfiguračný súbor.</b> 
+'<b>Nemožno otvoriť konfiguračný súbor.</b>
 Skontrolujte, či súbor existuje a či je povolené zapisovanie do súboru :',
 
-'config_error_modify' => 
-'<b>Nemožno zmeniť konfiguračný súbor.</b> 
+'config_error_modify' =>
+'<b>Nemožno zmeniť konfiguračný súbor.</b>
 Skontrolujte práva na zápis do súboru:',
 
 // New release alert
@@ -99,7 +98,7 @@ Oddelené čiarkou.',
 
 'debug'     => 'Debug mode',
 'debug_sub' =>
-'Disable mail sending, display p01-contact data structure, data sent by POST and 
+'Disable mail sending, display p01-contact data structure, data sent by POST and
 the email that would have been sent.',
 'debug_warn'=> 'Don\'t active that on production website!'
 );

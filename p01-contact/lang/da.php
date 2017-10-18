@@ -1,7 +1,7 @@
 <?php
 /**
  * @package  p01-contact
- * @subpackage Language 
+ * @subpackage Language
  * @file type: Danish Language File
  * @Version: 1.0
  * @Date: 27. oktober 2011
@@ -13,8 +13,8 @@ $p01contact_lang = array(
 'name'    => 'Navn',
 'email'   => 'Mail',
 'address' => 'Addresse',
-'phone'   => 'Telefon',
-'website' => 'Hjemmeside',
+'tel'   => 'Telefon',
+'url' => 'Hjemmeside',
 'subject' => 'Emne',
 'message' => 'Besked',
 'file'    => 'Tilføj',
@@ -26,11 +26,10 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Der er blevet bedt om en kopi af denne mail',
-'nofrom'   => 'Uden afsender',
+'anonymous'   => 'Uden afsender',
 'nosubject'=> '(Intet emne)',
-'fromsite' => 'Mail afsendt fra',
-'sentfrom' => 'Denne mail er afsendt fra side',
-        
+'email_title' => 'Mail afsendt fra',
+
 // status messages
 'sent'    => 'Mail afsendt.',
 'error'   => 'Fejl: Beskeden blev ikke afsendt.',
@@ -41,8 +40,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Udfyld dette tekstfelt',
 'field_email'   => 'Benyt en gyldig mailadresse',
-'field_phone'   => 'Benyt et gyldigt telefonnummer',
-'field_website' => 'Skriv en gyldig hjemmesideadresse',
+'field_tel'   => 'Benyt et gyldigt telefonnummer',
+'field_url' => 'Skriv en gyldig hjemmesideadresse',
 'field_message' => 'Skriv en længere meddelelse',
 'field_captcha' => 'Kopier den følgende tekst',
 'field_fieldcaptcha' => 'Undlad at udfylde dette tekstfelt',
@@ -56,11 +55,11 @@ $p01contact_lang = array(
 'config_updated' => 'Dine ændringer blev gemt.',
 
 'config_error_open' =>
-'<b>Opsætningsfilen kan ikke læses.</b> 
+'<b>Opsætningsfilen kan ikke læses.</b>
 Undersøg at filen eksisterer, og at du har rettigheder til filen:',
 
-'config_error_modify' => 
-'<b>Opsætningsfilen kan ikke ændres.</b> 
+'config_error_modify' =>
+'<b>Opsætningsfilen kan ikke ændres.</b>
 Undersøg, at du har rettigheder til filen:',
 
 // New release alert

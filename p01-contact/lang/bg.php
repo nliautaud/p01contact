@@ -9,8 +9,8 @@ $p01contact_lang = array(
 'name'    => 'Име',
 'email'   => 'Email',
 'address' => 'Адрес',
-'phone'   => 'Телефон',
-'website' => 'Уебсайт',
+'tel'   => 'Телефон',
+'url' => 'Уебсайт',
 'subject' => 'Относно',
 'message' => 'Съобщение',
 'file'    => 'Прикачи',
@@ -22,11 +22,10 @@ $p01contact_lang = array(
 
 // email words
 'askedcopy'=> 'Поискано е копие на това съобщение',
-'nofrom'   => 'Анонимен',
+'anonymous'   => 'Анонимен',
 'nosubject'=> '(Няма тема)',
-'fromsite' => 'Съобщението е изпратено от',
-'sentfrom' => 'Този имейл е изпратен от страница',
-        
+'email_title' => 'Съобщението е изпратено от',
+
 // status messages
 'sent'    => 'Съобщението е изпратено.',
 'error'   => 'Грешка : съобщението не е изпратено.',
@@ -37,8 +36,8 @@ $p01contact_lang = array(
 // fields errors
 'field_required'=> 'Това поле е задължително',
 'field_email'   => 'Моля използвайте валиден имейл адрес',
-'field_phone'   => 'Моля използвайте валиден телефонен номер',
-'field_website' => 'Моля напишете валиден уеб адрес',
+'field_tel'   => 'Моля използвайте валиден телефонен номер',
+'field_url' => 'Моля напишете валиден уеб адрес',
 'field_message' => 'Моля напишете по дълго съобщение',
 'field_captcha' => 'Моля копирайте следния текст',
 'field_fieldcaptcha' => 'Моля не попълвайте това поле',
@@ -52,11 +51,11 @@ $p01contact_lang = array(
 'config_updated' => 'Твоите промени са запазени успешно.',
 
 'config_error_open' =>
-'<b>Конфигуриращият файл не може да бъде отворен.</b> 
+'<b>Конфигуриращият файл не може да бъде отворен.</b>
 Проверете дали файла съществува и неговата достъпност :',
 
-'config_error_modify' => 
-'<b>Unable to modify config file.</b> 
+'config_error_modify' =>
+'<b>Unable to modify config file.</b>
 Check the file permissions :',
 
 // New release alert
@@ -98,7 +97,7 @@ Check the file permissions :',
 
 'debug'     => 'Debug mode',
 'debug_sub' =>
-'Изключване на изпращането на съобщения, display p01-contact data structure, data sent by POST and 
+'Изключване на изпращането на съобщения, display p01-contact data structure, data sent by POST and
 the email that would have been sent.',
 'debug_warn'=> 'Don\'t active that on production website!'
 );

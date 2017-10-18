@@ -1,0 +1,100 @@
+.p01-contact * {
+    box-sizing: border-box;
+}
+.p01-contact {
+    margin: 1em auto;
+    max-width: 26em;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+.p01-contact .field {
+    margin-top: .5em;
+}
+.p01-contact .field.inline {
+    margin-top: 1em;
+}
+.p01-contact label {
+    display: block;
+    font-weight: normal;
+}
+.p01-contact label .description{
+    font-size: .875em;
+    color: #888;
+    float: right;
+}
+.p01-contact input:not([type=radio]):not([type=checkbox]),
+.p01-contact textarea,
+.p01-contact select{
+    border:1px solid #BEBEBE;
+    padding: 7px;
+    margin:0px;
+    transition: all 0.30s ease-in-out;
+    outline: none;
+    width: 100%;
+}
+.p01-contact input:focus,
+.p01-contact textarea:focus,
+.p01-contact select:focus{
+    box-shadow: 0 0 8px #88D5E9;
+    border: 1px solid #88D5E9;
+}
+.p01-contact input[type=submit]:not([type=radio]):not([type=checkbox]),
+.p01-contact input[type=button]:not([type=radio]):not([type=checkbox]){
+    background: #4B99AD;
+    padding: 8px 15px 8px 15px;
+    margin: 1em 0;
+    border: none;
+    color: #fff;
+}
+.p01-contact input[type=submit]:hover,
+.p01-contact input[type=button]:hover{
+    background: #4691A4;
+    box-shadow:none;
+}
+.p01-contact .required label:after {
+    content: ' *';
+    color: #4B99AD;
+    font-weight: bold;
+}
+.p01-contact input[type=radio],
+.p01-contact input[type=checkbox] {
+    vertical-align: middle;
+}
+.p01-contact :not(.inline) .options {
+    display: flex;
+    border: 1px solid #ddd;
+    padding: .5em;
+}
+.p01-contact :not(.inline) .options .option {
+    margin: 0 1em;
+}
+.p01-contact .options input {
+    display: inline-block;
+    margin-right: .5em;
+}
+.p01-contact .error-msg {
+    color: red;
+    font-size: .85em;
+    margin-left: .5em;
+}
+input:invalid,
+textarea:invalid {
+    box-shadow: none;
+}
+
+.p01-contact .alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.p01-contact .alert.success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.p01-contact .alert.failed {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
