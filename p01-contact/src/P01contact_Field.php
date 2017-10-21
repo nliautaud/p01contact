@@ -161,6 +161,7 @@ class P01contactField
     public function isBlacklisted()
     {
         $list = $this->form->config('checklist');
+        if (!$list) return;
         foreach ($list as $i => $cl) {
             if ($cl->name != $this->type) {
                 continue;
@@ -220,8 +221,6 @@ class P01contactField
                 $html .='<div class="g-recaptcha" id="'.$id.'" data-sitekey="'.$key.'"></div>';
                 break;
             case 'checkbox':
-                $name = "{$name}[$i]";
-                // post every checkboxes values
             case 'radio':
                 $html .= '<div class="options">';
                 foreach ($this->value as $i => $v) {
@@ -229,7 +228,7 @@ class P01contactField
                     $v = !empty($v) ? $v : 'Default';
                     $html .= '<label class="option">';
                     $html .= "<input id=\"{$id}_option{$i}\"";
-                    $html .= " type=\"$type\" class=\"$type\" name=\"$name\"";
+                    $html .= " type=\"$type\" class=\"$type\" name=\"{$name}[$i]\"";
                     $html .= " value=\"$i\"$disabled$required$selected />$v";
                     $html .= '</label>';
                 }
