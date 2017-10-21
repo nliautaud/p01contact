@@ -304,7 +304,7 @@ class P01contact
             return $this->config(explode(',', $matches[1]));
         }, $html);
         // lang
-        $html = preg_replace_callback('`{{lang.(\w+)}}`', function ($matches) {
+        $html = preg_replace_callback('`{{lang\.(\w+)}}`', function ($matches) {
             return $this->lang($matches[1]);
         }, $html);
         // constants
