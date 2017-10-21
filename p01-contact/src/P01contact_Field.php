@@ -161,6 +161,7 @@ class P01contactField
     public function isBlacklisted()
     {
         $list = $this->form->config('checklist');
+        if (!$list) return;
         foreach ($list as $i => $cl) {
             if ($cl->name != $this->type) {
                 continue;

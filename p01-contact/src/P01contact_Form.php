@@ -165,8 +165,11 @@ class P01contactForm
             return;
         }
 
+        $errors = false;
         $fields = $this->getFields();
         foreach ($fields as $id => $field) {
+            if( !isset($posted[$field->id]) )
+                continue;
             $posted_val = $posted[$field->id];
             $field->setValue($posted_val);
             $field->validate();
@@ -298,7 +301,7 @@ class P01contactForm
         $html .= '</form>';
 
         if ($this->config('debug')) {
-            $html .= $this->debug();
+            $html .= $this->debug(false);
         }
         return $html;
     }
@@ -366,6 +369,7 @@ class P01contactForm
      */
     public function sendMail()
     {
+        $email = $name = $subject = null;
         $tpl_data = (object) null;
         $tpl_data->date = date('r');
         $tpl_data->ip = $_SERVER["REMOTE_ADDR"];
@@ -466,7 +470,7 @@ class P01contactForm
      */
     private function mailContent($content, $type, $mime_boundary)
     {
-        $head .= "--$mime_boundary\n";
+        $head = "--$mime_boundary\n";
         $head .= "Content-Type: text/$type; charset=UTF-8\n";
         $head .= "Content-Transfer-Encoding: 7bit\n\n";
         return $head.$content."\n";
