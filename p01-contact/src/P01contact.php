@@ -368,11 +368,14 @@ class P01contact
         $tpl_data->default_lang = $this->default_lang;
         $tpl_data->version = $this->version;
 
-        foreach ($this->config('checklist') as $i => $cl) {
-            $bl = 'cl'.$i.'bl';
-            $wl = 'cl'.$i.'wl';
-            $tpl_data->$bl = isset($cl->type) && $cl->type == 'whitelist' ? '' : 'checked';
-            $tpl_data->$wl = $tpl_data->$bl ? '' : 'checked';
+        $list = $this->config('checklist');
+        if ($list) {
+            foreach ($list as $i => $cl) {
+                $bl = 'cl'.$i.'bl';
+                $wl = 'cl'.$i.'wl';
+                $tpl_data->$bl = isset($cl->type) && $cl->type == 'whitelist' ? '' : 'checked';
+                $tpl_data->$wl = $tpl_data->$bl ? '' : 'checked';
+            }
         }
 
         $lang = $this->config('lang');
