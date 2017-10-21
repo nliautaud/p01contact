@@ -393,10 +393,10 @@ class P01contact
                 $infos .= '<div class="updated">New release check error debug : Github ';
                 $infos .= $response->message . '</div>';
             }
-            if (isset($response->name) && version_compare($response->name, $this->version) > 0) {
+            if (isset($response->url) && version_compare($response->tag_name, $this->version) > 0) {
                 $infos .= '<div class="updated">' . $this->lang('new_release');
                 $infos .= '<br /><a href="' . $response->html_url . '">';
-                $infos .= $this->lang('download') . ' (' . $response->name . ')</a></div>';
+                $infos .= $this->lang('download') . ' (' . $response->tag_name . ')</a></div>';
             }
         }
 
