@@ -54,20 +54,14 @@ class P01contact
      */
     public function getNewRelease()
     {
-        $context = stream_context_create(array('http' => array(
-          'header' => 'User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',
-        )));
-        $resp = file_get_contents(APILATEST, false, $context);
-        if (!$resp) {
-            return;
-        }
-        $resp = json_decode($resp);
-        if (!$resp->name) {
-            return;
-        }
-        if (version_compare($resp->name, $this->version) > 0) {
-            return $resp;
-        }
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,APILATEST);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'p01contact/curl');
+        $resp = curl_exec($ch);
+        curl_close($ch);
+        if ($resp) return json_decode($resp);
         return;
     }
 
@@ -362,9 +356,10 @@ class P01contact
      */
     private function panelContent($system = 'gs')
     {
+        $debug = $this->config('debug');
         $tpl_data = (object) null;
         $tpl_data->disablechecked = $this->config('disable') ? 'checked="checked" ' : '';
-        $tpl_data->debugchecked = $this->config('debug') ? 'checked="checked" ' : '';
+        $tpl_data->debugchecked = $debug ? 'checked="checked" ' : '';
         $tpl_data->honeypotchecked = $this->config('use_honeypot') ? 'checked="checked" ' : '';
         $tpl_data->default_lang = $this->default_lang;
         $tpl_data->version = $this->version;
@@ -392,16 +387,22 @@ class P01contact
         $html = $this->renderTemplate($system.'_settings', $tpl_data);
 
         //new release
-        $versionblock = '';
-        if ($new = $this->getNewRelease()) {
-            $versionblock .= '<div class="updated">' . $this->lang('new_release');
-            $versionblock .= '<br /><a href="' . $new->html_url . '">';
-            $versionblock .= $this->lang('download') . ' (' . $new->name . ')</a></div>';
+        $infos = '';
+        if ($response = $this->getNewRelease()) {
+            if ($debug && isset($response->message)) {
+                $infos .= '<div class="updated">New release check error debug : Github ';
+                $infos .= $response->message . '</div>';
+            }
+            if (isset($response->name) && version_compare($response->name, $this->version) > 0) {
+                $infos .= '<div class="updated">' . $this->lang('new_release');
+                $infos .= '<br /><a href="' . $response->html_url . '">';
+                $infos .= $this->lang('download') . ' (' . $response->name . ')</a></div>';
+            }
         }
 
         $logsblock = $this->logsTable();
 
-        return $versionblock . $html . $logsblock;
+        return $infos . $html . $logsblock;
     }
 
     private function logsTable()
