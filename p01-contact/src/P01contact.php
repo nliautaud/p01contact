@@ -54,8 +54,9 @@ class P01contact
      */
     public function getNewRelease()
     {
-        $options  = array('http' => array('user_agent'=> $_SERVER['HTTP_USER_AGENT']));
-        $context  = stream_context_create($options);
+        $context = stream_context_create(array('http' => array(
+          'header' => 'User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',
+        )));
         $resp = file_get_contents(APILATEST, false, $context);
         if (!$resp) {
             return;
