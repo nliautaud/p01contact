@@ -187,7 +187,8 @@ class P01contact
      */
     private function loadConfig()
     {
-        $this->config = json_decode(@file_get_contents(CONFIGPATH));
+        $content = file_exists(CONFIGPATH) ? file_get_contents(CONFIGPATH) : null;
+        $this->config = $content ? json_decode($content) : (object) array();
         $this->setDefaultConfig();
     }
 
