@@ -94,10 +94,9 @@ strings:
 
   captcha_info: "Les mécanismes anti-spam et anti-erreurs devraient prévenir l'intégralité des envois indésirables. En cas de besoin d'un niveau de sécurité supérieur, vous pouvez créer un champ personnalisé avec une valeur requise. Finalement, vous pouvez insérer un reCaptcha Google en utilisant un champ <em>captcha</em> avec les paramètres suivants."
   recaptcha_public_key: "Clé publique reCaptcha"
-  recaptcha_public_key_sub: "Clé publique Google reCaptcha. Voir <a href="https://www.google.com/recaptcha/admin">reCaptcha admin</a>."
+  recaptcha_public_key_sub: "Clé publique Google reCaptcha."
   recaptcha_secret_key: "Clé secrète reCaptcha"
-  recaptcha_secret_key_sub: "Clé secrète Google reCaptcha. Voir <a href="https://www.google.com/recaptcha/admin">reCaptcha admin</a>.
-  "
+  recaptcha_secret_key_sub: "Clé secrète Google reCaptcha."
   debug: "Mode debug"
   debug_sub: "Désactive l'envoi de mails, affiche les structures de données de P01contact, les données envoyées par POST et les mails qui auraient été envoyés."
   debug_warn: "A ne pas activer sur un site en production !
