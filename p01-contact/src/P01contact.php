@@ -8,7 +8,8 @@
  */
 namespace P01C;
 
-require 'P01contact_Form.php';
+require_once 'P01contact_Form.php';
+require_once 'vendor/spyc.php';
 
 if (session_id() === '') {
     session_start();
@@ -19,6 +20,7 @@ class P01contact
     public $version;
     public $default_lang;
     private $config;
+    private $langs;
 
     public function __construct()
     {
@@ -44,6 +46,7 @@ class P01contact
         define('P01C\APILATEST', 'https://api.github.com/repos/nliautaud/p01contact/releases/latest');
 
         $this->loadConfig();
+        $this->loadLangs();
     }
 
     /**
@@ -131,6 +134,25 @@ class P01contact
         preint($this);
     }
 
+
+    /*
+     *  LANG
+     */
+
+
+    /**
+     * Load language files
+     */
+    private function loadLangs()
+    {
+        $this->langs = [];
+        $files = glob(LANGSPATH . '*.yml');
+        foreach ($files as $f) {
+            $parsed = \Spyc::YAMLLoad($f);
+            if(!$parsed || !isset($parsed['lang_key'])) continue;
+            $this->langs[$parsed['lang_key']] = $parsed;
+        }
+    }
     /**
      * Return a traduction of the keyword
      *
@@ -140,40 +162,30 @@ class P01contact
      */
     public function lang($key, $lang = null)
     {
-        global $p01contact_lang;
-
         if (!$lang) {
             $lang = $this->config('lang');
             $lang = empty($lang) ? $this->default_lang : $lang;
         }
-
-        $path = LANGSPATH . $lang . '.php';
-        if (!file_exists($path)) {
-            $path = LANGSPATH . 'en.php';
+        if (empty($lang) || !isset($this->langs[$lang])) {
+            $lang = 'en';
         }
-        include_once $path;
-
-        if (!isset($p01contact_lang[$key])) {
-            include_once LANGSPATH . 'en.php';
-        }
-        if (isset($p01contact_lang[$key])) {
-            return $p01contact_lang[$key];
+        if (isset($this->langs[$lang]['strings'][$key])) {
+            return $this->langs[$lang]['strings'][$key];
         }
         return ucfirst($key);
     }
     /**
-     * Return list of existing langs from lang/langs.php
+     * Return the languages objects
      * @return array
      */
-    private function langs()
+    public function langs()
     {
-        require LANGSPATH . '/langs.php';
-        return $p01contact_langs;
+        return $this->langs;
     }
 
 
     /*
-     *  JSON
+     *  CONFIG
      */
 
 
@@ -376,12 +388,12 @@ class P01contact
 
         $lang = $this->config('lang');
         $tpl_data->langsoptions = '<option value=""'.($lang==''?' selected="selected" ':'').'>Default</option>';
-        foreach ($this->langs() as $iso => $name) {
-            $tpl_data->langsoptions .= '<option value="' . $iso . '" ';
-            if ($lang == $iso) {
+        foreach ($this->langs() as $language) {
+            $tpl_data->langsoptions .= '<option value="' . $language['lang_key'] . '" ';
+            if ($lang == $language['lang_key']) {
                 $tpl_data->langsoptions .= 'selected="selected" ';
             }
-            $tpl_data->langsoptions .= '/>' . $name . '</option>';
+            $tpl_data->langsoptions .= '/>' . $language['lang_name'] . '</option>';
         }
 
         $html = $this->renderTemplate($system.'_settings', $tpl_data);
