@@ -24,7 +24,7 @@ class P01contact
 
     public function __construct()
     {
-        define('P01C\VERSION', '1.0.1');
+        define('P01C\VERSION', '1.1.0');
         $this->version = VERSION;
 
         define('P01C\SERVERNAME', $_SERVER['SERVER_NAME']);
@@ -47,6 +47,9 @@ class P01contact
 
         $this->loadConfig();
         $this->loadLangs();
+        
+        if ($this->config('debug'))
+            $this->enablePHPdebug();
     }
 
     /**
@@ -81,57 +84,76 @@ class P01contact
         $pattern = "`(?<!<code>)\(%\s*contact\s*(\w*)\s*:?$sp(.*?)$sp%\)`s";
         preg_match_all($pattern, $contents, $tags, PREG_SET_ORDER);
 
-        static $once;
-        if (!$once) {
-            $inc = '<link rel="stylesheet" href="'.SERVER.RELPATH.'style.css"/>';
-            $contents = $inc . $contents;
-            $once = true;
-        }
-
         foreach ($tags as $tag) {
-            $form = new P01contactForm($this);
-            $form->parseTag($tag[2]);
-            $form->lang = $tag[1];
-            $form->post();
-            $contents = preg_replace($pattern, $form->html(), $contents, 1);
+            $form = $this->newForm($tag[2], $tag[1]);
+            $contents = preg_replace($pattern, $form, $contents, 1);
         }
-        $_SESSION['p01-contact']['last_page_load'] = time();
-
         return $contents;
     }
-
     /**
-     * Enable PHP error reporting and display system and p01-contact infos.
+     * Return a form based on the given parameters and lang
+     *
+     * @param string $params the parameters string, according to the syntax
+     * @param string $lang form-specific language code
+     * @return string the html form
      */
-    public function debug()
+    public function newForm($params = '', $lang = null)
+    {
+        $defaultStyle = '';
+        static $once;
+        if (!$once) {
+            $defaultStyle = '<link rel="stylesheet" href="'.SERVER.RELPATH.'style.css"/>';
+            $once = true;
+        }
+        $form = new P01contactForm($this);
+        $form->parseTag($params);
+        if ($lang) $form->lang = $lang;
+        $form->post();
+
+        $_SESSION['p01-contact']['last_page_load'] = time();
+
+        return $defaultStyle . $form->html();
+    }
+    
+    /**
+     * Display system and P01contact infos.
+     * 
+     * @return string the html report
+     */
+    public function debugReport()
+    {
+        $out = '<h2 style="color:#c33">p01-contact debug</h2>';
+
+        $out.= '<h3>Health :</h3>';
+        $health = 'PHP version : '.phpversion()."\n";
+        $health.= 'PHP mbstring (UTF-8) : '.(extension_loaded('mbstring') ? 'OK' : 'MISSING');
+        $out.= preint($health, true);
+
+        $out.= '<h3>Constants :</h3>';
+        $out.= preint(array_filter(get_defined_constants(true)['user'], function ($n) {
+            return 0 === strpos($n, __namespace__);
+        }, ARRAY_FILTER_USE_KEY), true);
+
+        if (!empty($_SESSION)) {
+            $out.= '<h3>$_SESSION :</h3>';
+            $out.= preint($_SESSION, true);
+        }
+        if (!empty($_POST)) {
+            $out.= '<h3>$_POST :</h3>';
+            $out.= preint($_POST, true);
+        }
+        $out.= '<h3>$p01contact :</h3>';
+        $out.= preint($this, true);
+        return $out;
+    }
+    /**
+     * Enable PHP error reporting
+     */
+    public function enablePHPdebug()
     {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
-
-        $health = 'PHP version : '.phpversion()."\n";
-        $health.= 'PHP mbstring (UTF-8) : '.(extension_loaded('mbstring') ? 'OK' : 'MISSING');
-
-        echo'<h2 style="color:#c33">p01-contact debug</h2>';
-
-        echo'<h3>Health :</h3>';
-        preint($health);
-
-        echo'<h3>Constants :</h3>';
-        preint(array_filter(get_defined_constants(true)['user'], function ($n) {
-            return 0 === strpos($n, __namespace__);
-        }, ARRAY_FILTER_USE_KEY));
-
-        if (!empty($_SESSION)) {
-            echo'<h3>$_SESSION :</h3>';
-            preint($_SESSION);
-        }
-        if (!empty($_POST)) {
-            echo'<h3>$_POST :</h3>';
-            preint($_POST);
-        }
-        echo'<h3>$p01contact :</h3>';
-        preint($this);
     }
 
 
@@ -347,13 +369,13 @@ class P01contact
             $this->loadConfig();
 
             if ($success) {
-                echo '<div class="updated">' . $this->lang('config_updated') . '</div>';
+                $msg = '<div class="updated">' . $this->lang('config_updated') . '</div>';
             } else {
-                echo '<div class="error">'.$this->lang('config_error_modify');
-                echo '<pre>'.CONFIGPATH.'</pre></div>';
+                $msg = '<div class="error">'.$this->lang('config_error_modify');
+                $msg.= '<pre>'.CONFIGPATH.'</pre></div>';
             }
         }
-        echo $this->panelContent();
+        return $msg . $this->panelContent();
     }
 
     /**
