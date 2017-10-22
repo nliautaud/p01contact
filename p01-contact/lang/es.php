@@ -38,7 +38,7 @@ $p01contact_lang = array(
 'field_tel'   => 'Es necesario un número de teléfono válido',
 'field_url' => 'Es necesaria una dirección web válida',
 'field_message' => 'El mensaje ha de ser más largo',
-'field_captcha' => 'Copiar el siguiente texto'
+'field_captcha' => 'Copiar el siguiente texto',
 'field_fieldcaptcha' => 'Por favor, no complete este campo',
 'field_password'=> 'Clave incorrecta',
 
