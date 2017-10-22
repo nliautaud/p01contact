@@ -40,8 +40,6 @@ class P01contact_pico extends AbstractPicoPlugin
      */
     public function onContentPrepared(&$content)
     {
-        global $p01contact;
-    
         $content = $this->P01contact->parse($content);
     
         if ($this->P01contact->config('debug')) {
