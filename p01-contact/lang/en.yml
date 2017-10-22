@@ -100,9 +100,9 @@ strings:
 
   captcha_info: "The native anti-spam and anti-error mechanisms should prevent all undesirable submissions. If you need a higher level of security you can create a custom captcha by adding a field with a required answer. Finally, you can insert a Google reCaptcha by using a <em>captcha</em> field with the below settings."
   recaptcha_public_key: "reCaptcha public key"
-  recaptcha_public_key_sub: "Google reCaptcha public key. See <a href="https://www.google.com/recaptcha/admin">reCaptcha admin</a>."
+  recaptcha_public_key_sub: "Google reCaptcha public key. See <a href=\"https://www.google.com/recaptcha/admin\">reCaptcha admin</a>."
   recaptcha_secret_key: "reCaptcha secret key"
-  recaptcha_secret_key_sub: "Google reCaptcha secret key. See <a href="https://www.google.com/recaptcha/admin">reCaptcha admin</a>."
+  recaptcha_secret_key_sub: "Google reCaptcha secret key. See <a href=\"https://www.google.com/recaptcha/admin\">reCaptcha admin</a>."
   
   debug: "Debug mode"
   debug_sub: "Disable mail sending, display p01-contact data structure, data sent by POST and the email that would have been sent."

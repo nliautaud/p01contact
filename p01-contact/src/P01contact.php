@@ -389,11 +389,11 @@ class P01contact
         $lang = $this->config('lang');
         $tpl_data->langsoptions = '<option value=""'.($lang==''?' selected="selected" ':'').'>Default</option>';
         foreach ($this->langs() as $language) {
-            $tpl_data->langsoptions .= '<option value="' . $language['lang_key'] . '" ';
-            if ($lang == $language['lang_key']) {
+            $tpl_data->langsoptions .= '<option value="' . $language['key'] . '" ';
+            if ($lang == $language['key']) {
                 $tpl_data->langsoptions .= 'selected="selected" ';
             }
-            $tpl_data->langsoptions .= '/>' . $language['lang_name'] . '</option>';
+            $tpl_data->langsoptions .= '/>' . $language['english_name'] . '</option>';
         }
 
         $html = $this->renderTemplate($system.'_settings', $tpl_data);
