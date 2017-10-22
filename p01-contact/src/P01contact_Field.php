@@ -162,7 +162,7 @@ class P01contactField
     {
         $list = $this->form->config('checklist');
         if (!$list) return;
-        foreach ($list as $i => $cl) {
+        foreach ($list as $cl) {
             if ($cl->name != $this->type) {
                 continue;
             }

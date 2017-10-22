@@ -93,8 +93,6 @@ class P01contactForm
         $param_pattern.= '\s*(?:(=[><]?)?';     // =value, =>locked, =<placeholder
         $param_pattern.= '\s*(.*))?\s*`';       // value
 
-        $values_pattern = '`(?:^|\|)\s*(?:"([^"]+)")?\s*([^| ]+)?`';
-
         preg_match($param_pattern, $param, $param);
         list(, $type, $required, $title, $desc, $assign, $values) = $param;
 
@@ -167,7 +165,7 @@ class P01contactForm
 
         $errors = false;
         $fields = $this->getFields();
-        foreach ($fields as $id => $field) {
+        foreach ($fields as $field) {
             if( !isset($posted[$field->id]) )
                 continue;
             $posted_val = $posted[$field->id];
@@ -288,7 +286,7 @@ class P01contactForm
             $html .= $this->htmlStatus();
         }
         if (!$this->sent) {
-            foreach ($this->fields as $id => $field) {
+            foreach ($this->fields as $field) {
                 $html .= $field->html();
             }
             if ($this->config('use_honeypot')) {
@@ -314,18 +312,6 @@ class P01contactForm
     {
         $statusclass = $this->sent ? 'alert success' : 'alert failed';
         return '<div class="' . $statusclass . '">' . $this->lang($this->status) . '</div>';
-    }
-
-    /**
-     * Return an html link
-     * @param string $href the link address
-     * @param string $title if not used, the link title will be the address
-     * @param string $protocol Default http://
-     * @return string the <a>
-     */
-    private function htmlLink($href, $title = false, $protocol = 'http://')
-    {
-        return "<a href=\"$protocol$href\">".($title ? $title : $href).'</a>';
     }
 
     /**
@@ -369,7 +355,7 @@ class P01contactForm
      */
     public function sendMail()
     {
-        $email = $name = $subject = null;
+        $email = $name = $subject = $askcopy = null;
         $tpl_data = (object) null;
         $tpl_data->date = date('r');
         $tpl_data->ip = $_SERVER["REMOTE_ADDR"];
@@ -508,7 +494,7 @@ class P01contactForm
      */
     public function reset()
     {
-        foreach ($this->fields as $id => $field) {
+        foreach ($this->fields as $field) {
             $field->value = '';
             $field->error = '';
         }
