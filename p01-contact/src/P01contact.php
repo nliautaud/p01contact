@@ -149,8 +149,8 @@ class P01contact
         $files = glob(LANGSPATH . '*.yml');
         foreach ($files as $f) {
             $parsed = \Spyc::YAMLLoad($f);
-            if(!$parsed || !isset($parsed['lang_key'])) continue;
-            $this->langs[$parsed['lang_key']] = $parsed;
+            if(!$parsed || !isset($parsed['key'])) continue;
+            $this->langs[$parsed['key']] = $parsed;
         }
     }
     /**

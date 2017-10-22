@@ -1,8 +1,11 @@
 ---
 # French language file for p01-contact"
-lang_key: "fr"
-lang_name: "French"
-lang_authors: "Nicolas Liautaud"
+key: "fr"
+name: "Français"
+english_name: "French"
+authors: "Nicolas Liautaud"
+date: "2011-10-22"
+compatibility: 1.1
 strings:
   name: "Nom"
   email: "Adresse email"

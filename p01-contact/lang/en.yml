@@ -1,8 +1,11 @@
 ---
 # English language file for p01-contact
-lang_key: "en"
-lang_name: "English"
-lang_authors: "Nicolas Liautaud"
+key: "en"
+name: "English"
+english_name: "English"
+authors: "Nicolas Liautaud"
+date: "2011-10-22"
+compatibility: 1.1
 strings:
   name: "Name"
   email: "Email"
@@ -28,7 +31,7 @@ strings:
   sent_copy_error: "Email sent, but there was an issue when sending you the copy."
   sent_already: "The message have already been sent."
 
-  error: "'Error : no message was sent.'"
+  error: "Error : no message was sent."
   target: "This contact form has no recipient."
 
   honeypot: "Blip. Blop. Blup. You felt in the honeypot for robots."
@@ -73,7 +76,7 @@ strings:
   message_len_sub: "Minimum number of characters for message fields."
 
   separator: "Separator"
-  separator_sub: "'Parameters separator in forms markup. Ex: comma, semicolon, double-pipe...'"
+  separator_sub: "Parameters separator in forms markup. Ex: comma, semicolon, double-pipe..."
 
   logs_count: "Logs number"
   logs_count_sub: "Maximum number of entries to keep on logs."
