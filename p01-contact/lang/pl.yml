@@ -32,7 +32,7 @@ strings:
   sent: Wiadomość została wysłana!
   error: "Błąd: wiadomość nie została wysłana."
   disable: Formularz kontaktowy jest wyłączony.
-  target: Nie określono odbiorcy dla tego formularza.
+  error_notarget: Nie określono odbiorcy dla tego formularza.
   token: The message have already been sent.
 
   # fields errors

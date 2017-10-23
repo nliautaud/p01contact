@@ -73,23 +73,26 @@ class P01contactField
 
     /**
      * Check field value.
+     * @return boolean
      */
     public function validate()
     {
         // empty and required
         if (empty($this->value) && $this->required) {
             $this->error = 'field_required';
-            return;
+            return false;
         }
         // value blacklisted or not in whitelist
         if ($reason = $this->isBlacklisted()) {
             $this->error = 'field_' . $reason;
+            return false;
         }
         // not empty but not valid
         if (!empty($this->value) && !$this->isValid()) {
             $this->error = 'field_' . $this->type;
-            return;
+            return false;
         }
+        return true;
     }
 
     /**

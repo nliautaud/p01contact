@@ -32,12 +32,11 @@ strings:
   sent_already: The message have already been sent.
 
   error: "Error : no message was sent."
-  target: This contact form has no recipient.
-
-  honeypot: Blip. Blop. Blup. You felt in the honeypot for robots.
-  wait_load: Blip. Blop. Blup. You're as fast as a robot. Please wait a few seconds.
-  wait_post: You submitted just recently. Please wait a bit.
-  wait_hour: You submitted too much times this hour.
+  error_notarget: This contact form has no recipient.
+  error_honeypot: Blip. Blop. Blup. You felt in the honeypot for robots.
+  error_pageload: Blip. Blop. Blup. You're as fast as a robot. Please wait a few seconds.
+  error_lastpost: You submitted just recently. Please wait a bit.
+  error_postcount: You submitted too much times this hour.
 
   field_required: This field is required
   field_email: Please use a valid email address

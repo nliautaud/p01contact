@@ -150,41 +150,38 @@ class P01contactForm
             return;
         }
 
-        $posted = $_POST['p01-contact_fields'];
-
-        // check token and spam
+        // check token
         if (!$this->checkToken()) {
             $this->setStatus('sent_already');
             $this->setToken();
             $this->reset();
             return;
         }
-        if (!$this->checkSpam($posted)) {
-            return;
-        }
 
-        $errors = false;
+        $posted = $_POST['p01-contact_fields'];
+        
+        // populate fields values and check errors
+        $hasFieldsErrors = false;
         $fields = $this->getFields();
         foreach ($fields as $field) {
             if( !isset($posted[$field->id]) )
                 continue;
             $posted_val = $posted[$field->id];
             $field->setValue($posted_val);
-            $field->validate();
-            if ($field->error) {
-                $errors = true;
-            }
+            $hasFieldsErrors = $field->validate() && $hasFieldsErrors;
         }
 
-        if ($errors) {
+        // check errors and set status
+        if ($this->config('disable')) {
+            $this->setStatus('disable');
             return;
         }
-
-        if ($this->config('disable')) {
-            return $this->setStatus('disable');
-        }
         if (count($this->targets) == 0) {
-            return $this->setStatus('target');
+            $this->setStatus('error_notarget');
+            return;
+        }
+        if ($hasFieldsErrors || $this->checkSpam($posted) !== true) {
+            return;
         }
 
         $this->sendMail();
@@ -207,7 +204,7 @@ class P01contactForm
      * @param array $post Sanitized p01-contact data of $_POST
      * @return bool the result status
      */
-    public function checkSpam($post)
+    private function checkSpam($post)
     {
         $s = $_SESSION['p01-contact'];
         if (!isset($s['first_post']) || time() - $s['first_post'] > 3600) {
@@ -216,19 +213,19 @@ class P01contactForm
         }
 
         if (isset($post['totally_legit'])) {
-            $this->setStatus('honeypot');
+            $this->setStatus('error_honeypot');
             return false;
         }
         if (time() - $s['last_page_load'] < $this->config('min_sec_after_load')) {
-            $this->setStatus('wait_load');
+            $this->setStatus('error_pageload');
             return false;
         }
         if (time() - $s['last_post'] < $this->config('min_sec_between_posts')) {
-            $this->setStatus('sent_recently');
+            $this->setStatus('error_lastpost');
             return false;
         }
         if (!$this->config('debug') && $s['post_count'] > $this->config('max_posts_by_hour')) {
-            $this->setStatus('wait_hour');
+            $this->setStatus('error_postcount');
             return false;
         }
 

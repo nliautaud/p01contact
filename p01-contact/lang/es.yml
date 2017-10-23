@@ -31,7 +31,7 @@ strings:
   sent: Correo electrónico enviado.
   error: "Error: mensaje no enviado."
   disable: Plugin de Contacto desactivado.
-  target: Este formulario de contacto no tiene destinatario.
+  error_notarget: Este formulario de contacto no tiene destinatario.
   token: El mensaje ya ha sido enviado.
 
   # fields errors

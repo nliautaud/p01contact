@@ -32,7 +32,7 @@ strings:
   sent: Nachricht verschickt.
   error: "Fehler : Nachricht wurde nicht verschickt."
   disable: Konaktformular deaktiviert.
-  target: Dieser Kontakt hat keine E-Mail-Adresse.
+  error_notarget: Dieser Kontakt hat keine E-Mail-Adresse.
   token: Die Nachricht wurde bereits verschickt.
 
   # fields errors

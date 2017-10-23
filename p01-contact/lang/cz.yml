@@ -32,7 +32,7 @@ strings:
   sent: E-mail odeslán.
   error: "Chyba: zpráva nebyla odeslána."
   disable: Kontaktní formulář není k dispozici.
-  target: Tento kontaktní formulář je bez příjemce.
+  error_notarget: Tento kontaktní formulář je bez příjemce.
   token: Tato zpráva již byla odeslána.
 
   # fields errors

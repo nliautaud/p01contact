@@ -32,12 +32,11 @@ strings:
   sent_already: Le formulaire a déjà été envoyé.
 
   error: "Erreur : aucun message n'a été envoyé."
-  target: Ce formulaire de contact n'a pas de destinataire.
-
-  honeypot: Blip. Blop. Blup. Vous êtes tombé dans le piège à robot.
-  wait_load: Blip. Blop. Blup. Vous êtes aussi rapide qu'un robot. Veuillez attendre quelques secondes.
-  wait_post: Vous venez d'utiliser ce formulaire. Merci d'attendre un peu.
-  wait_hour: Vous avez trop utilisé ce formulaire cette heure ci.
+  error_notarget: Ce formulaire de contact n'a pas de destinataire.
+  error_honeypot: Blip. Blop. Blup. Vous êtes tombé dans le piège à robot.
+  error_pageload: Blip. Blop. Blup. Vous êtes aussi rapide qu'un robot. Veuillez attendre quelques secondes.
+  error_lastpost: Vous venez d'utiliser ce formulaire. Merci d'attendre un peu.
+  error_postcount: Vous avez trop utilisé ce formulaire cette heure ci.
 
   field_required: Ce champ est obligatoire
   field_email: Veuillez entrer une adresse email valide

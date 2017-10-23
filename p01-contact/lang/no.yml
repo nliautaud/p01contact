@@ -30,7 +30,7 @@ strings:
   sent: E-post sendt.
   error: "Feil : Ingen melding er sendt."
   disable: Kontaktskjemaet er ute av funksjon.
-  target: Kontaktskjemaet har ingen mottager.
+  error_notarget: Kontaktskjemaet har ingen mottager.
 
   # fields errors
   field_required: Dette feltet må fylles ut

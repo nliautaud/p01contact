@@ -32,7 +32,7 @@ strings:
   sent: Správa odoslaná.
   error: "Chyba : správa nebola odoslaná."
   disable: Kontaktný formulár je vypnutý.
-  target: Tento kontaktný formulár nemá príjemcu.
+  error_notarget: Tento kontaktný formulár nemá príjemcu.
   token: Správa už bola odoslaná.
 
   # fields errors

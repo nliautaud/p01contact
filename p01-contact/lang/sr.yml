@@ -32,7 +32,7 @@ strings:
   sent: Email poslat.
   error: Greška u slanju poruke.
   disable: Formulari za kontakt su onemogućeni.
-  target: Ovaj formular nema adresu za prijem.
+  error_notarget: Ovaj formular nema adresu za prijem.
   token: Poruka je već poslata.
 
   # fields errors

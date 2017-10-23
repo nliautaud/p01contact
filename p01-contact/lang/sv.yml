@@ -29,7 +29,7 @@ compatibility: 1.1
   sent: Email skickat.
   error: "Fel : Inget meddelande skickades."
   disable: Kontaktformuläret är ur funktion.
-  target: Kontaktformuläret har ingen mottagare.
+  error_notarget: Kontaktformuläret har ingen mottagare.
 
   # fields errors
   field_required: Detta fält måste fyllas i

@@ -32,7 +32,7 @@ strings:
   sent: Mail afsendt.
   error: "Fejl: Beskeden blev ikke afsendt."
   disable: Kontaktformularen er slået fra.
-  target: Kontaktformularen indeholder ingen modtager.
+  error_notarget: Kontaktformularen indeholder ingen modtager.
   token: Beskeden er allerede afsendt.
 
   # fields errors

@@ -32,7 +32,7 @@ strings:
   sent: Bericht verzonden.
   error: "Fout : het bericht is niet verzonden."
   disable: De contactplugin is uitgeschakeld.
-  target: Dit contactformulier heeft geen ontvanger.
+  error_notarget: Dit contactformulier heeft geen ontvanger.
   token: Dit bericht is al verstuurd.
 
 

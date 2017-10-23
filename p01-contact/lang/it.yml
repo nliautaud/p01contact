@@ -32,7 +32,7 @@ strings:
   sent: Email inviata.
   error: Nessun messaggio inviato.
   disable: Contact plugin disabilitato.
-  target: Nessun destinatario indicato.
+  error_notarget: Nessun destinatario indicato.
   token: Il messaggio è già stato inviato.
 
   # fields errors

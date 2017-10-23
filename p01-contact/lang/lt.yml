@@ -32,7 +32,7 @@ strings:
   sent: Žinutė išsiųsta sėkmingai.
   error: "Klaida: nepavyko išsiųsti žinutės."
   disable: Susisiekimo formos yra išjungtos.
-  target: Ši susisiekimo forma neturi nurodyto gavėjo.
+  error_notarget: Ši susisiekimo forma neturi nurodyto gavėjo.
   token: Ši žinutė jau buvo išsiųsta.
 
   # fields errors
