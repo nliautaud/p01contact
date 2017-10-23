@@ -192,7 +192,7 @@ class P01contact
             $lang = 'en';
         }
         if (isset($this->langs[$lang]['strings'][$key])) {
-            return $this->langs[$lang]['strings'][$key];
+            return trim($this->langs[$lang]['strings'][$key]);
         }
         return ucfirst($key);
     }
@@ -415,7 +415,7 @@ class P01contact
             if ($lang == $language['key']) {
                 $tpl_data->langsoptions .= 'selected="selected" ';
             }
-            $tpl_data->langsoptions .= '/>' . $language['english_name'] . '</option>';
+            $tpl_data->langsoptions .= '>' . $language['english_name'] . '</option>';
         }
 
         $html = $this->renderTemplate($system.'_settings', $tpl_data);
