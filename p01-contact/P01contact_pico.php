@@ -48,18 +48,18 @@ class P01contact_pico extends AbstractPicoPlugin
      */
     public function onContentPrepared(&$content)
     {
-        // replace forms (% contact ... %)
-        $content = $this->P01contact->parse($content);
-
         // replace config panel (% contact_admin_config %)
-        $content = preg_replace_callback('`(%\s*contact_admin_config\s*%)`', function () {
+        $content = preg_replace_callback('`\(%\s*contact_admin_config\s*%\)`', function () {
             return $this->P01contact->panel();
         }, $content, 1);
 
         // replace debug report (% contact_admin_debug %)
-        $content = preg_replace_callback('`(%\s*contact_admin_debug\s*%)`', function () {
+        $content = preg_replace_callback('`\(%\s*contact_admin_debug\s*%\)`', function () {
             return $this->P01contact->config('debug') ? $this->P01contact->debugReport() : '';
         }, $content, 1);
+
+        // replace forms (% contact ... %)
+        $content = $this->P01contact->parse($content);
     }
     /**
      * Add  {{ contact() }}  and  {{ contact_admin() }}  twig functions 
