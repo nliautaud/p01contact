@@ -193,8 +193,8 @@ class P01contact
         || !isset($this->langs[$lang]['strings'][$key])) {
             $lang = $default;
         }
-        $val = $this->langs[$lang]['strings'][$key];
-        if (!empty($val)) return trim($val);
+        $strings = $this->langs[$lang]['strings'];
+        if (!empty($strings[$key])) return trim($strings[$key]);
         
         return ucfirst($key);
     }
