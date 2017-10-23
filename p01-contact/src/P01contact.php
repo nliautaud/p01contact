@@ -184,16 +184,18 @@ class P01contact
      */
     public function lang($key, $lang = null)
     {
-        if (!$lang) {
-            $lang = $this->config('lang');
-            $lang = empty($lang) ? $this->default_lang : $lang;
+        $default = !empty($this->default_lang) ? $this->default_lang : 'en';
+
+        if (!$lang) $lang = $this->config('lang');
+        
+        if (empty($lang)
+        || !isset($this->langs[$lang])
+        || !isset($this->langs[$lang]['strings'][$key])) {
+            $lang = $default;
         }
-        if (empty($lang) || !isset($this->langs[$lang])) {
-            $lang = 'en';
-        }
-        if (isset($this->langs[$lang]['strings'][$key])) {
-            return trim($this->langs[$lang]['strings'][$key]);
-        }
+        $val = $this->langs[$lang]['strings'][$key];
+        if (!empty($val)) return trim($val);
+        
         return ucfirst($key);
     }
     /**
