@@ -376,8 +376,9 @@ class P01contact
                 $msg = '<div class="error">'.$this->lang('config_error_modify');
                 $msg.= '<pre>'.CONFIGPATH.'</pre></div>';
             }
+            return $msg . $this->panelContent();
         }
-        return $msg . $this->panelContent();
+        return $this->panelContent();
     }
 
     /**
