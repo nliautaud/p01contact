@@ -1,43 +1,59 @@
 ---
-# French language file for p01-contact"
+# French language file for p01contact"
 key: fr
 name: Français
 english_name: French
 authors: Nicolas Liautaud
-date: "2011-10-22"
+date: "2011-10-23"
 compatibility: 1.1
 strings:
-  name: Nom
-  email: Adresse email
-  address: Adresse postale
-  tel: Numéro de téléphone
-  url: Adresse web
-  subject: Objet
-  message: Message
-  file: Pièce jointe
-  captcha: Captcha
-  reload: Recharger
-  askcopy: Envoyez-moi une copie de cet email
-  send: Envoyer
-
+  # basic fields
+  text: texte
+  textarea: champ de texte
+  password: mot de passe
+  file: pièce jointe
+  # html5 inputs types
+  color: couleur
+  date: date
+  email: adresse email
+  month: mois
+  number: nombre
+  range: valeur
+  search: recherche
+  tel: numéro de téléphone
+  time: heure
+  url: URL
+  week: semaine
+  # other fields
+  name: nom
+  subject: objet
+  message: message
+  address: adresse postale
+  askcopy: envoyez-moi une copie de cet email
+  captcha: captcha
+  # actions
+  submit: envoyer
+  reload: recharger
+  reset: remettre à zéro
+  # received email
   askedcopy: Une copie de cet email a été demandée
   anonymous: Anonyme
   nosubject: (Pas d'objet)
   email_title: Email envoyé depuis
-
+  # confirmations
   sent: Email envoyé.
   sent_debug: Email virtuellement envoyé (mode debug actif).
   sent_copy: Email envoyé. Une copie a été envoyée à l'addresse spécifiée.
   sent_copy_error: Email envoyé, mais il y a eu un problème lors de l'envoie de votre copie.
   sent_already: Le formulaire a déjà été envoyé.
-
+  # errors
   error: "Erreur : aucun message n'a été envoyé."
   error_notarget: Ce formulaire de contact n'a pas de destinataire.
   error_honeypot: Blip. Blop. Blup. Vous êtes tombé dans le piège à robot.
   error_pageload: Blip. Blop. Blup. Vous êtes aussi rapide qu'un robot. Veuillez attendre quelques secondes.
   error_lastpost: Vous venez d'utiliser ce formulaire. Merci d'attendre un peu.
   error_postcount: Vous avez trop utilisé ce formulaire cette heure ci.
-
+  # fields errors
   field_required: Ce champ est obligatoire
   field_email: Veuillez entrer une adresse email valide
   field_tel: Veuillez entrer un numéro de téléphone valide
@@ -47,18 +63,20 @@ strings:
   field_password: Mot de passe incorrect
   field_blacklist: Ce champ contiens des termes prohibés
   field_whitelist: Une valeur attendue est manquante
-
+  # configuration panel
   config_title: Configuration de p01contact
   config_updated: Vos modifications ont été enregistrées avec succès.
   config_error_open: <b>Impossible d'ouvrir le fichier de configuration.</b> Vérifiez s'il existe et ses permissions
   config_error_modify: <b>Impossible de modifier le fichier de configuration.</b> Vérifiez ses permissions
-
+  # infos
   new_release: Il y a une nouvelle version!
   download: Télécharger la dernière version
   repo: Github
   wiki: Documentation / Wiki
   issues: Aide / rapporter un bug
 
+  # settings
+  
   disable: Désactiver tous les formulaires
   disable_sub: Désactive l'envoi de mail, sans cacher les formulaires.
 
