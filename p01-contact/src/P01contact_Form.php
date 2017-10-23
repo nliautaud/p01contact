@@ -4,7 +4,7 @@
  *
  * @link https://github.com/nliautaud/p01contact
  * @author Nicolas Liautaud
- * @package p01-contact
+ * @package p01contact
  */
 namespace P01C;
 
@@ -206,57 +206,52 @@ class P01contactForm
      */
     private function checkSpam($post)
     {
-        $s = $_SESSION['p01-contact'];
-        if (!isset($s['first_post']) || time() - $s['first_post'] > 3600) {
-            $s['first_post'] = time();
-            $s['post_count'] = 0;
-        }
-
         if (isset($post['totally_legit'])) {
             $this->setStatus('error_honeypot');
             return false;
         }
-        if (time() - $s['last_page_load'] < $this->config('min_sec_after_load')) {
+        $loads = Session::get('pageloads');
+        if (count($loads > 1) && $loads[1] - $loads[0] < $this->config('min_sec_after_load')) {
             $this->setStatus('error_pageload');
             return false;
         }
-        if (time() - $s['last_post'] < $this->config('min_sec_between_posts')) {
+        $lastpost = Session::get('lastpost', false);
+        if ($lastpost && time() - $lastpost < $this->config('min_sec_between_posts')) {
             $this->setStatus('error_lastpost');
             return false;
         }
-        if (!$this->config('debug') && $s['post_count'] > $this->config('max_posts_by_hour')) {
+        $postcount = Session::get('postcount', 0);
+        if (!$this->config('debug') && $postcount > $this->config('max_posts_by_hour')) {
             $this->setStatus('error_postcount');
             return false;
         }
 
-        $s['last_post'] = time();
-        $s['post_count']++;
-
-        $_SESSION['p01-contact'] = $s;
+        Session::set('lastpost', time());
+        Session::set('postcount', $postcount + 1);
 
         return true;
     }
 
     /**
-     * Create an unique hash in SESSION
+     * Create an unique hash in Session
      */
     private static function setToken()
     {
-        $_SESSION['p01-contact']['token'] = uniqid(md5(microtime()), true);
+        Session::set('token', uniqid(md5(microtime()), true));
     }
     /**
-     * Get the token in SESSION (create it if not exists)
+     * Get the token in Session (create it if not exists)
      * @return string
      */
     public function getToken()
     {
-        if (!isset($_SESSION['p01-contact']['token'])) {
+        if (!Session::get('token', false)) {
             $this->setToken();
         }
-        return $_SESSION['p01-contact']['token'];
+        return Session::get('token');
     }
     /**
-     * Compare the POSTed token to the SESSION one
+     * Compare the POSTed token to the Session one
      * @return boolean
      */
     private function checkToken()

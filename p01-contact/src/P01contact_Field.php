@@ -4,7 +4,7 @@
  *
  * @link https://github.com/nliautaud/p01contact
  * @author Nicolas Liautaud
- * @package p01-contact
+ * @package p01contact
  */
 namespace P01C;
 

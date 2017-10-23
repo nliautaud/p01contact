@@ -2,18 +2,15 @@
 /**
  * p01-contact - A simple contact forms manager
  *
- * @package p01-contact
+ * @package p01contact
  * @link https://github.com/nliautaud/p01contact
  * @author Nicolas Liautaud
  */
 namespace P01C;
 
+require_once 'P01contact_Session.php';
 require_once 'P01contact_Form.php';
 require_once 'vendor/spyc.php';
-
-if (session_id() === '') {
-    session_start();
-}
 
 class P01contact
 {
@@ -48,8 +45,11 @@ class P01contact
         $this->loadConfig();
         $this->loadLangs();
         
-        if ($this->config('debug'))
+        if ($this->config('debug')) {
             $this->enablePHPdebug();
+        }
+
+        Session::stack('pageloads', time());
     }
 
     /**
@@ -110,8 +110,6 @@ class P01contact
         if ($lang) $form->lang = $lang;
         $form->post();
 
-        $_SESSION['p01-contact']['last_page_load'] = time();
-
         return $defaultStyle . $form->html();
     }
     
@@ -134,10 +132,8 @@ class P01contact
             return 0 === strpos($n, __namespace__);
         }, ARRAY_FILTER_USE_KEY), true);
 
-        if (!empty($_SESSION)) {
-            $out.= '<h3>$_SESSION :</h3>';
-            $out.= preint($_SESSION, true);
-        }
+        $out .= Session::report();
+
         if (!empty($_POST)) {
             $out.= '<h3>$_POST :</h3>';
             $out.= preint($_POST, true);
