@@ -38,7 +38,7 @@ Follow the [syntax] to create custom forms.
     radio "I'd like to contact you" = a little | a lot |: passionately,
     select "Department" (the floor you look for) = Silly walks :| Strange things,
     email!,
-    message <= Bla bla bla,
+    message =< Bla bla placeholder,
     checkbox! "I'm in control",
     askcopy
 %)
