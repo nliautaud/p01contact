@@ -2,27 +2,26 @@
 /**
  * p01-contact - A simple contact forms manager
  *
- * @package p01-contact
+ * @package p01contact
  * @link https://github.com/nliautaud/p01contact
  * @author Nicolas Liautaud
  */
 namespace P01C;
 
-require 'P01contact_Form.php';
-
-if (session_id() === '') {
-    session_start();
-}
+require_once 'P01contact_Session.php';
+require_once 'P01contact_Form.php';
+require_once 'vendor/spyc.php';
 
 class P01contact
 {
     public $version;
     public $default_lang;
     private $config;
+    private $langs;
 
     public function __construct()
     {
-        define('P01C\VERSION', '1.0.1');
+        define('P01C\VERSION', '1.1.0');
         $this->version = VERSION;
 
         define('P01C\SERVERNAME', $_SERVER['SERVER_NAME']);
@@ -44,6 +43,13 @@ class P01contact
         define('P01C\APILATEST', 'https://api.github.com/repos/nliautaud/p01contact/releases/latest');
 
         $this->loadConfig();
+        $this->loadLangs();
+        
+        if ($this->config('debug')) {
+            $this->enablePHPdebug();
+        }
+
+        Session::stack('pageloads', time());
     }
 
     /**
@@ -78,59 +84,93 @@ class P01contact
         $pattern = "`(?<!<code>)\(%\s*contact\s*(\w*)\s*:?$sp(.*?)$sp%\)`s";
         preg_match_all($pattern, $contents, $tags, PREG_SET_ORDER);
 
-        static $once;
-        if (!$once) {
-            $inc = '<link rel="stylesheet" href="'.SERVER.RELPATH.'style.css"/>';
-            $contents = $inc . $contents;
-            $once = true;
-        }
-
         foreach ($tags as $tag) {
-            $form = new P01contactForm($this);
-            $form->parseTag($tag[2]);
-            $form->lang = $tag[1];
-            $form->post();
-            $contents = preg_replace($pattern, $form->html(), $contents, 1);
+            $form = $this->newForm($tag[2], $tag[1]);
+            $contents = preg_replace($pattern, $form, $contents, 1);
         }
-        $_SESSION['p01-contact']['last_page_load'] = time();
-
         return $contents;
     }
-
     /**
-     * Enable PHP error reporting and display system and p01-contact infos.
+     * Return a form based on the given parameters and lang
+     *
+     * @param string $params the parameters string, according to the syntax
+     * @param string $lang form-specific language code
+     * @return string the html form
      */
-    public function debug()
+    public function newForm($params = '', $lang = null)
+    {
+        $defaultStyle = '';
+        static $once;
+        if (!$once) {
+            $defaultStyle = '<link rel="stylesheet" href="'.SERVER.RELPATH.'style.css"/>';
+            $once = true;
+        }
+        $form = new P01contactForm($this);
+        $form->parseTag($params);
+        if ($lang) $form->lang = $lang;
+        $form->post();
+
+        return $defaultStyle . $form->html();
+    }
+    
+    /**
+     * Display system and P01contact infos.
+     * 
+     * @return string the html report
+     */
+    public function debugReport()
+    {
+        $out = '<h2 style="color:#c33">p01-contact debug</h2>';
+
+        $out.= '<h3>Health :</h3>';
+        $health = 'PHP version : '.phpversion()."\n";
+        $health.= 'PHP mbstring (UTF-8) : '.(extension_loaded('mbstring') ? 'OK' : 'MISSING');
+        $out.= preint($health, true);
+
+        $out.= '<h3>Constants :</h3>';
+        $out.= preint(array_filter(get_defined_constants(true)['user'], function ($n) {
+            return 0 === strpos($n, __namespace__);
+        }, ARRAY_FILTER_USE_KEY), true);
+
+        $out .= Session::report();
+
+        if (!empty($_POST)) {
+            $out.= '<h3>$_POST :</h3>';
+            $out.= preint($_POST, true);
+        }
+        $out.= '<h3>$p01contact :</h3>';
+        $out.= preint($this, true);
+        return $out;
+    }
+    /**
+     * Enable PHP error reporting
+     */
+    public function enablePHPdebug()
     {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
-
-        $health = 'PHP version : '.phpversion()."\n";
-        $health.= 'PHP mbstring (UTF-8) : '.(extension_loaded('mbstring') ? 'OK' : 'MISSING');
-
-        echo'<h2 style="color:#c33">p01-contact debug</h2>';
-
-        echo'<h3>Health :</h3>';
-        preint($health);
-
-        echo'<h3>Constants :</h3>';
-        preint(array_filter(get_defined_constants(true)['user'], function ($n) {
-            return 0 === strpos($n, __namespace__);
-        }, ARRAY_FILTER_USE_KEY));
-
-        if (!empty($_SESSION)) {
-            echo'<h3>$_SESSION :</h3>';
-            preint($_SESSION);
-        }
-        if (!empty($_POST)) {
-            echo'<h3>$_POST :</h3>';
-            preint($_POST);
-        }
-        echo'<h3>$p01contact :</h3>';
-        preint($this);
     }
 
+
+    /*
+     *  LANG
+     */
+
+
+    /**
+     * Load language files
+     */
+    private function loadLangs()
+    {
+        $this->langs = [];
+        $files = glob(LANGSPATH . '*.yml');
+        foreach ($files as $f) {
+            $parsed = \Spyc::YAMLLoad($f);
+            if(!$parsed || !isset($parsed['key'])) continue;
+            $this->langs[$parsed['key']] = $parsed;
+        }
+    }
     /**
      * Return a traduction of the keyword
      *
@@ -140,40 +180,32 @@ class P01contact
      */
     public function lang($key, $lang = null)
     {
-        global $p01contact_lang;
+        $default = !empty($this->default_lang) ? $this->default_lang : 'en';
 
-        if (!$lang) {
-            $lang = $this->config('lang');
-            $lang = empty($lang) ? $this->default_lang : $lang;
+        if (!$lang) $lang = $this->config('lang');
+        
+        if (empty($lang)
+        || !isset($this->langs[$lang])
+        || !isset($this->langs[$lang]['strings'][$key])) {
+            $lang = $default;
         }
-
-        $path = LANGSPATH . $lang . '.php';
-        if (!file_exists($path)) {
-            $path = LANGSPATH . 'en.php';
-        }
-        include_once $path;
-
-        if (!isset($p01contact_lang[$key])) {
-            include_once LANGSPATH . 'en.php';
-        }
-        if (isset($p01contact_lang[$key])) {
-            return $p01contact_lang[$key];
-        }
+        $strings = $this->langs[$lang]['strings'];
+        if (!empty($strings[$key])) return trim($strings[$key]);
+        
         return ucfirst($key);
     }
     /**
-     * Return list of existing langs from lang/langs.php
+     * Return the languages objects
      * @return array
      */
-    private function langs()
+    public function langs()
     {
-        require LANGSPATH . '/langs.php';
-        return $p01contact_langs;
+        return $this->langs;
     }
 
 
     /*
-     *  JSON
+     *  CONFIG
      */
 
 
@@ -335,13 +367,14 @@ class P01contact
             $this->loadConfig();
 
             if ($success) {
-                echo '<div class="updated">' . $this->lang('config_updated') . '</div>';
+                $msg = '<div class="updated">' . $this->lang('config_updated') . '</div>';
             } else {
-                echo '<div class="error">'.$this->lang('config_error_modify');
-                echo '<pre>'.CONFIGPATH.'</pre></div>';
+                $msg = '<div class="error">'.$this->lang('config_error_modify');
+                $msg.= '<pre>'.CONFIGPATH.'</pre></div>';
             }
+            return $msg . $this->panelContent();
         }
-        echo $this->panelContent();
+        return $this->panelContent();
     }
 
     /**
@@ -376,12 +409,12 @@ class P01contact
 
         $lang = $this->config('lang');
         $tpl_data->langsoptions = '<option value=""'.($lang==''?' selected="selected" ':'').'>Default</option>';
-        foreach ($this->langs() as $iso => $name) {
-            $tpl_data->langsoptions .= '<option value="' . $iso . '" ';
-            if ($lang == $iso) {
+        foreach ($this->langs() as $language) {
+            $tpl_data->langsoptions .= '<option value="' . $language['key'] . '" ';
+            if ($lang == $language['key']) {
                 $tpl_data->langsoptions .= 'selected="selected" ';
             }
-            $tpl_data->langsoptions .= '/>' . $name . '</option>';
+            $tpl_data->langsoptions .= '>' . $language['english_name'] . '</option>';
         }
 
         $html = $this->renderTemplate($system.'_settings', $tpl_data);

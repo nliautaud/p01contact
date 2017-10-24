@@ -1,0 +1,126 @@
+---
+# Italian language file for p01-contact
+key: it
+name: Italiano
+english_name: Italian
+authors: Nicola Sarti, Nicola Scattaglia
+date: "2017-10-23"
+compatibility: 1.1
+strings:
+  # basic fields
+  text: testo
+  textarea: area di testo
+  password: password
+  file: file
+  # html5 inputs types
+  color: colore
+  date: data
+  email: email
+  month: mese
+  number: numero
+  range: range
+  search: cerca
+  tel: telefono
+  time: orario
+  url: URL
+  week: settimana
+  # other fields
+  name: nome
+  subject: soggetto
+  message: messaggio
+  address: indirizzo postale
+  askcopy: invia anche a me una copia
+  captcha: captcha
+  # actions
+  submit: invia
+  reload: ricarica
+  reset: Pulisci il form
+  # received email
+  askedcopy: È stata richiesta una copia di questa email
+  anonymous: Anonimo
+  nosubject: (Nessun oggetto)
+  email_title: Inviata da
+  # confirmations
+  sent: Email inviata.
+  sent_debug: Email virtualmente inviata (abilitata modalità debug).
+  sent_copy: Email inviata. Una copia è stata inviata all'indirizzo specificato.
+  sent_copy_error: Email inviata, ma si è verificato un errore nell'invio della copia.
+  sent_already: Il messaggio è già stato inviato.
+  # errors
+  error: "Errore : nessun messaggio inviato."
+  error_notarget: Questo form di contatto non ha nessun destinatario.
+  error_honeypot: Blip. Blop. Blup. Sei caduto nell'honeypot per i robot.
+  error_pageload: Blip. Blop. Blup. Sei veloce quanto un robot. Attendi per favore.
+  error_lastpost: Hai appena inviato. Attendi qualche istante.
+  error_postcount: Hai inviato troppo in questa ora.
+  # fields errors
+  field_required: Campo richiesto
+  field_email: Per favore usa un indirizzo email valido
+  field_tel: Per favore usa un numero di telefono valido
+  field_url: Per favore usa un indirizzo web valido
+  field_message: Per favore inserisci un maggior numero di caratteri
+  field_captcha: Per favore rispondi correttamente al seguente captcha
+  field_password: Password errata
+  field_blacklist: Questo campo contiene parole non permesse
+  field_whitelist: Un valore è mancante
+  # configuration panel
+  config_title: Configurazione p01contact
+  config_updated: Le modifiche sono state applicate.
+  config_error_open: "<b>Impossibile aprire il file di configurazione.</b> Controlla che esista e i suoi permessi :"
+  config_error_modify: "<b>Impossibile modificare il file di configurazione.</b> Controlla i permessi di accesso :"
+  # infos
+  new_release: È disponibile una nuova release!
+  download: Scarica l'ultima versione
+  repo: Github
+  wiki: Documentazione / Wiki
+  issues: Aiuto / Segnala un bug
+
+  # settings
+
+  disable: Disabilita tutti i form
+  disable_sub: Disabilita invio mail, senza nascondere i form di contatto.
+
+  default_email: Email di default
+  default_email_sub: Uno o più indirizzi, separati da virgola, che riceveranno tutte le mail dei form.
+
+  default_params: Parametri di default
+  default_params_sub: Struttura form di default. Usa la sintassi descritta nella documentazione.
+
+  lang: Lingua
+  lang_sub: La lingua di default è impostata in
+
+  message_len: Lunghezza minima del messaggio
+  message_len_sub: Numero minimo di caratteri per il campo messaggio.
+
+  separator: Separatore
+  separator_sub: "Separatore parametri nel markup dei form. Es: virgola, punto e virgola, doppia barra verticale..."
+
+  logs_count: Numero di log
+  logs_count_sub: Numero massimo di voci da tenere nei log.
+
+  checklists: Checklist dei campi
+  blacklist: Blacklist
+  whitelist: Whitelist
+  checklists_sub: "Una blacklist è una lista di valori che non devono essere presenti nel campo per inviare l'email, una whitelist è una lista di possibili valori richiesti nel campo per inviare l'email. Separati da virgola"
+
+  use_honeypot: Usa campo honeypot nasconsto
+  use_honeypot_sub: Aggiunge ad ogni form, un campo nascosto da non compilare. Le persone non lo vedranno, ma i bot spam cadranno nella trappola.
+
+  min_sec_after_load: Tempo minimo dopo il caricamento pagina
+  min_sec_after_load_sub: Numero minimo di secondi tra il caricamento pagina e l'invio del form. Le persone hanno bisogno di almeno qualche secondo per leggere, compilare e inviare un form. I robot no.
+  
+  min_sec_between_posts: Tempo minimo tra due invii
+  min_sec_between_posts_sub: Tempo minimo di secondi fra l'invio di due form da parte dello stesso utente.
+
+  max_posts_by_hour: Invii massimi in un'ora
+  max_posts_by_hour_sub: Numero massimo di invii per ogni ora da un utente.
+
+  captcha_info: I meccasismi anti-spam e anti-errore dovrebbero prevenire tutti gli invii indesiderati. Se hai bisogno di un livello più alto di sicurezza puoi creare un captcha personalizzato aggiungendo un campo con una risposta obbligatoria. Infine, puoi inserire un Google reCaptcha usando un campo <em>captcha</em> con le seguenti impostazioni.
+  recaptcha_public_key: reCaptcha public key
+  recaptcha_public_key_sub: Google reCaptcha public key.
+  recaptcha_secret_key: reCaptcha secret key
+  recaptcha_secret_key_sub: Google reCaptcha secret key.
+
+  debug: Modalità debug
+  debug_sub: Disabilita l'invio di email, mostra la data structure di p01-contact , i dati inviati da POST e l'email che sarebbe stata inviata.
+  debug_warn: Non attivarlo sul sito di produzione!

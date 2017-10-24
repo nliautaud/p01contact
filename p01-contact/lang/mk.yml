@@ -1,0 +1,93 @@
+---
+# Macedonian language file for p01-contact
+key: mk
+name: Macedonian
+english_name: Macedonian
+authors: Спиркоски
+date: "2011-10-27"
+compatibility: 1.1
+strings:
+  # fields
+  name: Име
+  email: Email
+  address: Поштенска адреса
+  tel: Телефонски број
+  url: Web страна
+  subject: Наслов
+  message: Порака
+  file: Прилог
+  captcha: Captcha
+  reload: Смени
+  fieldcaptcha: "Ве молам <b>не</b> пополнувајте го следното поле:"
+  askcopy: Испрати ми копија на оваа email адреса
+  send: Испрати
+
+  # email words
+  askedcopy: Побарана беше копија од оваа email порака
+  anonymous: Анонимно
+  nosubject: (Нема наслов)
+  email_title: Пораката е испратена од
+
+  # status messages
+  sent: Email пораката е пратена.
+  error: "ГРЕШКА: пораката не е пратена."
+  disable: Контакт формите се исклучени.
+  error_notarget: Оваа контактна форма нема примач.
+  token: Пораката веќе беше испратена.
+
+  # fields errors
+  field_required: Ова поле е обврзно
+  field_email: Ве молам внесете валидна email адреса
+  field_tel: Ве молам внесете валиден телефонски број
+  field_url: Ве молам внесете валидна web адреса
+  field_message: Ве молам напишете подолга порака
+  field_captcha: Ве молам препишете го следниот текст
+  field_fieldcaptcha: Ве молам не го пополнувајте ова поле
+  field_password: Погрешна лозинка
+
+  # configuration panel
+
+  config_title: p01contact конфигурација
+
+  # messages
+  config_updated: Вашите измени се успешно зачувани.
+
+  config_error_open: "<b>Не можам да ја отворам конфугурациската датотека.</b> Ве молам проверете дали постои датотеката и нејзините привилегии:"
+
+  config_error_modify: "<b>Не можам да ја изменам конфигурацискта датотека.</b> Проверете ги нејзините привилегии:"
+
+  # New release alert
+  new_release: Има нова верзија!
+  download: Превземи ја најновата верзија
+
+  # Links
+  doc: Документација
+  forum: Форум
+
+  # Parameters
+  enable: Вклучи
+  enable_sub: Вклучи или исклучи испраќање на пораки (не ги крие контакт формите).
+
+  default_email: Главен email
+  default_email_sub: Оставете го празно за да биде конфигурирано на
+
+  lang: Јазик
+  lang_sub: Основниот јазик е конфигуриран на
+
+  default_params: Основни параметри
+  default_params_sub: Структура на основна tag форма. Користете ја синтаксата опишана во документацијата.
+
+  message_len: Минимална должина на пораката
+  message_len_sub: Минимален број на знаци во полињата за порака.
+
+  checklists: Чеклисти на полињата
+  blacklist: Црна листа
+  whitelist: Бела листа
+  checklists_sub: "Црна листа: вредности кои не смеат да се појават за да се прати пораката.<br />Бела листа: можни вредности потребни за да се прати пораката.<br />Разделени со запирки."
+
+  general_fields: Основни полиња
+  special_fields: Специјални полиња
+
+  debug: Режим за дебагирање
+  debug_sub: Оневозможи праќање на пораки, прикажи ја p01-contact структурата на податоци, податоците пратени со POST и email-от кој би бил испратен.
+  debug_warn: Не активирајте на функционална web страна!

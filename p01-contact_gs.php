@@ -10,7 +10,7 @@
  * @link https://github.com/nliautaud/p01contact
  * @author Nicolas Liautaud
  * @package p01-contact
- * @version 1.0.0
+ * @version 1.1
  */
 
 require_once GSPLUGINPATH . 'p01-contact/src/P01contact.php';
@@ -43,7 +43,7 @@ function p01contact_filter($contents)
     $contents = $p01contact->parse($contents);
 
     if ($p01contact->config('debug')) {
-        $p01contact->debug();
+        echo $p01contact->debugReport();
     }
     return $contents;
 }

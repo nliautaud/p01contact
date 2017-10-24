@@ -1,0 +1,41 @@
+---
+# Norwegian language file for p01-contact
+key: "no"
+name: Norwegian
+english_name: Norwegian
+authors: Tor Rafsol Løseth
+date: "2011-10-27"
+compatibility: 1.1
+strings:
+  # fields
+  name: Navn
+  email: E-post adresse
+  address: Adresse
+  tel: Tel. nummer
+  url: Nettside
+  subject: Emne
+  message: Melding
+  file: Bilag
+  captcha: Captcha
+  reload: Nytt bilde
+  askcopy: Send en kopi till meg selv
+  send: Send
+
+  # email words
+  anonymous: Anonym
+  nosubject: (Intet emne)
+  email_title: E-post sendt i fra
+
+  # status messages
+  sent: E-post sendt.
+  error: "Feil : Ingen melding er sendt."
+  disable: Kontaktskjemaet er ute av funksjon.
+  error_notarget: Kontaktskjemaet har ingen mottager.
+
+  # fields errors
+  field_required: Dette feltet må fylles ut
+  field_email: Vennligst bruk en korrekt e-post adresse
+  field_tel: Vennligst bruk ett korrekt telefon nummer
+  field_url: Vennligst bruk en korrekt nettside adresse
+  field_message: Meldingen er for kort.
+  field_captcha: Kopier bokstavene

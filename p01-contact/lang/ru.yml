@@ -1,0 +1,93 @@
+---
+# Russian language file for p01-contact
+key: ru
+name: Russian
+english_name: Russian
+authors: Stanislav Ulver
+date: "2011-10-27"
+compatibility: 1.1
+strings:
+  # fields
+  name: Ваше имя
+  email: E-mail
+  address: Почтовый адрес
+  tel: Номер телефона
+  url: Сайт
+  subject: Тема
+  message: Сообщение
+  file: Прикрепить файл
+  captcha: Код безопасности
+  reload: Обновить
+  fieldcaptcha: "Пожалуйста, не заполняйте следующие поля :"
+  askcopy: Отправить мне копию этого сообщения
+  send: Отправить
+
+  # email words
+  askedcopy: Копия этого письма была запрошена
+  anonymous: Анонимно
+  nosubject: (Без темы)
+  email_title: "Отправитель:"
+
+  # status messages
+  sent: E-mail отправлен.
+  error: "Ошибка: сообщение не было отправлено."
+  disable: Контактный плагин отключен.
+  error_notarget: Не указан получатель.
+  token: Это сообщение уже было отправлено.
+
+  # fields errors
+  field_required: Обязательное поле
+  field_email: Неверно указан e-mail адрес
+  field_tel: Неверно указан номер телефона
+  field_url: Неверно указан веб-адрес
+  field_message: Ваше сообщение слишком короткое
+  field_captcha: Код безопасности не соответствует отображённому
+  field_fieldcaptcha: Пожалуйста не заполняйте это поле
+  field_password: Неправильный пароль
+
+  # configuration panel
+
+  config_title: p01contact конфигурация
+
+  # messages
+  config_updated: Изменения сохранены.
+
+  config_error_open: "<b>Никак не открыть конфигурационный файл.</b> Проверьте его существование и права доступа к нему :"
+
+  config_error_modify: "<b>Не удается модифицировать конфигурационный файл.</b> Проверьте права доступа к нему :"
+
+  # New release alert
+  new_release: Это новая версия!
+  download: Скачать последнюю версию
+
+  # Links
+  doc: Документация
+  forum: Форум
+
+  # Parameters
+  enable: Включено
+  enable_sub: Включить или выключить отправку е-mail сообщения (не скрывает контактную форму).
+
+  default_email: email по умолчанию
+  default_email_sub: Оставьте пустым для установки
+
+  lang: Язык
+  lang_sub: Язык по умолчанию установлен в
+
+  default_params: Параметры по умолчанию
+  default_params_sub: Структура тегов формы. Используйте синтаксис описанный в документации.
+
+  message_len: Минимальная длинна сообщения
+  message_len_sub: Минимальное количество символов для поля сообщения.
+
+  checklists: Проверочный список полей
+  blacklist: Черный список
+  whitelist: Белый список
+  checklists_sub: "Черный список: значения, при которых отправка письма не произойдет.<br />Белый список: значения, которые требуются для отправки письма.<br />Элементы разделяются запятыми."
+
+  general_fields: Основные поля
+  special_fields: Специальные поля
+
+  debug: Режим отладки
+  debug_sub: Отключается отправка емайл сообщения, на экране отображается p01-contact структура данных, и данные которые были бы посланы по электронной почте.
+  debug_warn: Не включайте на рабочем сайте!

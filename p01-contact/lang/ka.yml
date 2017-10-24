@@ -1,0 +1,93 @@
+---
+# Italian language file for p01-contact
+key: ka
+name: Georgian (Kartuli)
+english_name: Georgian (Kartuli)
+authors: Temur Danelia
+date: "2011-10-27"
+compatibility: 1.1
+strings:
+  # fields
+  name: სახელი
+  email: ელფოსტა
+  address: მისამართი
+  tel: ტელეფონის ნომერი
+  url: ვებგვერდი
+  subject: სათაური
+  message: წერილის ტექსტი
+  file: მიმაგრებული
+  captcha: Captcha
+  reload: ხელახლა ჩატვირთვა
+  fieldcaptcha: "<b>არ</b> შეავსოთ ეს ველი :"
+  askcopy: გამომიგზავნეთ ამ წერილის ასლი
+  send: გაგზავნა
+
+  # email words
+  askedcopy: ამ წერილის ასლი მიუვიდა გამომგზავნს
+  anonymous: ანონიმური
+  nosubject: (სათაურის გარეშე)
+  email_title: წერილის ავტორი
+
+  # status messages
+  sent: წერილი გაიგზავნა.
+  error: "შეცდომა : წერილი არ გაიგზავნა."
+  disable: კონტაქტის ფორმა გამორთულია.
+  error_notarget: ამ კონტაქტის ფორმას არ ჰყავს ადრესატი.
+  token: წერილი უკვე გაიგზავნა.
+
+  # fields errors
+  field_required: ამ ველის შევსება სავალდებულოა
+  field_email: გამოიყენეთ არსებული ელფოსტა
+  field_tel: გამოიყენეთ არსებული ტელეფონის ნომერი
+  field_url: შეიყვანეთ არსებული ვებგვერდის მისამართი
+  field_message: წერილის ტექსტი ძალიან მოკლეა
+  field_captcha: დააკოპირეთ შემდეგი ტექსტი
+  field_fieldcaptcha: არ შეავსოთ ეს ველი
+  field_password: არასწორი პაროლი
+
+  # configuration panel
+
+  config_title: p01contact-ის კონფიგურაცია
+
+  # messages
+  config_updated: ცვლილებები წარმატებით შეინახა.
+
+  config_error_open: "<b>config ფაილის გახსნა შეუძლებელია.</b> გადაამოწმეთ რომ ფაილი არსებობს და მისი დაშვებებია :"
+
+  config_error_modify: "<b>config ფაილის შეცვლა შეუძლებელია.</b> გადაამოწმეთ ფაილის დაშვებები :"
+
+  # New release alert
+  new_release: არსებობს ჩანართის უფრო ახალი ვერსია!
+  download: გადმოწერეთ ჩანართის ბოლო ვერსია
+
+  # Links
+  doc: დოკუმენტაცია
+  forum: ფორუმი
+
+  # Parameters
+  enable: ჩართვა
+  enable_sub: წერილის გაგზავნის ფუნქციის ჩართვა ან გამორთვა (საკონტაქტო ფორმა არ დაიმალება).
+
+  default_email: ნაგულისხმები ელფოსტა
+  default_email_sub: დატოვეთ ცარიელი რათა დაყენდეს
+
+  lang: ენა
+  lang_sub: ნაგულისხმებ ენად დაყენებულია
+
+  default_params: ნაგულისხმები პარამეტრები
+  default_params_sub: ფორმის ნაგულისხმები სტრუქტურის ტეგები. გამოიყენეთ დოკუმენტაციაში აღწერილი სინტაქსი.
+
+  message_len: წერილის ტექსტის მინიმალური ზომა
+  message_len_sub: სიმბოლოების მინიმალური რაოდენობა წერილის ტექსტის ველში.
+
+  checklists: ველების დაშვებების სია
+  blacklist: შავი სია
+  whitelist: თეთრი სია
+  checklists_sub: "შავი სია : სიმბოლოები, რომელთა შესაბამის ველში შეყვანის შემთხვევაში წერილი არ გაიგზავნება.<br />Whitelist : სიმბოლოები, რომელთა შესაბამის ველში შეყვანის გარეშე წერილი არ გაიგზავნება.<br />გამოყავით მძიმით."
+
+  general_fields: ძირითადი ველები
+  special_fields: სპეციალური ველები
+
+  debug: შეცდომების გასწორების რეჟიმი
+  debug_sub: წერილის გაგზავნის ფუნქციის გამორთვა, p01-contact-ის მონაცემთა სტრუქტურის ჩვენება, POST-ის მიერ გაგზავნილი მონაცემები და წერილი, რომელიც გაიგზავნებოდა.
+  debug_warn: არ გამოიყენოთ მოქმედ საიტზე!

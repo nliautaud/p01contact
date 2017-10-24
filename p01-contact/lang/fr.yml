@@ -1,0 +1,117 @@
+---
+# French language file for p01contact"
+key: fr
+name: Français
+english_name: French
+authors: Nicolas Liautaud
+date: "2011-10-23"
+compatibility: 1.1
+strings:
+  # basic fields
+  text: texte
+  textarea: champ de texte
+  password: mot de passe
+  file: pièce jointe
+  # html5 inputs types
+  color: couleur
+  date: date
+  email: adresse email
+  month: mois
+  number: nombre
+  range: valeur
+  search: recherche
+  tel: numéro de téléphone
+  time: heure
+  url: URL
+  week: semaine
+  # other fields
+  name: nom
+  subject: objet
+  message: message
+  address: adresse postale
+  askcopy: envoyez-moi une copie de cet email
+  captcha: captcha
+  # actions
+  submit: envoyer
+  reload: recharger
+  reset: remettre à zéro
+  # received email
+  askedcopy: Une copie de cet email a été demandée
+  anonymous: Anonyme
+  nosubject: (Pas d'objet)
+  email_title: Email envoyé depuis
+  # confirmations
+  sent: Email envoyé.
+  sent_debug: Email virtuellement envoyé (mode debug actif).
+  sent_copy: Email envoyé. Une copie a été envoyée à l'addresse spécifiée.
+  sent_copy_error: Email envoyé, mais il y a eu un problème lors de l'envoie de votre copie.
+  sent_already: Le formulaire a déjà été envoyé.
+  # errors
+  error: "Erreur : aucun message n'a été envoyé."
+  error_notarget: Ce formulaire de contact n'a pas de destinataire.
+  error_honeypot: Blip. Blop. Blup. Vous êtes tombé dans le piège à robot.
+  error_pageload: Blip. Blop. Blup. Vous êtes aussi rapide qu'un robot. Veuillez attendre quelques secondes.
+  error_lastpost: Vous venez d'utiliser ce formulaire. Merci d'attendre un peu.
+  error_postcount: Vous avez trop utilisé ce formulaire cette heure ci.
+  # fields errors
+  field_required: Ce champ est obligatoire
+  field_email: Veuillez entrer une adresse email valide
+  field_tel: Veuillez entrer un numéro de téléphone valide
+  field_url: Veuillez entrer une adresse internet valide
+  field_message: Veuillez écrire un message plus long
+  field_captcha: Veuillez recopier le texte ci-dessous
+  field_password: Mot de passe incorrect
+  field_blacklist: Ce champ contiens des termes prohibés
+  field_whitelist: Une valeur attendue est manquante
+  # configuration panel
+  config_title: Configuration de p01contact
+  config_updated: Vos modifications ont été enregistrées avec succès.
+  config_error_open: <b>Impossible d'ouvrir le fichier de configuration.</b> Vérifiez s'il existe et ses permissions
+  config_error_modify: <b>Impossible de modifier le fichier de configuration.</b> Vérifiez ses permissions
+  # infos
+  new_release: Il y a une nouvelle version!
+  download: Télécharger la dernière version
+  repo: Github
+  wiki: Documentation / Wiki
+  issues: Aide / rapporter un bug
+
+  # settings
+  
+  disable: Désactiver tous les formulaires
+  disable_sub: Désactive l'envoi de mail, sans cacher les formulaires.
+
+  default_email: Emails par défaut
+  default_email_sub: Une addresse email ou plus, séparées par des virgules, qui reçevront les mails de tous les formulaires.
+
+  default_params: Paramètres par défaut
+  default_params_sub: Structure des formulaires pour les balises par défaut. Utilisez la syntaxe décrite dans la documentation.
+
+  lang: Langue
+  lang_sub: La langue par défaut est définie à
+  message_len: Longueur minimum des messages
+  message_len_sub: Nombre minimum de caractères authorisé pour les champs message
+
+  checklists: Listes de vérification des champs
+  blacklist: Liste noire
+  whitelist: Liste blanche
+  checklists_sub: Une liste noire est une liste de valeurs qui ne doivent pas être présentes dans un champ pour envoyer le mail, une liste blanche est une liste de valeurs possibles devant être présentes dans un champ pour envoyer le mail. Chaque terme est séparé par des virgules.
+
+  use_honeypot: Utiliser le champ honeypot
+  use_honeypot_sub: Ajoute à chaque formulaire un champ caché qui ne doit pas être rempli. Les humains ne le voient pas, mais les robots de spam tombent dans le piège.
+
+  min_sec_after_load: Temps minimium au chargement de la page
+  min_sec_after_load_sub: Nombre minimum de secondes entre le chargement de la page et l'envoi d'un formulaire. Les humains ont besoin d'au moins quelques secondes pour lire, remplir et valider un formulaire. Pas les robots.
+  min_sec_between_posts: Temps minimum entre deux envois
+  min_sec_between_posts_sub: Nombre minimum de secondes entre deux envois de formulaires par un même visiteur.
+
+  max_posts_by_hour: Nombre d'envoi maximum par heure
+  max_posts_by_hour_sub: Nombre maximum de soumission d'un formulaire par heure et par visiteur.
+
+  captcha_info: Les mécanismes anti-spam et anti-erreurs devraient prévenir l'intégralité des envois indésirables. En cas de besoin d'un niveau de sécurité supérieur, vous pouvez créer un champ personnalisé avec une valeur requise. Finalement, vous pouvez insérer un reCaptcha Google en utilisant un champ <em>captcha</em> avec les paramètres suivants.
+  recaptcha_public_key: Clé publique reCaptcha
+  recaptcha_public_key_sub: Clé publique Google reCaptcha.
+  recaptcha_secret_key: Clé secrète reCaptcha
+  recaptcha_secret_key_sub: Clé secrète Google reCaptcha.
+  debug: Mode debug
+  debug_sub: Désactive l'envoi de mails, affiche les structures de données de P01contact, les données envoyées par POST et les mails qui auraient été envoyés.
+  debug_warn: A ne pas activer sur un site en production !

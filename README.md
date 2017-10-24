@@ -1,23 +1,26 @@
-p01contact
-==========
+# p01contact
 
 Create contact forms by writing simple tags.
 
-p01-contact is natively a plugin for [GetSimple CMS](http://get-simple.info).
+Usage as a plugin for [GetSimple CMS] or [Pico CMS], syntax and settings are documented in the [wiki].
 
-Live examples, syntax and settings are documented in the [Wiki](https://github.com/nliautaud/p01contact/wiki/_pages)
+![](https://img.shields.io/github/release/nliautaud/p01contact.svg?style=for-the-badge&label=Latest+release)
+
+<p align="center">
+<img src="capture.png"><img src="capture_complex.png">
+</p>
 
 ## Installation
 
 Download the files.
 
-For GetSimple CMS, unzip it in the ``plugins/`` directory.
+For [GetSimple CMS], place the `p01-contact` directory and the file `p01-contact_gs.php` in `plugins/`.
 
-## Use
+For [Pico CMS], place the `p01-contact` directory in `plugins/`.
 
-### As a GetSimple plugin
+## Usage as a plugin
 
-Just write tags in your pages according to the [syntax](https://github.com/nliautaud/p01contact/wiki/Syntax). Reminds you to fill the Meta Description accessible in page options. If you don't, GetSimple will show the tag source in the source code of the output page.
+Just write tags in your pages.
 
 ```
 This is a default contact form :
@@ -27,24 +30,38 @@ This is a default contact form :
 Simple.
 ```
 
-You can also use it in components or templates by manipulating the variable ``$p01contact``, already initialized. For example, to add a default contact form in your sidebar :
+Follow the [syntax] to create custom forms.
 
-```php
-<?php
-get_component('sidebar');
-echo $p01contact->parse('(% contact %)');
-?>
+```
+(% contact en :
+    subject => A locked subject,
+    radio "I'd like to contact you" = a little | a lot |: passionately,
+    select "Department" (the floor you look for) = Silly walks :| Strange things,
+    email!,
+    message =< Bla bla placeholder,
+    checkbox! "I'm in control",
+    askcopy
+%)
 ```
 
-### As a PHP script
+Details about usage as a plugin can be found in the [wiki] :
+- [GetSimple plugin](https://github.com/nliautaud/p01contact/wiki/GetSimple-plugin)
+- [Pico CMS plugin](https://github.com/nliautaud/p01contact/wiki/Pico-CMS-plugin)
 
-Include the script, create a new instance and parse a string containing tags using the [syntax](https://github.com/nliautaud/p01contact/wiki/Syntax).
+## Usage as a PHP script
+
+The simplest method is to include the script, create a new instance and parse strings containing tags using the [syntax].
 
 ```php
-include 'path/to/p01-contact/p01-contact.php';
+include 'p01-contact/P01contact.php';
 
 $p01contact = new P01contact();
 
 $content = 'This is a default contact form : (% contact %)'
 $content = $p01contact->parse($content);
 ```
+
+[GetSimple CMS]: http://get-simple.info
+[Pico CMS]: http://picocms.org
+[wiki]: https://github.com/nliautaud/p01contact/wiki/_pages
+[syntax]: https://github.com/nliautaud/p01contact/wiki/Syntax
