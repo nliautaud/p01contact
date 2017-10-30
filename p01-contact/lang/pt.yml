@@ -1,0 +1,126 @@
+---
+# Portuguese language file for p01contact
+key: pt
+name: Português
+english_name: Portuguese
+authors:  Julianna Brandão
+date: "2017-10-29"
+compatibility: 1.1
+strings:
+  # basic fields
+  text: texto
+  textarea: campo de texto
+  password: senha
+  file: arquivo
+  # html5 inputs types
+  color: cor
+  date: data
+  email: e-mail
+  month: mês
+  number: número
+  range: valor
+  search: busca
+  tel: número de telefone
+  time: hora
+  url: URL
+  week: semana
+  # other fields
+  name: nome
+  subject: assunto
+  message: mensagem
+  address: endereço postal
+  askcopy: me envie uma cópia deste e-mail
+  captcha: captcha
+  # actions
+  submit: Enviar
+  reload: Recarregar
+  reset: Apagar este campo
+  # received email
+  askedcopy: Uma cópia deste e-mail foi requisitada
+  anonymous: Anônimo
+  nosubject: (Sem assunto)
+  email_title: E-mail enviado de
+  # confirmations
+  sent: E-mail enviado.
+  sent_debug: E-mail virtualmente enviado (modo de depuração habilitado).
+  sent_copy: E-mail enviado. Uma cópia foi enviada para o endereço especificado.
+  sent_copy_error: E-mail enviado, mas houve uma problema ao te enviar uma cópia.
+  sent_already: A messagem já foi enviada.
+  # errors
+  error: "Erro : a mensagem não foi enviada."
+  error_notarget: Este campo de contato encontra-se vazio.
+  error_honeypot: Blip. Blop. Blup. Você caiu no "pote de mel" para robôs.
+  error_pageload: Blip. Blop. Blup. Você é tão rápido quanto um robô. Por favor, espere alguns segundos.
+  error_lastpost: Você enviou recentemente. Por favor, aguarde um pouco.
+  error_postcount: Você enviou muitas vezes na última hora.
+  # fields errors
+  field_required: Este campo é necessário
+  field_email: Por favor, utilize um endereço de e-mail válido
+  field_tel: Por favor, utilize um número de telefone válido
+  field_url: Por favor, escreva um endereço web válido
+  field_message: Por favor, escreva uma mensagem mais longa
+  field_captcha: Por favor, responda corretamente o captha a seguir
+  field_password: Senha errada
+  field_blacklist: Este campo contém termos proibidos
+  field_whitelist: Um valor esperado está faltando
+  # configuration panel
+  config_title: configuração do p01contact
+  config_updated: Suas alterações foram salvas com sucesso.
+  config_error_open: <b>Não foi possível abrir o arquivo de configuração.</b> Verifique se o arquivo existe e se possue as devidas permissões
+  config_error_modify: <b>Não foi possível modificar o arquivo de configurações.</b> Verifique as permissões do arquivo"
+  # infos
+  new_release: Há uma nova versão!
+  download: Baixe a última versão
+  repo: Github
+  wiki: Documentation / Wiki
+  issues: Ajuda / reporte um erro
+
+  # settings
+
+  disable: Desabilitar todos os campos
+  disable_sub: Desabilitar envio de e-mails, sem esconder os campos de contato.
+
+  default_email: E-mails padrão
+  default_email_sub: Um ou mais endereços de e-mail, separados por vírgula, que receberão e-mails de todos os formulários.
+
+  default_params: Parâmetros padrões
+  default_params_sub: Estrutura de campos padrão. Use a sintaze descrita na documentação.
+
+  lang: Idioma
+  lang_sub: Idioma padrão está configurado para
+
+  message_len: Tamanho mínimo das mensagens
+  message_len_sub: Número mínimo de caracteres para os cmapos de mensagem.
+
+  separator: Separador
+  separator_sub: "Separador de parâmetros nos campos. Ex: vírgula, ponto-vírgula, barra dupla..."
+
+  logs_count: Número do log
+  logs_count_sub: Máximo número de entradas a serem mantidas nos logs.
+
+  checklists: Lista de verificação de campos
+  blacklist: Lista negra
+  whitelist: Lista branca
+  checklists_sub: Uma lista negra é uma lista de valores proibidos no tipo de campo em questão, e uma lista branca é uma lista dos únicos valores possíveis para certo tipo de campo. Cada termo deve ser separado por vírgulas.
+
+  use_honeypot: Use campo de "pote de mel" escondido
+  use_honeypot_sub: Adicionar a todos os campos um campo escondido que não deve ser preenchido. Humanos não o enxergarão, mas a maioria dos robôs de spam cairão na armadilha.
+
+  min_sec_after_load: Tempo mínimo após o carregamento da página
+  min_sec_after_load_sub: Mínimo número de segundos entre uma carregamento de uma página e uma submissão de um formulário. Humanos necessitam de pelo menos alguns segundos para ler, preencher e enviar um formulário. Robôs não.
+  
+  min_sec_between_posts: Tempo mínimo entre duas submissões
+  min_sec_between_posts_sub: Mínimo número de segundos entre a submissão de dois formulários pelo mesmo usuário.
+
+  max_posts_by_hour: Número máximo de submissôes por hora
+  max_posts_by_hour_sub: Número máximo de submissões por hora por usuário.
+
+  captcha_info: Os mecanismos nativos de anti-spam e anti-erro devem prevenir todas as submissões não desejadas. Se precisar de um nível maior de segurança, você pode criar um captcha customizado ao adicionar um campo com a resposta requerida. Finalmente, você pode inserir um Google reCaptcha ao usar um campo <em>captcha</em> com as configurações a baixo.
+  recaptcha_public_key: chave pública do reCaptcha
+  recaptcha_public_key_sub: chave pública do Google reCaptcha.
+  recaptcha_secret_key: chave secreta do reCaptcha
+  recaptcha_secret_key_sub: chave secreta do Google reCaptcha.
+  
+  debug: Modo de depuração
+  debug_sub: Desabilitar o envio de e-mails, mostrar a estrutura de dados do p01-contact, os dados enviador por POST e o e-mail que deveria ser enviado.
+  debug_warn: não ative num site em produção!
