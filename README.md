@@ -4,7 +4,7 @@ Create contact forms by writing simple tags.
 
 Usage as a plugin for [GetSimple CMS] or [Pico CMS], syntax and settings are documented in the [wiki].
 
-![](https://img.shields.io/github/release/nliautaud/p01contact.svg?style=for-the-badge&label=Latest+release)
+[![](https://img.shields.io/github/release/nliautaud/p01contact.svg?style=for-the-badge&label=Latest+release)](https://github.com/nliautaud/p01contact/releases)
 
 <p align="center">
 <img src="capture.png"><img src="capture_complex.png">
