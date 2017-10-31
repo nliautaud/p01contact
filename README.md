@@ -14,7 +14,7 @@ Create contact forms by writing simple tags.
 - Plugin for [GetSimple][GetSimple plugin] or [Pico CMS][Pico CMS plugin]
  
 <p align="center">
-<img src="capture.png"><img src="capture_complex.png">
+<img src="images/capture.png"><img src="images/capture_complex.png">
 </p>
 
 ## Installation
