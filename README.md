@@ -1,11 +1,18 @@
 # p01contact
 
-Create contact forms by writing simple tags.
-
-Usage as a plugin for [GetSimple CMS] or [Pico CMS], syntax and settings are documented in the [wiki].
-
 [![](https://img.shields.io/github/release/nliautaud/p01contact.svg?style=for-the-badge&label=Latest+release)](https://github.com/nliautaud/p01contact/releases)
 
+Create contact forms by writing simple tags.
+
+- Supports any fields types
+- Powerful [textual syntax][syntax]
+- Generates [comprehensive mails][emails]
+- UTF-8, [localized and multilingual][i18n]
+- Automatic [security measures]
+- Integrated [settings editor][settings]
+- Debug reports and [submission logs][logs]
+- Plugin for [GetSimple][GetSimple plugin] or [Pico CMS][Pico CMS plugin]
+ 
 <p align="center">
 <img src="capture.png"><img src="capture_complex.png">
 </p>
@@ -63,5 +70,12 @@ $content = $p01contact->parse($content);
 
 [GetSimple CMS]: http://get-simple.info
 [Pico CMS]: http://picocms.org
+[GetSimple plugin]: https://github.com/nliautaud/p01contact/wiki/GetSimple-plugin
+[Pico CMS plugin]: https://github.com/nliautaud/p01contact/wiki/Pico-CMS-plugin
 [wiki]: https://github.com/nliautaud/p01contact/wiki/_pages
 [syntax]: https://github.com/nliautaud/p01contact/wiki/Syntax
+[settings]: https://github.com/nliautaud/p01contact/wiki/Settings
+[security measures]: https://github.com/nliautaud/p01contact/wiki/Settings#security
+[i18n]: https://github.com/nliautaud/p01contact/wiki/Localization-(i18n)
+[emails]: https://github.com/nliautaud/p01contact/wiki/Emails
+[logs]: https://github.com/nliautaud/p01contact/wiki/Logs
