@@ -3,91 +3,126 @@
 key: cz
 name: Czech
 english_name: Czech
-authors: Seva
-date: "2011-10-22"
+authors: Seva, princezna
+date: "2017-10-31"
 compatibility: 1.1
 strings:
-  # fields
-  name: Jméno
-  email: E-mail
-  address: Adresa
-  tel: Telefonní číslo
-  url: Webové stránky
-  subject: Předmět
-  message: Text zprávy
-  file: Přílohy
-  captcha: Captcha
-  reload: Načíst znovu
-  fieldcaptcha: "Prosím <b>ne</b>vyplňujte následující pole:"
-  askcopy: Zašlete mi kopii tohoto e-mailu
-  send: Odeslat
-
-  # email words
+  # basic fields
+  text: text
+  textarea: textové pole
+  password: heslo
+  file: příloha
+  # html5 inputs types
+  color: barva
+  date: datum
+  email: email
+  month: měsíc
+  number: číslo
+  range: rozsah
+  search: hledání
+  tel: telefonní číslo
+  time: čas
+  url: URL
+  week: týden
+  # other fields
+  name: jméno
+  subject: předmět
+  message: zpráva
+  address: poštovní adresa
+  askcopy: pošlete mi kopii tohoto mailu
+  captcha: captcha
+  # actions
+  submit: Odeslat
+  reload: Znovu načíst
+  reset: Vyresetovat
+  # received email
   askedcopy: Kopie tohoto e-mailu je požadována
   anonymous: Anonym
   nosubject: (Bez předmětu)
   email_title: E-mail odeslán z
-
-  # status messages
-  sent: E-mail odeslán.
-  error: "Chyba: zpráva nebyla odeslána."
-  disable: Kontaktní formulář není k dispozici.
-  error_notarget: Tento kontaktní formulář je bez příjemce.
-  token: Tato zpráva již byla odeslána.
-
+  
+  # confirmations
+  sent: Email byl odeslán.
+  sent_debug: Email byl virtuálně odeslán (je zapnutý debug mode).
+  sent_copy: Email byl odeslán. Kopie byla zaslána na zadanou adresu.
+  sent_copy_error: Email byl odeslán, ale nepovedlo se zaslat kopii.
+  sent_already: Zpráva již byla odeslána.
+  # errors
+  error: "Chyba : žádná zpráva se neposlala."
+  error_notarget: Tento kontaktní formulář nemá žádného příjemce.
+  error_honeypot: Blip. Blop. Blup. Byl jste rozpoznán jako robot.
+  error_pageload: Blip. Blop. Blup. Odesíláte zprávy tak často, jako robot. Počkejte prosím pár vteřin.
+  error_lastpost: Odeslal jste email před chvilkou. Počkejte prosím chvíli.
+  error_postcount: Odeslal jste příliš mnoho emailů během poslední hodiny.
   # fields errors
   field_required: Musíte vyplnit toto pole
   field_email: Prosím vložte platný e-mail
   field_tel: Prosím vložte platné telefonní číslo
   field_url: Prosím vložte platnou webovou adresu
   field_message: Prosím napište delší zprávu
-  field_captcha: Prosím přepište následující text
-  field_fieldcaptcha: Prosím nevyplňujte následující pole
+  field_captcha: Prosím vyplňte captchu
   field_password: Špatné heslo
-
+  field_blacklist: Toto pole obsahovalo zakázané slova
+  field_whitelist: V tomto poli něco chybí
+  
   # configuration panel
-
   config_title: p01contact konfigurace
+  config_updated: Změny byly úspěšně uloženy.
+  config_error_open: <b>Nepovedlo se otevřít konfigurační soubor.</b> Ověřte, jestli existuje a jeho přístupová práva
+  config_error_modify: <b>Nepovedlo se změnit konfigurační soubor.</b> Ověřte jeho přístupová práva"
+  # infos
+  new_release: Existuje vydána nová verze!
+  download: Stáhnout poslední verzi
+  repo: Github
+  wiki: Dokumentace / Wiki
+  issues: Nápověda / nahlásit chybu
 
-  # messages
-  config_updated: Změny byly uloženy.
+  # settings
 
-  config_error_open: "<b>Nelze otevřít konfigurační soubor.</b> Zkontrolujte zda soubor existuje a má oprávnění:"
+  disable: Vypnout všechny formuláře
+  disable_sub: Vypne posílání emailu, ale neskryje kontaktní formuláře.
 
-  config_error_modify: "<b>Nelze upravit konfigurační soubor.</b> Zkontrolujte oprávnění souboru:"
-
-  # New release alert
-  new_release: Je dostupná nová verze!
-  download: Stáhnout nejnovější verzi
-
-  # Links
-  doc: Dokumentace
-  forum: Fórum
-
-  # Parameters
-  enable: Aktivovat
-  enable_sub: Povolit/zakázat odeslání e-mailu. (Ponechá kontaktní formulář viditelný).
-
-  default_email: Výchozí e-mail
-  default_email_sub: Ponechte prázdné, pokud chcete ponechat nenastaveno
-
-  lang: Jazyk
-  lang_sub: Výchozí jazyk je nastaven na
+  default_email: Výchozí emaily
+  default_email_sub: Jedna nebo více emailových adres, oddělených čárkou, na které přijdou zprávy ze všech formulářů.
 
   default_params: Výchozí parametry
-  default_params_sub: Výchozí tagy formuláře. Použijte syntaxi popsanou v dokumentaci.
+  default_params_sub: Výchozí struktura formuláře. Více detailů v dokumentaci.
+
+  lang: Jazyk
+  lang_sub: Výchozí jazyk je nastaven na 
 
   message_len: Minimální délka zprávy
-  message_len_sub: Minimální počet znaku, které musí uživatel zadat do zprávy.
+  message_len_sub: Minimální počet znaků znaků pro políčka se zprávou.
+
+  separator: Oddělovač
+  separator_sub: "Oddělovač v definici formulářů. Např. čárka, středník, dvě svislítka..."
+
+  logs_count: Velikost logu
+  logs_count_sub: Maximální počet položek které mají být uchovány v logu.
 
   checklists: Checklisty
   blacklist: Blacklist
   whitelist: Whitelist
-  checklists_sub: "Blacklist : hodnoty, které nesmějí obsahovat pole.<br />Whitelist : hodnoty, které jsou vhodné pro pole.<br />Oddělujte středníkem"
+  checklists_sub: Blacklist je seznam zakázaných hodnot v daném typu pole, a whitelist je seznam jediných povolených hodnot pro daný typ pole. Položky by měly být odděleny čárkou.
 
-  general_fields: Hlavní pole
-  special_fields: Speciální pole
+  use_honeypot: Použít skryté honeypot políčko
+  use_honeypot_sub: Přidá do každého formuláře skryté pole, které lidé neuvidí, ale většina spam botů ho vyplní a spadnou tak do pasti.
 
+  min_sec_after_load: Minimální čas po načtení stránky
+  min_sec_after_load_sub: Minimální počet sekund mezi načtením stránky a odesláním formuláře. Lidé potřebují čas, aby si formulář přečetli, roboti nikoliv.
+  
+  min_sec_between_posts: Minimální čas mezi dvěma odesláními
+  min_sec_between_posts_sub: Minimální počet sekund mezi dvěma odesláními formuláře (od stejného člověka).
+
+  max_posts_by_hour: Maximální počet odeslání za hodinu
+  max_posts_by_hour_sub: Limituje počet odeslaných zpráv jedním člověkem.
+
+  captcha_info: Nativní anti-spam and anti-error mechanismy by měly zabránit všem podezřelým zprávám. Pokud potřebujete ještě vyšší úrove ochrany, můžete vytvořit vlastní captchu přidáním pole s povinnou odpovědí. Můžete také vložit Google reCaptcha použitím <em>captcha</em> pole s následujícím nastavením.
+  recaptcha_public_key: reCaptcha public key
+  recaptcha_public_key_sub: Google reCaptcha public key.
+  recaptcha_secret_key: reCaptcha secret key
+  recaptcha_secret_key_sub: Google reCaptcha secret key.
+  
   debug: Debug mód
-  debug_sub: Vypne odesílání e-mailu a zobrazí strukturu p01-contact pluginu.
+  debug_sub: Vypne odesílání e-mailu a zobrazí strukturu p01-contact pluginu, data odeslaná přes POST a email co by byl poslán.
   debug_warn: Neaktivujte na veřejně přístupné stránce!
