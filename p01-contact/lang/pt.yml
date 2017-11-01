@@ -45,7 +45,7 @@ strings:
   sent_debug: E-mail virtualmente enviado (modo de depuração habilitado).
   sent_copy: E-mail enviado. Uma cópia foi enviada para o endereço especificado.
   sent_copy_error: E-mail enviado, mas houve uma problema ao te enviar uma cópia.
-  sent_already: A messagem já foi enviada.
+  sent_already: A mensagem já foi enviada.
   # errors
   error: "Erro : a mensagem não foi enviada."
   error_notarget: Este campo de contato encontra-se vazio.
@@ -72,7 +72,7 @@ strings:
   new_release: Há uma nova versão!
   download: Baixe a última versão
   repo: Github
-  wiki: Documentation / Wiki
+  wiki: Documentação / Wiki
   issues: Ajuda / reporte um erro
 
   # settings
@@ -84,7 +84,7 @@ strings:
   default_email_sub: Um ou mais endereços de e-mail, separados por vírgula, que receberão e-mails de todos os formulários.
 
   default_params: Parâmetros padrões
-  default_params_sub: Estrutura de campos padrão. Use a sintaze descrita na documentação.
+  default_params_sub: Estrutura de campos padrão. Use a sintaxe descrita na documentação.
 
   lang: Idioma
   lang_sub: Idioma padrão está configurado para
@@ -93,7 +93,7 @@ strings:
   message_len_sub: Número mínimo de caracteres para os cmapos de mensagem.
 
   separator: Separador
-  separator_sub: "Separador de parâmetros nos campos. Ex: vírgula, ponto-vírgula, barra dupla..."
+  separator_sub: "Separador de parâmetros nos campos. Ex: vírgula, ponto e vírgula, barra dupla..."
 
   logs_count: Número do log
   logs_count_sub: Máximo número de entradas a serem mantidas nos logs.
@@ -108,11 +108,11 @@ strings:
 
   min_sec_after_load: Tempo mínimo após o carregamento da página
   min_sec_after_load_sub: Mínimo número de segundos entre uma carregamento de uma página e uma submissão de um formulário. Humanos necessitam de pelo menos alguns segundos para ler, preencher e enviar um formulário. Robôs não.
-  
+
   min_sec_between_posts: Tempo mínimo entre duas submissões
   min_sec_between_posts_sub: Mínimo número de segundos entre a submissão de dois formulários pelo mesmo usuário.
 
-  max_posts_by_hour: Número máximo de submissôes por hora
+  max_posts_by_hour: Número máximo de submissões por hora
   max_posts_by_hour_sub: Número máximo de submissões por hora por usuário.
 
   captcha_info: Os mecanismos nativos de anti-spam e anti-erro devem prevenir todas as submissões não desejadas. Se precisar de um nível maior de segurança, você pode criar um captcha customizado ao adicionar um campo com a resposta requerida. Finalmente, você pode inserir um Google reCaptcha ao usar um campo <em>captcha</em> com as configurações a baixo.
@@ -120,7 +120,7 @@ strings:
   recaptcha_public_key_sub: chave pública do Google reCaptcha.
   recaptcha_secret_key: chave secreta do reCaptcha
   recaptcha_secret_key_sub: chave secreta do Google reCaptcha.
-  
+
   debug: Modo de depuração
   debug_sub: Desabilitar o envio de e-mails, mostrar a estrutura de dados do p01-contact, os dados enviador por POST e o e-mail que deveria ser enviado.
   debug_warn: não ative num site em produção!
