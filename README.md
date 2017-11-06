@@ -23,7 +23,7 @@ Download the files.
 
 For [GetSimple CMS], place the `p01-contact` directory and the file `p01-contact_gs.php` in `plugins/`.
 
-For [Pico CMS], place the `p01-contact` directory in `plugins/`.
+For [Pico CMS], place the `p01-contact` directory in `plugins/` and **rename-it `PicoContact`**.
 
 ## Usage as a plugin
 

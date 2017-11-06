@@ -15,7 +15,7 @@
 
 require_once 'src/P01contact.php';
 
-class P01contact_pico extends AbstractPicoPlugin
+class PicoContact extends AbstractPicoPlugin
 {
     private $P01contact;
 
