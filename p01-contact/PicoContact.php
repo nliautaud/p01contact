@@ -80,8 +80,8 @@ class PicoContact extends AbstractPicoPlugin
         // {{ contact('parameters') }}       custom parameters
         // {{ contact('fr', 'parameters') }} custom parameters and form-specific language
         // {{ contact('fr', null) }}         default form with form-specific language
-        $twig->addFunction(new Twig_SimpleFunction('contact', function ($a, $b) {
-            if (isset($b)) return $this->P01contact->newForm($b, $a);
+        $twig->addFunction(new Twig_SimpleFunction('contact', function ($a = null, $b = null) {
+            if ($b) return $this->P01contact->newForm($b, $a);
             return $this->P01contact->newForm($a);
         }));
 
