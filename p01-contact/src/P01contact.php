@@ -21,7 +21,7 @@ class P01contact
 
     public function __construct()
     {
-        define('P01C\VERSION', '1.1.0');
+        define('P01C\VERSION', '1.1.2');
         $this->version = VERSION;
 
         define('P01C\SERVERNAME', $_SERVER['SERVER_NAME']);
