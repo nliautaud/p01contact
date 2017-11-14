@@ -25,7 +25,11 @@ class P01contact
         $this->version = VERSION;
 
         define('P01C\SERVERNAME', $_SERVER['SERVER_NAME']);
-        define('P01C\SERVER', 'http://' . SERVERNAME);
+        define('P01C\SERVERPORT', $_SERVER['SERVER_PORT']);
+        define('P01C\HTTPS', !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+        define('P01C\PORT', SERVERPORT && SERVERPORT != 80 && SERVERPORT != 443 ? ':'.SERVERPORT : '');
+        define('P01C\PROTOCOL', HTTPS || SERVERPORT == 443 ? 'https' : 'http');
+        define('P01C\SERVER', PROTOCOL . '://' . SERVERNAME . PORT);
         define('P01C\PAGEURI', $_SERVER['REQUEST_URI']);
         define('P01C\PAGEURL', SERVER . PAGEURI);
 
@@ -44,7 +48,7 @@ class P01contact
 
         $this->loadConfig();
         $this->loadLangs();
-        
+
         if ($this->config('debug')) {
             $this->enablePHPdebug();
         }
@@ -62,7 +66,7 @@ class P01contact
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,APILATEST);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
         curl_setopt($ch, CURLOPT_USERAGENT, 'p01contact/curl');
         $resp = curl_exec($ch);
@@ -112,10 +116,10 @@ class P01contact
 
         return $defaultStyle . $form->html();
     }
-    
+
     /**
      * Display system and P01contact infos.
-     * 
+     *
      * @return string the html report
      */
     public function debugReport()
@@ -183,7 +187,7 @@ class P01contact
         $default = !empty($this->default_lang) ? $this->default_lang : 'en';
 
         if (!$lang) $lang = $this->config('lang');
-        
+
         if (empty($lang)
         || !isset($this->langs[$lang])
         || !isset($this->langs[$lang]['strings'][$key])) {
@@ -191,7 +195,7 @@ class P01contact
         }
         $strings = $this->langs[$lang]['strings'];
         if (!empty($strings[$key])) return trim($strings[$key]);
-        
+
         return ucfirst($key);
     }
     /**
