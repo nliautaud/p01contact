@@ -50,7 +50,7 @@ class PicoContact extends AbstractPicoPlugin
     {
         // replace config panel (% contact_admin_config %)
         $content = preg_replace_callback('`\(%\s*contact_admin_config\s*%\)`', function () {
-            return $this->P01contact->panel();
+            return '<div>' . $this->P01contact->panel(). '</div>'; 
         }, $content, 1);
 
         // replace debug report (% contact_admin_debug %)
