@@ -1,40 +1,58 @@
 ---
 # German language file for p01-contact
 key: de
-name: German
+name: Deutsch
 english_name: German
-authors: Martin Köhler
+authors: Martin Köhler, sonst-was
 date: "2011-10-27"
 compatibility: 1.1
 strings:
-  # fields
-  name: Name
+  # basic fields
+  text: Text
+  textarea: Textbereich
+  password: Passwort
+  file: Anhang
+  # html5 inputs types
+  color: Farbe
+  date: Datum
   email: E-Mail
-  address: Anschrift
+  month: Monat
+  number: Nummer
+  range: Bereich
+  search: Suche
   tel: Telefonnummer
+  time: Zeit
   url: Website
+  week: Woche
+  # other fields
+  name: Name
   subject: Betreff
   message: Nachricht
-  file: Anhang
+  address: Anschrift
   captcha: Captcha
-  reload: Neuladen
-  fieldcaptcha: "Folgendes Feld <b>NICHT</b> beschriften :"
   askcopy: Eine Kopie an mich senden
+  # actions
   send: Senden
-
-  # email words
+  reload: Neu laden
+  reset: Zurücksetzen
+  # received email
   askedcopy: Eine Kopie wurde angefordert
   anonymous: Anonym
   nosubject: (kein Betreff)
   email_title: Nachricht gesendet von
-
-  # status messages
+  # confirmations
   sent: Nachricht verschickt.
+  sent_debug: Nachricht virtuell verschickt (Debugmodus ist aktiviert).
+  sent_copy: Nachricht verschickt. Eine Kopie wurde an die angegebene Adresse geschickt.
+  sent_copy_error: Nachricht verschickt, beim Senden der Kopie gab es jedoch einen Fehler.
+  sent_already: Die Nachricht wurde bereits verschickt.
+  # errors
   error: "Fehler : Nachricht wurde nicht verschickt."
-  disable: Konaktformular deaktiviert.
-  error_notarget: Dieser Kontakt hat keine E-Mail-Adresse.
-  token: Die Nachricht wurde bereits verschickt.
-
+  error_notarget: Das Kontaktformular hat keinen Empfänger.
+  error_honeypot: Blubber di blubb, Sie sind in den Honigtopf für Roboter gefallen.
+  error_pageload: Blubber di blubb, Sie sind schnell wie ein Robter, bitte warten Sie einige Sekunden.
+  error_lastpost: Sie haben erst vor kurzem abgeschickt, bitte einen Moment warten.
+  error_postcount: Sie haben innerhalb einer Stunde zu häufig abgeschickt.
   # fields errors
   field_required: Dieses Feld ist obligatorisch
   field_email: Bitte korrekte E-Mail-Adresse verwenden
@@ -42,52 +60,67 @@ strings:
   field_url: Bitte korrekte Internetadresse angeben
   field_message: Bitte umfangreichere Nachricht schreiben
   field_captcha: Folgendes bitte abschreiben
-  field_fieldcaptcha: Folgendes nicht beschriften
   field_password: Passwort falsch
-
+  field_blacklist: Dieses Feld enthält nicht erlaubte Worte.
+  field_whitelist: Dieses Feld enthält erforderliche Worte nicht.
   # configuration panel
-
   config_title: p01contact Konfiguration
-
-  # messages
-  config_updated: Erfolgreich eingestellt.
-
-  config_error_open: "<b>Konfigurationsdatei nicht lesbar.</b> Datei eventuell anlegen und Rechte einstellen :"
-
-  config_error_modify: "<b>Konfigurationsdatei nicht beschreibbar.</b> Rechte einstellen :"
-
-  # New release alert
+  config_updated: Änderungen wurden gespeichert.
+  config_error_open: <b>Kann Konfiguration nicht öffnen.</b> Bitte überprüfen ob Datei vorhanden ist und korrekte Berechtigungen hat
+  config_error_modify: <b>Kann Konfiguration nicht ändern.</b> Bitte Berechtigungen überprüfen
+  # infos
   new_release: Es gibt eine neue Version!
   download: Aktuelle Version herunterladen
-
-  # Links
-  doc: Dokumentation
-  forum: Forum
-
-  # Parameters
-  enable: Aktivieren
-  enable_sub: E-Mail-Versand ein- oder ausschalten.
-
+  repo: Github
+  wiki: Dokumentation / Wiki
+  issues: Hilfe / Fehler melden
+  
+  # settings
+  
+  disable: Alle Formulare deaktivieren
+  disable_sub: Deaktiviert E-Mail-Versand ohne das Kontaktformular zu verstecken.
+  
   default_email: Standard-E-Mail-Adresse
-  default_email_sub: Leerlassen um einzustellen
-
-  lang: Sprache
-  lang_sub: Standardsprache ist
+  default_email_sub: Eine oder mehrere E-Mail-Adressen (durch Komma separiert), welche E-Mails aller Formulare erhalten.
 
   default_params: Standardwerte
   default_params_sub: Standardstruktur. Bitte Syntax laut Dokumentation verwenden.
 
+  lang: Sprache
+  lang_sub: Standardsprache ist
+
   message_len: Mindestzeichenzahl
   message_len_sub: Mindestanzahl an Zeichen im Nachrichtenfeld.
-
+  
+  separator: Trennzeichen
+  separator_sub: "Trennzeichen für Formular-MarkUp. Zum Beispiel Komma, Semikolon, ..."
+  
+  logs_count: Anzahl Logs
+  logs_count_sub: Maximale Anzahl an Einträgen in Logs.
+  
   checklists: Feldercheckliste
   blacklist: Blacklist
   whitelist: Whitelist
-  checklists_sub: "Blacklist : Verbotene Werte.<br />Whitelist : Erlaubte Werte.<br />Durch Kommata abgetrennt."
-
-  general_fields: Allgemeine Felder
-  special_fields: Besondere Felder
+  checklists_sub: Eine Blacklist ist eine Liste verbotener Werte im jeweiligen Feldtyp und eine Whitelist ist eine Liste mit Werten ausschließlich erlaubt sind. Durch Kommata abgetrennt.
+  
+  use_honeypot: Verstecktes Feld nutzen (Honigtopf)
+  use_honeypot_sub: Fügt ein verstecktes Feld zu jedem Formular hinzu, welches von Menschen nicht ausgefüllt werden kann. Viele Roboter füllen es jedoch aus.
+  
+  min_sec_after_load: Minimale Zeit seit Seitenaufruf
+  min_sec_after_load_sub: Minimale Anzahl Sekunden die zwischen Seitenaufruf und Abschicken vergangen sein muss. Menschen brauchen einige Zeit um das Formular auszufüllen und abzuschicken, Roboter dagegen nicht.
+  
+  min_sec_between_posts: Minimale Zeit zwischen Einsendungen
+  min_sec_between_posts_sub: Minimale Anzahl Sekunden zwischen zwei Einsendungen des gleichen Nutzers.
+  
+  max_posts_by_hour: Maximale Einsendungen pro Stunde
+  max_posts_by_hour_sub: Maximale Einsendungen pro Stunde und Nutzer
+  
+  captcha_info: Die nativen Anti-Spam Mechanismen sollten alle unerwünschte Einsendungen blockieren. Wenn mehr Sicherheit benötigt wird, kann ein benutzerdefiniertes Feld genutzt werden  mit einer erforderlichen Antwort. Alternativ kann ein Google reCaptcha mit <em>captcha</em> und unten aufgeführten Einstellungen eingefügt werden.
+  recaptcha_public_key: reCaptcha öffentlicher Schlüssel
+  recaptcha_public_key_sub: Google reCaptcha öffentlicher Schlüssel.
+  recaptcha_secret_key: reCaptcha geheimer Schlüssel
+  recaptcha_secret_key_sub: Google reCaptcha geheimer Schlüssel.
 
   debug: Debugmodus
   debug_sub: E-Mail versand deaktiveren, Datenstruktur von p01-contact anzeigen, Daten per POST verschickt und die E-Mail, die verschickt worden waere.
-  debug_warn: Nicht im laufenden Betrieb verwenden!
+  debug_warn: Nicht im Produktivbetrieb verwenden!
