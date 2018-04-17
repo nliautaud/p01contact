@@ -168,7 +168,7 @@ class P01contactForm
                 continue;
             $posted_val = $posted[$field->id];
             $field->setValue($posted_val);
-            $hasFieldsErrors = $field->validate() && $hasFieldsErrors;
+            $hasFieldsErrors = !$field->validate() || $hasFieldsErrors;
         }
 
         // check errors and set status
