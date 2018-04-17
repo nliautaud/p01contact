@@ -222,6 +222,7 @@ class P01contactField
                     $html .= '<script src="https://www.google.com/recaptcha/api.js"></script>';
                 }
                 $html .='<div class="g-recaptcha" id="'.$id.'" data-sitekey="'.$key.'"></div>';
+                $html .="<input type=\"hidden\" id=\"$id\" name=\"$name\" value=\"trigger\">";
                 break;
             case 'checkbox':
             case 'radio':
