@@ -5,7 +5,7 @@
  * This plugin let you add contact forms in your pages by writing simple tags.
  * You can also define recipients or create your own complex forms.
  *
- * This file is the handle of p01-contact for Pico CMS.
+ * This file is the handle of p01-contact for Pico 2.
  *
  * @link https://github.com/nliautaud/p01contact
  * @author Nicolas Liautaud
@@ -17,6 +17,8 @@ require_once 'src/P01contact.php';
 
 class PicoContact extends AbstractPicoPlugin
 {
+    const API_VERSION = 2;
+
     private $P01contact;
 
     /**
@@ -65,16 +67,13 @@ class PicoContact extends AbstractPicoPlugin
      * Add  {{ contact() }}  and  {{ contact_admin() }}  twig functions 
      * For outputing forms and admin panels from themes templates
      * 
-     * Triggered before Pico renders the page
+     * Triggered when Pico registers the twig template engine
      *
-     * @see    Pico::getTwig()
-     * @see    DummyPlugin::onPageRendered()
-     * @param  Twig_Environment &$twig          twig template engine
-     * @param  array            &$twigVariables template variables
-     * @param  string           &$templateName  file name of the template
+     * @see Pico::getTwig()
+     * @param Twig_Environment &$twig Twig instance
      * @return void
      */
-    public function onPageRendering(Twig_Environment &$twig, array &$twigVariables, &$templateName)
+    public function onTwigRegistered(Twig_Environment &$twig)
     {
         // {{ contact() }}                   output the default form
         // {{ contact('parameters') }}       custom parameters
