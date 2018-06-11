@@ -21,24 +21,24 @@ class PicoContact extends AbstractPicoPlugin
 
     /**
      * Initialize P01contact and set the default language from Pico settings
-     * 
+     *
      * Triggered after Pico has read its configuration
      *
      * @see    Pico::getConfig()
      * @param  array &$config array of config variables
      * @return void
      */
-     public function onConfigLoaded(array &$config)
-     {
+    public function onConfigLoaded(array &$config)
+    {
         $this->P01contact = new P01C\P01contact();
 
-        if(!empty($config['default_language'])) {
+        if (!empty($config['default_language'])) {
             $this->P01contact->default_lang = $config['default_language'];
         }
     }
     /**
      * Replace (% contact %) tags and contact_admin tags in pages content
-     * 
+     *
      * Triggered after Pico has prepared the raw file contents for parsing
      *
      * @see    Pico::parseFileContent()
@@ -50,21 +50,24 @@ class PicoContact extends AbstractPicoPlugin
     {
         // replace config panel (% contact_admin_config %)
         $content = preg_replace_callback('`\(%\s*contact_admin_config\s*%\)`', function () {
-            return '<div>' . $this->P01contact->panel(). '</div>'; 
+            return '<div>' . $this->P01contact->panel(). '</div>';
         }, $content, 1);
 
         // replace debug report (% contact_admin_debug %)
         $content = preg_replace_callback('`\(%\s*contact_admin_debug\s*%\)`', function () {
-            return $this->P01contact->config('debug') ? $this->P01contact->debugReport() : '';
+            if (!$this->P01contact->config('debug')) {
+                return '';
+            }
+            return '<div>' . $this->P01contact->debugReport() .'</div>';
         }, $content, 1);
 
         // replace forms (% contact ... %)
         $content = $this->P01contact->parse($content);
     }
     /**
-     * Add  {{ contact() }}  and  {{ contact_admin() }}  twig functions 
+     * Add  {{ contact() }}  and  {{ contact_admin() }}  twig functions
      * For outputing forms and admin panels from themes templates
-     * 
+     *
      * Triggered before Pico renders the page
      *
      * @see    Pico::getTwig()
@@ -81,17 +84,21 @@ class PicoContact extends AbstractPicoPlugin
         // {{ contact('fr', 'parameters') }} custom parameters and form-specific language
         // {{ contact('fr', null) }}         default form with form-specific language
         $twig->addFunction(new Twig_SimpleFunction('contact', function ($a = null, $b = null) {
-            if ($b) return $this->P01contact->newForm($b, $a);
+            if ($b) {
+                return $this->P01contact->newForm($b, $a);
+            }
             return $this->P01contact->newForm($a);
         }));
 
         // {{ contact_admin('debug') }}       output the debug report
         // {{ contact_admin('config') }}      output the config panel
         $twig->addFunction(new Twig_SimpleFunction('contact_admin', function ($type) {
-            if ($type == 'debug' && $this->P01contact->config('debug'))
+            if ($type == 'debug' && $this->P01contact->config('debug')) {
                 return $this->P01contact->debugReport();
-            if ($type == 'config')
+            }
+            if ($type == 'config') {
                 return $this->P01contact->panel();
+            }
         }));
     }
 }

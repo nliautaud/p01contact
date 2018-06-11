@@ -12,9 +12,14 @@ class Session
 {
     private static $key = 'p01contact';
 
-    private static function init() {
-        if (session_id() === '') session_start();
-        if (!self::exists()) $_SESSION[self::$key] = [];
+    private static function init()
+    {
+        if (session_id() === '') {
+            session_start();
+        }
+        if (!self::exists()) {
+            $_SESSION[self::$key] = [];
+        }
     }
     /**
      * Return if the session data exists, or if the given key exists.$_COOKIE
@@ -22,9 +27,12 @@ class Session
      * @param string $key
      * @return bool
      */
-    public static function exists($key = null) {
+    public static function exists($key = null)
+    {
         $sessionExist = !empty($_SESSION) && !empty($_SESSION[self::$key]);
-        if ($key === null) return $sessionExist;
+        if ($key === null) {
+            return $sessionExist;
+        }
         return $sessionExist && isset($_SESSION[self::$key][$key]);
     }
     /**
@@ -34,8 +42,11 @@ class Session
      * @param mixed $val
      * @return void
      */
-    public static function set($key, $val) {
-        if (!self::exists()) self::init();
+    public static function set($key, $val)
+    {
+        if (!self::exists()) {
+            self::init();
+        }
         $_SESSION[self::$key][$key] = $val;
     }
     /**
@@ -45,8 +56,11 @@ class Session
      * @param mixed $default (optional) Value to return if the key doesn't exist.
      * @return mixed `$default` or `null`
      */
-    public static function get($key, $default = null) {
-        if (!self::exists($key)) return $default;
+    public static function get($key, $default = null)
+    {
+        if (!self::exists($key)) {
+            return $default;
+        }
         return $_SESSION[self::$key][$key];
     }
     /**
@@ -58,13 +72,20 @@ class Session
      * @param integer $size
      * @return void
      */
-    public static function stack($key, $val, $size = 2) {
-        if (!self::exists()) self::init();
+    public static function stack($key, $val, $size = 2)
+    {
+        if (!self::exists()) {
+            self::init();
+        }
         $arr = self::get($key);
-        if(!isset($arr)) $arr = [];
-        if(!is_array($arr)) return;
+        if (!isset($arr)) {
+            $arr = [];
+        }
+        if (!is_array($arr)) {
+            return;
+        }
         array_push($arr, $val);
-        while(count($arr) > $size) {
+        while (count($arr) > $size) {
             array_shift($arr);
         }
         self::set($key, $arr);
@@ -74,8 +95,11 @@ class Session
      *
      * @return string
      */
-    public static function report() {
-        if (!self::exists()) return;
+    public static function report()
+    {
+        if (!self::exists()) {
+            return;
+        }
         $out = '<h3>$_SESSION :</h3>';
         $out.= preint($_SESSION, true);
         return $out;
