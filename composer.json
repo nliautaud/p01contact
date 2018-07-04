@@ -1,0 +1,18 @@
+{
+    "name": "nliautaud/p01contact",
+    "description": "Create contact forms by writing simple tags.",
+    "type": "library",
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.3",
+        "wimg/php-compatibility": "^8.1",
+        "friendsofphp/php-cs-fixer": "^2.12"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "nliautaud",
+            "email": "nicolas.liautaud@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}

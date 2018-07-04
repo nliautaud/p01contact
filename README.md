@@ -25,6 +25,8 @@ For [GetSimple CMS], place the `p01-contact` directory and the file `p01-contact
 
 For [Pico CMS], place the `p01-contact` directory in `plugins/` and **rename-it `PicoContact`**.
 
+*Compatibility : PHP 5.4+*
+
 ## Usage as a plugin
 
 Just write tags in your pages.

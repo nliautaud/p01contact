@@ -164,8 +164,9 @@ class P01contactForm
         $hasFieldsErrors = false;
         $fields = $this->getFields();
         foreach ($fields as $field) {
-            if( !isset($posted[$field->id]) )
+            if (!isset($posted[$field->id])) {
                 continue;
+            }
             $posted_val = $posted[$field->id];
             $field->setValue($posted_val);
             $hasFieldsErrors = !$field->validate() || $hasFieldsErrors;

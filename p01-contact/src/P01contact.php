@@ -21,7 +21,7 @@ class P01contact
 
     public function __construct()
     {
-        define('P01C\VERSION', '1.1.2');
+        define('P01C\VERSION', '1.1.4');
         $this->version = VERSION;
 
         define('P01C\SERVERNAME', $_SERVER['SERVER_NAME']);
@@ -65,13 +65,15 @@ class P01contact
     public function getNewRelease()
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL,APILATEST);
+        curl_setopt($ch, CURLOPT_URL, APILATEST);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
         curl_setopt($ch, CURLOPT_USERAGENT, 'p01contact/curl');
         $resp = curl_exec($ch);
         curl_close($ch);
-        if ($resp) return json_decode($resp);
+        if ($resp) {
+            return json_decode($resp);
+        }
         return;
     }
 
@@ -111,7 +113,9 @@ class P01contact
         }
         $form = new P01contactForm($this);
         $form->parseTag($params);
-        if ($lang) $form->lang = $lang;
+        if ($lang) {
+            $form->lang = $lang;
+        }
         $form->post();
 
         return $defaultStyle . $form->html();
@@ -132,9 +136,12 @@ class P01contact
         $out.= preint($health, true);
 
         $out.= '<h3>Constants :</h3>';
-        $out.= preint(array_filter(get_defined_constants(true)['user'], function ($n) {
-            return 0 === strpos($n, __namespace__);
-        }, ARRAY_FILTER_USE_KEY), true);
+        $constants = get_defined_constants(true)['user'];
+        $filteredConstants = array_filter(array_keys($constants), function ($key) {
+            return 0 === strpos($key, __namespace__);
+        });
+        $filteredConstants = array_intersect_key($constants, array_flip($filteredConstants));
+        $out .= preint($filteredConstants, true);
 
         $out .= Session::report();
 
@@ -171,7 +178,9 @@ class P01contact
         $files = glob(LANGSPATH . '*.yml');
         foreach ($files as $f) {
             $parsed = \Spyc::YAMLLoad($f);
-            if(!$parsed || !isset($parsed['key'])) continue;
+            if (!$parsed || !isset($parsed['key'])) {
+                continue;
+            }
             $this->langs[$parsed['key']] = $parsed;
         }
     }
@@ -186,16 +195,20 @@ class P01contact
     {
         $default = !empty($this->default_lang) ? $this->default_lang : 'en';
 
-        if (!$lang) $lang = $this->config('lang');
+        if (!$lang) {
+            $lang = $this->config('lang');
+        }
 
         if (empty($lang)
         || !isset($this->langs[$lang])
         || !isset($this->langs[$lang]['strings'][$key])) {
             $lang = $default;
         }
-        $strings = $this->langs[$lang]['strings'];
-        if (!empty($strings[$key])) return trim($strings[$key]);
 
+        $strings = $this->langs[$lang]['strings'];
+        if (!empty($strings[$key])) {
+            return trim($strings[$key]);
+        }
         return ucfirst($key);
     }
     /**
@@ -449,7 +462,7 @@ class P01contact
             return;
         }
         $html = '';
-        foreach (array_reverse ($logs) as $log) {
+        foreach (array_reverse($logs) as $log) {
             $html .= '<tr><td>';
             $html .= implode('</td><td>', array_map('htmlentities', $log));
             $html .= '</td></tr>';
