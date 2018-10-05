@@ -274,7 +274,7 @@ class P01contactField
         $html .= "\n\n\n";
         $html .= '<tr style="background-color: #eeeeee">';
         $html .= '<td style="padding: .5em .75em"><span style="'.$emphasis.'">';
-        $html .= $this->title ? $this->title : $this->type;
+        $html .= $this->title ? $this->title : ucfirst($this->form->lang($this->type));
         $html .= '</span></td>';
         $html .= "\t\t";
 
