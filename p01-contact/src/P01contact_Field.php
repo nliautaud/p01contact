@@ -234,7 +234,7 @@ class P01contactField
                     $v = !empty($v) ? $v : 'Default';
                     $html .= '<label class="option">';
                     $html .= "<input id=\"{$id}_option{$i}\"";
-                    $html .= " type=\"$type\" class=\"$type\" name=\"{$name}[$i]\"";
+                    $html .= " type=\"$type\" class=\"$type\" name=\"{$name}\"";
                     $html .= " value=\"$i\"$disabled$required$selected />$v";
                     $html .= '</label>';
                 }
