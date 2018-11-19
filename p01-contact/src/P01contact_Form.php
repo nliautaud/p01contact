@@ -212,7 +212,7 @@ class P01contactForm
             return false;
         }
         $loads = Session::get('pageloads');
-        if (count($loads > 1) && $loads[1] - $loads[0] < $this->config('min_sec_after_load')) {
+        if (count($loads) > 1 && $loads[1] - $loads[0] < $this->config('min_sec_after_load')) {
             $this->setStatus('error_pageload');
             return false;
         }
