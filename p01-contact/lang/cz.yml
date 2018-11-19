@@ -32,7 +32,7 @@ strings:
   askcopy: pošlete mi kopii tohoto mailu
   captcha: captcha
   # actions
-  submit: Odeslat
+  send: Odeslat
   reload: Znovu načíst
   reset: Vyresetovat
   # received email

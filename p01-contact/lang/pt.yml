@@ -32,7 +32,7 @@ strings:
   askcopy: me envie uma cópia deste e-mail
   captcha: captcha
   # actions
-  submit: Enviar
+  send: Enviar
   reload: Recarregar
   reset: Apagar este campo
   # received email
