@@ -26,6 +26,9 @@ class P01contact
 
         define('P01C\SERVERNAME', $_SERVER['SERVER_NAME']);
         define('P01C\SERVERPORT', $_SERVER['SERVER_PORT']);
+        define('P01C\SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
+        define('P01C\SCRIPTPATH', get_included_files()[0]);
+
         define('P01C\HTTPS', !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
         define('P01C\PORT', SERVERPORT && SERVERPORT != 80 && SERVERPORT != 443 ? ':'.SERVERPORT : '');
         define('P01C\PROTOCOL', HTTPS || SERVERPORT == 443 ? 'https' : 'http');
@@ -33,8 +36,9 @@ class P01contact
         define('P01C\PAGEURI', $_SERVER['REQUEST_URI']);
         define('P01C\PAGEURL', SERVER . PAGEURI);
 
-        define('P01C\PATH', dirname(dirname(__FILE__)) . '/');
-        define('P01C\RELPATH', substr(PATH, strlen($_SERVER['DOCUMENT_ROOT'])));
+        define('P01C\PATH', dirname(__DIR__) . '/');
+        define('P01C\ROOT', str_replace(SCRIPTNAME,'', SCRIPTPATH));
+        define('P01C\RELPATH', str_replace(ROOT, '', PATH));
 
         define('P01C\LANGSPATH', PATH . 'lang/');
         define('P01C\TPLPATH', PATH . 'src/templates/');
