@@ -427,9 +427,8 @@ class P01contactForm
     private function mailHeaders($name, $email, $mime_boundary)
     {
         $encoded_name = $this->encodeHeader($name);
-        $headers  = "From: $encoded_name";
+        $headers  = "From: $encoded_name <no-reply@" . SERVERNAME . ">\n";
         if ($email) {
-            $headers .= " <$email>\n";
             $headers .= "Reply-To: $encoded_name <$email>\n";
             $headers .= "Return-Path: $encoded_name <$email>";
         }
