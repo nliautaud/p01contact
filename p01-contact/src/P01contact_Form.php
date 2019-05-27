@@ -367,6 +367,9 @@ class P01contactForm
                 case 'subject':
                     $subject = $field->value;
                     break;
+                case 'askcopy':
+                    $askcopy = true;
+                    break;
             }
         }
         $html = $this->manager->renderTemplate('mail_template', $tpl_data);
