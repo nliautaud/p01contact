@@ -1,0 +1,126 @@
+---
+# Turkish language file for p01-contact
+key: tr
+name: Türkçe
+english_name: Turkish
+authors: Efrahim Önder
+date: "2020-03-14"
+compatibility: 1.1
+strings:
+  # basic fields
+  text: Yazı
+  textarea: Yazı alanı
+  password: Şifre
+  file: Eklenti
+  # html5 inputs types
+  color: Renk
+  date: Tarih
+  email: Eposta
+  month: Ay
+  number: Numara
+  range: Alan
+  search: Arama
+  tel: Telefon numarası
+  time: Yaman
+  url: Website
+  week: Hafta
+  # other fields
+  name: İsim
+  subject: Konu
+  message: Mesaj
+  address: Adres
+  captcha: Captcha
+  askcopy: Bir kopyasını bana gönder
+  # actions
+  send: Gönder
+  reload: Yeniden yükle
+  reset: Geri dönüştür
+  # received email
+  askedcopy: Bir kopyası istendi
+  anonymous: Anonim
+  nosubject: (konu yok)
+  email_title: Mesajı gönderen
+  # confirmations
+  sent: Mesaj gönderildi.
+  sent_debug: Mesaj gizli gönderildi (Hata ayıklama modu etkin).
+  sent_copy: Mesaj gönderildi. Bir kopyasıda verilen adrese gönderildi.
+  sent_copy_error: Mesaj gönderildi. Fakat kopyasının gönderilmesinde bir hata oluştu.
+  sent_already: Mesaj yaten gönderildi.
+  # errors
+  error: "Hata : Mesaj gönderilemedi."
+  error_notarget: İletişim formunun alıcısı bulunmuyor.
+  error_honeypot: Çat, pat, küt, robotlar için bal kabına düştünüz.
+  error_pageload: Çat, pat, küt, bir robot gibi hızlısınız, lütfen birkaç saniye bekleyiniz.
+  error_lastpost: Biraz önce gönderdiniz, lütfen biraz bekleyiniz.
+  error_postcount: Bir saat içinde çok fazla gönderdiniz.
+  # fields errors
+  field_required: Bu alan zorunludur
+  field_email: Lütfen geçerli bir eposta adresi kullanın
+  field_tel: Lütfen geçerli bir telefon numarası kullanın
+  field_url: Lütfen geçerli bir internet adresi kullanın
+  field_message: Lütfen daha kapsayıcı bir mesaj yazın
+  field_captcha: Lütfen aşağıdakileri kopyalayın
+  field_password: Şifre yanlış
+  field_blacklist: Bu alanda izin verilmeyen kelimeler mevcut.
+  field_whitelist: Bu alanda gerekli olan kelimeler mevcut değil.
+  # configuration panel
+  config_title: p01contact Ayarlar
+  config_updated: Değişiklikler kaydedildi.
+  config_error_open: <b>Ayarlar açılamıyor.</b> Lütfen dosyanın var olup olmadığını ve doğru izinlere sahip olup olmadığını kontrol edin
+  config_error_modify: <b>Ayarlar değiştirilemiyor.</b> Lütfen izinleri kontrol edin
+  # infos
+  new_release: Yeni bir versiyon mevcut!
+  download: Güncel versiyonu indir
+  repo: Github
+  wiki: Dokumentation / Wiki
+  issues: Yardım / Hata bildir
+  
+  # settings
+  
+  disable: Tüm formları devre dışı bırak
+  disable_sub: İletişim formunu gizlemeden eposta göndermeyi devre dışı bırakır.
+  
+  default_email: Standart eposta adresi
+  default_email_sub: Tüm formlardan eposta alan bir veya daha fazla eposta adresi (virgülle ayrılır).
+
+  default_params: Standart değerler
+  default_params_sub: Standart yapı. Lütfen belgelere göre sözdizimi kullanın.
+
+  lang: Dil
+  lang_sub: Standart dil
+
+  message_len: En az karakter sayısı
+  message_len_sub: Mesaj alanındaki en az karakter sayısı.
+  
+  separator: Ayırıcı
+  separator_sub: "Form işaretlemesi için ayırıcı. Örneğin: virgül, noktalı virgül, ..."
+  
+  logs_count: Günlük sayısı
+  logs_count_sub: Günlüklerdeki maksimum giriş sayısı.
+  
+  checklists: Alan kontrol listesi
+  blacklist: Kara liste
+  whitelist: Beyaz liste
+  checklists_sub: Kara liste, ilgili alan türünde yasaklanmış değerlerin listesidir ve beyaz liste yalnızca izin verilen değerlerin listesidir. Virgülle ayrılmıştır.
+  
+  use_honeypot: Gizli alanı kullan (bal kabı)
+  use_honeypot_sub: İnsanların dolduramayacağı her forma gizli bir alan ekler. Ancak, birçok robot bunu doldurur.
+  
+  min_sec_after_load: Sayfanın görüntülenmesinden bu yana geçen minimum süre
+  min_sec_after_load_sub: Sayfaya erişim ile sayfayı gönderme arasında geçen minimum saniye sayısı. İnsanların formu doldurup göndermeleri biraz zaman alır, ancak robotlarda değil.
+  
+  min_sec_between_posts: Gönderiler arasındaki minimum süre
+  min_sec_between_posts_sub: Aynı kullanıcı tarafından yapılan iki gönderi arasındaki minimum saniye sayısı.
+  
+  max_posts_by_hour: Saat başına maksimum gönderi
+  max_posts_by_hour_sub: Saat ve kullanıcı başına maksimum gönderi sayısı
+  
+  captcha_info: Yerel istenmeyen posta önleme ve hata önleme mekanizmaları istenmeyen tüm gönderileri engellemelidir. Daha yüksek bir güvenliğe ihtiyacınız varsa, gerekli cevabı içeren bir alan ekleyerek özel bir captcha oluşturabilirsiniz. Son olarak, aşağıdaki ayarlara sahip bir <em> captcha </em> alanı kullanarak bir Google reCaptcha'sı ekleyebilirsiniz.
+  recaptcha_public_key: reCaptcha ortak anahtar
+  recaptcha_public_key_sub: Google reCaptcha ortak anahtar.
+  recaptcha_secret_key: reCaptcha gizli anahtar
+  recaptcha_secret_key_sub: Google reCaptcha gizli anahtar.
+
+  debug: Hata ayıklama modu
+  debug_sub: Eposta göndermeyi devre dışı bırak, p01-contact veri yapısını görüntüle, POST yoluyla gönderilen veriler ve gönderilecek eposta.
+  debug_warn: Üretim web sitesinde aktif etmeyin!
