@@ -22,7 +22,11 @@ class PicoContact extends AbstractPicoPlugin
     private $P01contact;
 
     protected $enabled = false;
-    
+
+    protected $doContact = false;
+    protected $forAll = false;
+    protected $style = '/plugins/PicoContact/style.css';
+
     /**
      * Initialize P01contact and set the default language from Pico settings
      *
@@ -34,10 +38,25 @@ class PicoContact extends AbstractPicoPlugin
      */
     public function onConfigLoaded(array &$config)
     {
-        $this->P01contact = new P01C\P01contact();
-
         if (!empty($config['default_language'])) {
-            $this->P01contact->default_lang = $config['default_language'];
+            $this->default_lang = $config['default_language'];
+        }
+        $this->forAll=$this->getPluginConfig('forall',false);
+    }
+    public function generateRandomString($length = 6) 
+    {
+     $characters = '123456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ'; // lookalike characters excluded
+     $randomString = '';
+     for ($i = 0; $i < $length; $i++) {
+         $randomString .= $characters[rand(0, strlen($characters) - 1)];
+     }
+     return $randomString;
+    }
+    public function onMetaParsed(array &$meta)
+    {
+        if($this->forAll || $meta['contact']['enabled']) {
+            $this->doContact = true;
+            if(!empty($meta['contact']['style'])) $this->style=$meta['contact']['style'];
         }
     }
     /**
@@ -52,21 +71,33 @@ class PicoContact extends AbstractPicoPlugin
      */
     public function onContentPrepared(&$content)
     {
-        // replace config panel (% contact_admin_config %)
-        $content = preg_replace_callback('`\(%\s*contact_admin_config\s*%\)`', function () {
-            return '<div>' . $this->P01contact->panel(). '</div>';
-        }, $content, 1);
-
-        // replace debug report (% contact_admin_debug %)
-        $content = preg_replace_callback('`\(%\s*contact_admin_debug\s*%\)`', function () {
-            if (!$this->P01contact->config('debug')) {
-                return '';
+        if($this->doContact) {
+            $this->P01contact = new P01C\P01contact();
+    
+            if (!empty($this->default_lang)) {
+                $this->P01contact->default_lang = $this->default_lang;
             }
-            return '<div>' . $this->P01contact->debugReport() .'</div>';
-        }, $content, 1);
-
-        // replace forms (% contact ... %)
-        $content = $this->P01contact->parse($content);
+            $this->P01contact->style = $this->style;
+    
+            $pwd = $this->generateRandomString();
+            file_put_contents(__DIR__ . '/src/pwd',$pwd);
+    
+            // replace config panel (% contact_admin_config %)
+            $content = preg_replace_callback('`\(%\s*contact_admin_config\s*%\)`', function () {
+                return '<div>' . $this->P01contact->panel(). '</div>';
+            }, $content, 1);
+    
+            // replace debug report (% contact_admin_debug %)
+            $content = preg_replace_callback('`\(%\s*contact_admin_debug\s*%\)`', function () {
+                if (!$this->P01contact->config('debug')) {
+                    return '';
+                }
+                return '<div>' . $this->P01contact->debugReport() .'</div>';
+            }, $content, 1);
+    
+            // replace forms (% contact ... %)
+            $content = $this->P01contact->parse($content);
+        }
     }
     /**
      * Add  {{ contact() }}  and  {{ contact_admin() }}  twig functions
@@ -80,26 +111,28 @@ class PicoContact extends AbstractPicoPlugin
      */
     public function onTwigRegistered(Twig_Environment &$twig)
     {
-        // {{ contact() }}                   output the default form
-        // {{ contact('parameters') }}       custom parameters
-        // {{ contact('fr', 'parameters') }} custom parameters and form-specific language
-        // {{ contact('fr', null) }}         default form with form-specific language
-        $twig->addFunction(new Twig_SimpleFunction('contact', function ($a = null, $b = null) {
-            if ($b) {
-                return $this->P01contact->newForm($b, $a);
-            }
-            return $this->P01contact->newForm($a);
-        }));
-
-        // {{ contact_admin('debug') }}       output the debug report
-        // {{ contact_admin('config') }}      output the config panel
-        $twig->addFunction(new Twig_SimpleFunction('contact_admin', function ($type) {
-            if ($type == 'debug' && $this->P01contact->config('debug')) {
-                return $this->P01contact->debugReport();
-            }
-            if ($type == 'config') {
-                return $this->P01contact->panel();
-            }
-        }));
+        if($this->doContact) {
+            // {{ contact() }}                   output the default form
+            // {{ contact('parameters') }}       custom parameters
+            // {{ contact('fr', 'parameters') }} custom parameters and form-specific language
+            // {{ contact('fr', null) }}         default form with form-specific language
+            $twig->addFunction(new Twig_SimpleFunction('contact', function ($a = null, $b = null) {
+                if ($b) {
+                    return $this->P01contact->newForm($b, $a);
+                }
+                return $this->P01contact->newForm($a);
+            }));
+    
+            // {{ contact_admin('debug') }}       output the debug report
+            // {{ contact_admin('config') }}      output the config panel
+            $twig->addFunction(new Twig_SimpleFunction('contact_admin', function ($type) {
+                if ($type == 'debug' && $this->P01contact->config('debug')) {
+                    return $this->P01contact->debugReport();
+                }
+                if ($type == 'config') {
+                    return $this->P01contact->panel();
+                }
+            }));
+        }
     }
 }
