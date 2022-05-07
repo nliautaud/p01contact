@@ -25,7 +25,7 @@ class PicoContact extends AbstractPicoPlugin
 
     protected $doContact = false;
     protected $forAll = false;
-    protected $style = '/plugins/PicoContact/style.css';
+    protected $PicoContactStyle = '/plugins/PicoContact/style.css';
 
     /**
      * Initialize P01contact and set the default language from Pico settings
@@ -56,7 +56,7 @@ class PicoContact extends AbstractPicoPlugin
     {
         if($this->forAll || $meta['contact']['enabled']) {
             $this->doContact = true;
-            if(!empty($meta['contact']['style'])) $this->style=$meta['contact']['style'];
+            if(!empty($meta['contact']['style'])) $this->PicoContactStyle=$meta['contact']['style'];
         }
     }
     /**
@@ -77,7 +77,7 @@ class PicoContact extends AbstractPicoPlugin
             if (!empty($this->default_lang)) {
                 $this->P01contact->default_lang = $this->default_lang;
             }
-            $this->P01contact->style = $this->style;
+            $this->P01contact->PicoContactStyle = $this->PicoContactStyle;
     
             $pwd = $this->generateRandomString();
             file_put_contents(__DIR__ . '/src/pwd',$pwd);
