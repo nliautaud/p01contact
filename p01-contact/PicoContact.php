@@ -21,6 +21,8 @@ class PicoContact extends AbstractPicoPlugin
 
     private $P01contact;
 
+    protected $enabled = false;
+    
     /**
      * Initialize P01contact and set the default language from Pico settings
      *
