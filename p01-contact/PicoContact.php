@@ -54,7 +54,7 @@ class PicoContact extends AbstractPicoPlugin
     }
     public function onMetaParsed(array &$meta)
     {
-        if($this->forAll || ( !empty($meta['contact']['enabled']) && $meta['contact']['enabled'] ) {
+        if($this->forAll || (!empty($meta['contact']['enabled']) && $meta['contact']['enabled']) ) {
             $this->doContact = true;
             if(!empty($meta['contact']['style'])) $this->ContactStyle=$meta['contact']['style'];
         }
