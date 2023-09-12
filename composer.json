@@ -1,18 +1,25 @@
 {
     "name": "nliautaud/p01contact",
     "description": "Create contact forms by writing simple tags.",
-    "type": "library",
-    "require-dev": {
-        "squizlabs/php_codesniffer": "^3.3",
-        "wimg/php-compatibility": "^8.1",
-        "friendsofphp/php-cs-fixer": "^2.12"
-    },
+    "keywords": [ "form", "contact", "contact form" ],
     "license": "MIT",
     "authors": [
         {
             "name": "nliautaud",
-            "email": "nicolas.liautaud@gmail.com"
+            "email": "nicolas.liautaud@gmail.com",
+            "homepage": "http://github.com/nliautaud",
+            "role": "Developer"
         }
     ],
-    "minimum-stability": "stable"
+    "support": {
+        "source": "http://github.com/nliautaud/p01contact",
+        "wiki": "http://github.com/nliautaud/p01contact/wiki",
+        "issues": "http://github.com/nliautaud/p01contact/issues"
+    },
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "classmap": [ "p01contact.php" ]
+    }
 }

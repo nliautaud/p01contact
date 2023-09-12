@@ -100,8 +100,6 @@ class Session
         if (!self::exists()) {
             return;
         }
-        $out = '<h3>$_SESSION :</h3>';
-        $out.= preint($_SESSION, true);
-        return $out;
+        return preint($_SESSION[self::$key], true);
     }
 }

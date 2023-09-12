@@ -13,7 +13,6 @@
  * @version 1.1
  */
 
-require_once GSPLUGINPATH . 'p01-contact/src/P01contact.php';
 $p01contact = new P01C\P01contact();
 $p01contact->default_lang = substr($LANG, 0, 2);
 

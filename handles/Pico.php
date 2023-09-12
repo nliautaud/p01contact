@@ -5,7 +5,7 @@
  * This plugin let you add contact forms in your pages by writing simple tags.
  * You can also define recipients or create your own complex forms.
  *
- * This file is the handle of p01-contact for Pico 2.
+ * This file is the handle of p01-contact for Pico CMS.
  *
  * @link https://github.com/nliautaud/p01contact
  * @author Nicolas Liautaud
@@ -13,9 +13,7 @@
  * @version 1.1
  */
 
-require_once 'src/P01contact.php';
-
-class PicoContact extends AbstractPicoPlugin
+class p01contact extends AbstractPicoPlugin
 {
     const API_VERSION = 2;
 

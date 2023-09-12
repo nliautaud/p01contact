@@ -13,23 +13,11 @@ Create contact forms by writing simple tags.
 - Debug reports and [submission logs][logs]
 - Plugin for [GetSimple][GetSimple plugin] or [Pico CMS][Pico CMS plugin]
  
-<p align="center">
-<img src="images/capture.png"><img src="images/capture_complex.png">
-</p>
+<img src="images/capture.png">
 
-## Installation
+## Usage
 
-Download the files.
-
-For [GetSimple CMS], place the `p01-contact` directory and the file `p01-contact_gs.php` in `plugins/`.
-
-For [Pico CMS], place the `p01-contact` directory in `plugins/` and **rename-it `PicoContact`**.
-
-*Compatibility : PHP 5.4+*
-
-## Usage as a plugin
-
-Just write tags in your pages.
+Write tags in plain text.
 
 ```
 This is a default contact form :
@@ -53,21 +41,36 @@ Follow the [syntax] to create custom forms.
 %)
 ```
 
-Details about usage as a plugin can be found in the [wiki] :
+## Installation
+
+Either for [GetSimple CMS] or [Pico CMS], you can :
+1. download and unpack the [latest release](https://github.com/nliautaud/p01contact/releases),
+2. place `p01contact/` in `plugins/`.
+
+All done.
+
+If you manage Pico with [Composer](https://getcomposer.org/), from the Pico root :
+```
+composer require nliautaud/p01contact
+composer config scripts.post-install-cmd "cp -r vendor/nliautaud/p01contact plugins/p01contact;"
+composer install
+```
+
+More details can be found in the [wiki] :
 - [GetSimple plugin](https://github.com/nliautaud/p01contact/wiki/GetSimple-plugin)
 - [Pico CMS plugin](https://github.com/nliautaud/p01contact/wiki/Pico-CMS-plugin)
 
-## Usage as a PHP script
+## Standalone usage
 
-The simplest method is to include the script, create a new instance and parse strings containing tags using the [syntax].
+Install, include.
 
+```
+composer require nliautaud/p01contact
+```
+Parse strings containing tags using the [syntax].
 ```php
-include 'p01-contact/P01contact.php';
-
 $p01contact = new P01contact();
-
-$content = 'This is a default contact form : (% contact %)'
-$content = $p01contact->parse($content);
+$html = $p01contact->parse('This is a default contact form : (% contact %)');
 ```
 
 [GetSimple CMS]: http://get-simple.info

@@ -24,28 +24,28 @@ class P01contact
         define('P01C\VERSION', '1.1.6');
         $this->version = VERSION;
 
-        define('P01C\SERVERNAME', $_SERVER['SERVER_NAME']);
-        define('P01C\SERVERPORT', $_SERVER['SERVER_PORT']);
-        define('P01C\SCRIPTNAME', $_SERVER['SCRIPT_NAME']);
-        define('P01C\SCRIPTPATH', get_included_files()[0]);
+        define('P01C\SERVER_NAME', $_SERVER['SERVER_NAME']);
+        define('P01C\SERVER_PORT', $_SERVER['SERVER_PORT']);
+        define('P01C\SERVER_ROOT', str_replace("/", DIRECTORY_SEPARATOR, $_SERVER['DOCUMENT_ROOT']));
+        define('P01C\SERVER_URI', $_SERVER['REQUEST_URI']);
 
         define('P01C\HTTPS', !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
-        define('P01C\PORT', SERVERPORT && SERVERPORT != 80 && SERVERPORT != 443 ? ':'.SERVERPORT : '');
-        define('P01C\PROTOCOL', HTTPS || SERVERPORT == 443 ? 'https' : 'http');
-        define('P01C\SERVER', PROTOCOL . '://' . SERVERNAME . PORT);
-        define('P01C\PAGEURI', $_SERVER['REQUEST_URI']);
-        define('P01C\PAGEURL', SERVER . PAGEURI);
+        define('P01C\PORT', SERVER_PORT && SERVER_PORT != 80 && SERVER_PORT != 443 ? ':'.SERVER_PORT : '');
+        $protocol = HTTPS || SERVER_PORT == 443 ? 'https' : 'http';
+        define('P01C\SERVER', $protocol . '://' . SERVER_NAME . PORT);
+        define('P01C\PAGEURL', SERVER . SERVER_URI);
 
-        define('P01C\PATH', dirname(__DIR__) . '/');
-        define('P01C\ROOT', str_replace(SCRIPTNAME,'', SCRIPTPATH));
-        define('P01C\RELPATH', str_replace(ROOT, '', PATH));
+        define('P01C\PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR );
+        define('P01C\RELPATH', str_replace(SERVER_ROOT, '', PATH));
+        define('P01C\SCRIPTURL', SERVER . RELPATH);
 
-        define('P01C\LANGSPATH', PATH . 'lang/');
+        define('P01C\LANGSPATH', PATH . 'src/lang/');
         define('P01C\TPLPATH', PATH . 'src/templates/');
         define('P01C\CONFIGPATH', PATH . 'config.json');
         define('P01C\LOGPATH', PATH . 'log.json');
 
         define('P01C\REPOURL', 'https://github.com/nliautaud/p01contact');
+        define('P01C\RELEASESURL', 'https://github.com/nliautaud/p01contact/releases/');
         define('P01C\WIKIURL', 'https://github.com/nliautaud/p01contact/wiki');
         define('P01C\ISSUESURL', 'https://github.com/nliautaud/p01contact/issues');
         define('P01C\APILATEST', 'https://api.github.com/repos/nliautaud/p01contact/releases/latest');
@@ -112,7 +112,7 @@ class P01contact
         $defaultStyle = '';
         static $once;
         if (!$once) {
-            $defaultStyle = '<link rel="stylesheet" href="'.SERVER.RELPATH.'style.css"/>';
+            $defaultStyle = '<link rel="stylesheet" href="'.SCRIPTURL.'src/styles/style.css"/>';
             $once = true;
         }
         $form = new P01contactForm($this);
@@ -132,29 +132,76 @@ class P01contact
      */
     public function debugReport()
     {
-        $out = '<h2 style="color:#c33">p01-contact debug</h2>';
+        $out = '<style>
+        .p01c.debug { border: 1px solid #c33;border-radius:3px;padding:1em; }
+        .p01c.debug h2 { color:#c33 }
+        .p01c.debug th { text-align:right; font-weight:300 }
+        </style>';
+        $out.= '<div class="p01c debug">';
+        $out.= '<h2>p01-contact debug</h2>';
 
-        $out.= '<h3>Health :</h3>';
-        $health = 'PHP version : '.phpversion()."\n";
-        $health.= 'PHP mbstring (UTF-8) : '.(extension_loaded('mbstring') ? 'OK' : 'MISSING');
-        $out.= preint($health, true);
+        $out .= "<table>";
+        $out .= '<tr>';
+        $out .= '<th>Current version</th>';
+        $out .= '<td>' . $this->version . '</td>';
+        $out .= '</tr>';
+        $out .= '<tr>';
+        $out .= '<tr>';
+        $out .= '<th><a href="'.RELEASESURL.'">Latest version</a></th>';
+        $out .= '<td>' . $response = $this->getNewRelease()->tag_name . '</td>';
+        $out .= '</tr>';
+        $out .= '<tr>';
+        $out .= '<th>Default language</th>';
+        $out .= '<td>' . $this->lang_code() . '</td>';
+        $out .= '</tr>';
+        $out .= '<tr>';
+        $out .= '<th>PHP version</th>';
+        $out .= '<td>' . phpversion() . '</td>';
+        $out .= '</tr>';
+        $out .= '<tr>';
+        $out .= '<th>PHP mbstring (UTF-8)</th>';
+        $out .= '<td>' . (extension_loaded('mbstring') ? 'OK' : 'MISSING') . '</td>';
+        $out .= '</tr>';
+        $out .= '</table>';
 
-        $out.= '<h3>Constants :</h3>';
+        $out.= '<details>';
+        $out.= '<summary>Constants</summary>';
         $constants = get_defined_constants(true)['user'];
         $filteredConstants = array_filter(array_keys($constants), function ($key) {
             return 0 === strpos($key, __namespace__);
         });
         $filteredConstants = array_intersect_key($constants, array_flip($filteredConstants));
-        $out .= preint($filteredConstants, true);
+        $ctable = "<table>";
+        foreach($filteredConstants as $key=>$val) {
+            $ctable .= '<tr>';
+            $ctable .= '<th>' . str_replace('P01C\\', '', $key) . '</th>';
+            $ctable .= '<td>' . $val . '</td>';
+            $ctable .= '</tr>';
+        }
+        $ctable .= '</table>';
+        $out .= $ctable;
+        $out.= '</details>';
 
+        $out.= '<details>';
+        $out.= '<summary>Session</summary>';
         $out .= Session::report();
+        $out.= '</details>';
 
         if (!empty($_POST)) {
-            $out.= '<h3>$_POST :</h3>';
+            $out.= '<details>';
+            $out.= '<summary>POST</summary>';
             $out.= preint($_POST, true);
+            $out.= '</details>';
         }
-        $out.= '<h3>$p01contact :</h3>';
-        $out.= preint($this, true);
+        $out.= '<details>';
+        $out.= '<summary>Config</summary>';
+        $out.= preint($this->config, true);
+        $out.= '</details>';
+        $out.= '<details>';
+        $out.= '<summary>Langs</summary>';
+        $out.= preint($this->langs, true);
+        $out.= '</details>';
+        $out.= '</div>';
         return $out;
     }
     /**
@@ -189,13 +236,9 @@ class P01contact
         }
     }
     /**
-     * Return a traduction of the keyword
-     *
-     * Manage languages between requested langs and existing traductions.
-     * @param string $key the keyword
-     * @return string
+     * Return the language code
      */
-    public function lang($key, $lang = null)
+    public function lang_code($lang = null, $key = null)
     {
         $default = !empty($this->default_lang) ? $this->default_lang : 'en';
 
@@ -205,10 +248,22 @@ class P01contact
 
         if (empty($lang)
         || !isset($this->langs[$lang])
-        || !isset($this->langs[$lang]['strings'][$key])) {
+        || ($key != null && !isset($this->langs[$lang]['strings'][$key]))) {
             $lang = $default;
         }
 
+        return $lang;
+    }
+    /**
+     * Return a traduction of the keyword
+     *
+     * Manage languages between requested langs and existing traductions.
+     * @param string $key the keyword
+     * @return string
+     */
+    public function lang($key, $lang = null)
+    {
+        $lang = $this->lang_code($lang, $key);
         $strings = $this->langs[$lang]['strings'];
         if (!empty($strings[$key])) {
             return trim($strings[$key]);
@@ -456,7 +511,7 @@ class P01contact
 
         $logsblock = $this->logsTable();
 
-        return $infos . $html . $logsblock;
+        return $infos . $html . $logsblock . $this->debugReport();
     }
 
     private function logsTable()
