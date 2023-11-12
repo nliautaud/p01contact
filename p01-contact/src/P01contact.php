@@ -112,7 +112,8 @@ class P01contact
         $defaultStyle = '';
         static $once;
         if (!$once) {
-            $defaultStyle = '<link rel="stylesheet" href="'.SERVER.RELPATH.'style.css"/>';
+            if (empty($this->ContactStyle)) $this->ContactStyle=SERVER.RELPATH."style.css";
+            $defaultStyle = '<link rel="stylesheet" href="'.$this->ContactStyle.'"/>';
             $once = true;
         }
         $form = new P01contactForm($this);

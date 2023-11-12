@@ -21,9 +21,21 @@ Create contact forms by writing simple tags.
 
 Download the files.
 
-For [GetSimple CMS], place the `p01-contact` directory and the file `p01-contact_gs.php` in `plugins/`.
+- For [GetSimple CMS], place the `p01-contact` directory and the file `p01-contact_gs.php` in `plugins/`.
 
-For [Pico CMS], place the `p01-contact` directory in `plugins/` and **rename-it `PicoContact`**.
+- For [Pico CMS], place the `p01-contact` directory in `plugins/` and **rename-it `PicoContact`**.
+    The plugin is disabled by default. You can enable it in `config/config.yml`:
+    ~~~
+    PicoContact:
+        enabled: true
+        forall: false # setting this to true will enable the plugin for all pages!
+    ~~~
+    Then you can add
+    ~~~
+    contact:
+        enabled: true
+    ~~~
+    To your contact page's yaml header.
 
 *Compatibility : PHP 5.4+*
 
